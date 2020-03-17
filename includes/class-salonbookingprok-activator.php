@@ -29,7 +29,31 @@ class Salonbookingprok_Activator {
 	 *
 	 * @since    1.0.0
 	 */
+	
 	public static function activate() {
+
+		add_role('salonbookingprok_employee', __(
+			'Employees','salonbookingprok'),
+			array(
+				'read'            => true, // Allows a user to read
+				'create_posts'      => false, // Allows user to create new posts
+				'edit_posts'        => false, // Allows user to edit their own posts
+				'edit_others_posts' => false, // Allows user to edit others posts too
+				'publish_posts' => false, // Allows the user to publish posts
+				'manage_categories' => false, // Allows user to manage post categories
+				)
+		 );
+		 add_role('salonbookingprok_customer', __(
+			'Customers','salonbookingprok'),
+			array(
+				'read'            => true, // Allows a user to read
+				'create_posts'      => false, // Allows user to create new posts
+				'edit_posts'        => false, // Allows user to edit their own posts
+				'edit_others_posts' => false, // Allows user to edit others posts too
+				'publish_posts' => false, // Allows the user to publish posts
+				'manage_categories' => false, // Allows user to manage post categories
+				)
+		 );
 
 	}
 

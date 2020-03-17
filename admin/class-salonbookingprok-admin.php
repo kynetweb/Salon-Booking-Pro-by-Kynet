@@ -99,5 +99,14 @@ class Salonbookingprok_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/salonbookingprok-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
+	/**
+	 * Register the menu pages.
+	 *
+	 * @since    1.0.0
+	 */
+	function menu_pages(){
+		add_menu_page('My Page Title', 'Salon', 'manage_options', 'salon', 'my_menu_output' );
+		
+	}
 
 }
