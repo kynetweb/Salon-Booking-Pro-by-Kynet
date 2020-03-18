@@ -156,10 +156,11 @@ class Salonbookingprok {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages');  // add menus
-		$this->loader->add_action( 'init', $plugin_admin, 'register_Services' );
-		$this->loader->add_action('admin_menu',  $plugin_admin, 'test_plugin_top_menu');
+		$this->loader->add_action( 'init', $plugin_admin, 'register_services' );
 		$this->loader->add_action( 'init', $plugin_admin,'service_hierarchical_taxonomy', 0 );
+		$this->loader->add_action( 'add_meta_boxes', $plugin_admin,'service_meta_boxes', 0 );
 
 	}
 

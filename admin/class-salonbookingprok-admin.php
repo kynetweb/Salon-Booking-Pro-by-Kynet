@@ -6,7 +6,7 @@
  * @link       #
  * @since      1.0.0
  *
- * @package    Salonbookingprok
+ * @package    Salonbookingprok 
  * @subpackage Salonbookingprok/admin
  */
 
@@ -41,6 +41,16 @@ class Salonbookingprok_Admin {
 	private $version;
 
 	/**
+	 * The meta_helper that's responsible for maintaining and registering all meta fileds.
+	 *
+	 * @since    1.0.0
+	 * @access   protected
+	 * @var      Salonbookingprok_Metaboxes    $loader    Maintains and registers all hooks for the plugin.
+	 */
+	protected $meta_helper;
+
+
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -51,6 +61,23 @@ class Salonbookingprok_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+		$this->load_Helper();
+
+	}
+	
+	/**
+	 * Load the required Helper's for this plugin.
+	 *
+	 *
+	 * @since    1.0.0
+	 */
+	private function load_Helper() {
+		/**
+		 * The helper class responsible for defining and crating the meta Fileds for all post types.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/helper/class-salonbookingprok-metaboxes.php';
+
+		$this->meta_helper = new Salonbookingprok_Metaboxes();
 
 	}
 
@@ -72,8 +99,10 @@ class Salonbookingprok_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
+		
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/salonbookingprok-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'css/select2.min.css', array(), $this->version, 'all' );
+		
 
 	}
 
@@ -95,9 +124,10 @@ class Salonbookingprok_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/salonbookingprok-admin.js', array( 'jquery' ), $this->version, false );
-
+		
+		
+		wp_enqueue_script( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/salonbookingprok-admin.js', array( 'jquery' ), $this->version, true );
 	}
 	/**
 	 * Register the menu pages.
@@ -110,30 +140,36 @@ class Salonbookingprok_Admin {
 	}
 
 	
-	function register_Services() {
+	/**
+	 * Register post type for Services.
+	 *
+	 * @since    1.0.0
+	 */
+
+	function register_services() {
 		$labels = array(
-			'name'               => _x( 'Service', 'post type general name', 'salonbookingprok' ),
-			'singular_name'      => _x( 'Services', 'post type singular name', 'salonbookingprok' ),
-			'menu_name'          => _x( 'Services', 'admin menu', 'salonbookingprok' ),
-			'name_admin_bar'     => _x( 'Services', 'add new on admin bar', 'salonbookingprok' ),
-			'add_new'            => _x( 'Add New', 'Services', 'salonbookingprok' ),
-			'add_new_item'       => __( 'Add New Services', 'salonbookingprok' ),
-			'new_item'           => __( 'New Services', 'salonbookingprok' ),
-			'edit_item'          => __( 'Edit Services', 'salonbookingprok' ),
-			'view_item'          => __( 'View Services', 'salonbookingprok' ),
-			'view_items'         => __('View %s', 'salonbookingprok'),
-			'all_items'          => __( 'All Services', 'salonbookingprok' ),
-			'search_items'       => __( 'Search Services', 'salonbookingprok' ),
-			'parent_item_colon'  => __( 'Parent Services:', 'salonbookingprok' ),
-			'not_found'          => __( 'No Services found.', 'salonbookingprok' ),
-			'not_found_in_trash' => __( 'No Services found in Trash.', 'salonbookingprok' ),
+			'name'                  => _x( 'Service', 'post type general name', 'salonbookingprok' ),
+			'singular_name'         => _x( 'Services', 'post type singular name', 'salonbookingprok' ),
+			'menu_name'             => _x( 'Services', 'admin menu', 'salonbookingprok' ),
+			'name_admin_bar'        => _x( 'Services', 'add new on admin bar', 'salonbookingprok' ),
+			'add_new'               => _x( 'Add New', 'Services', 'salonbookingprok' ),
+			'add_new_item'          => __( 'Add New Services', 'salonbookingprok' ),
+			'new_item'              => __( 'New Services', 'salonbookingprok' ),
+			'edit_item'             => __( 'Edit Services', 'salonbookingprok' ),
+			'view_item'             => __( 'View Services', 'salonbookingprok' ),
+			'view_items'            => __('View %s', 'salonbookingprok'),
+			'all_items'             => __( 'All Services', 'salonbookingprok' ),
+			'search_items'          => __( 'Search Services', 'salonbookingprok' ),
+			'parent_item_colon'     => __( 'Parent Services:', 'salonbookingprok' ),
+			'not_found'             => __( 'No Services found.', 'salonbookingprok' ),
+			'not_found_in_trash'    => __( 'No Services found in Trash.', 'salonbookingprok' ),
 			'archives'              =>  __('%s Archives', 'salonbookingprok'),
 			'attributes'            =>  __('%s Attributes', 'salonbookingprok'),
 			'update_item'           =>  __('Update %s', 'salonbookingprok'),
-			'featured_image'        =>  __( 'Profile Picture', 'salonbookingprok' ),
-            'set_featured_image'    =>  __( 'Set profile image', 'salonbookingprok' ),
-            'remove_featured_image' =>  __( 'Remove profile image', 'salonbookingprok' ),
-            'use_featured_image'    =>  __( 'Use as profile image', 'salonbookingprok' ),
+			'featured_image'        =>  __( 'featured image', 'salonbookingprok' ),
+            'set_featured_image'    =>  __( 'Set featured image', 'salonbookingprok' ),
+            'remove_featured_image' =>  __( 'Remove featured image', 'salonbookingprok' ),
+            'use_featured_image'    =>  __( 'Use as featured image', 'salonbookingprok' ),
             'items_list'            =>  __('%s list', 'salonbookingprok'),
 			'items_list_navigation' =>  __('%s list navigation', 'salonbookingprok'),
 			'description'           => __( 'Demo', 'salonbookingprok' ),
@@ -146,59 +182,130 @@ class Salonbookingprok_Admin {
 			'public'             => true,
 			'publicly_queryable' => true,
 			'show_ui'            => true,
-			'show_in_menu'       => false, //<--- HERE
+			'show_in_menu'       => true, //<--- HERE
 			'query_var'          => true,
 			'rewrite'            => array( 'slug' => 'sbprok_services' ),
 			'capability_type'    => 'post',
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'menu_position'      => null,
-			'description'        => 'Demo discription.',
-			'supports'           => array( 'title', 'editor', 'author', 'thumbnail')
+			'supports'           => array( 'title', 'editor', 'author', 'thumbnail','description')
 		);
 	 
 		register_post_type( 'sbprok_services', $args );
 	}
 
 
-	  function service_hierarchical_taxonomy() {
+	/**
+	 * Register Taxonomy for Services.
+	 *
+	 * @since    1.0.0
+	 */
+
+	function service_hierarchical_taxonomy() {
 
 		  $labels = array(
-			'name' => _x( 'Services Category', 'taxonomy general name','salonbookingprok' ),
-			'singular_name' => _x( 'Services Category', 'taxonomy singular name','salonbookingprok' ),
-			'search_items' =>  __( 'Search Services Category','salonbookingprok' ),
-			'all_items' => __( 'All Services Category','salonbookingprok' ),
-			'parent_item' => __( 'Parent Services Category','salonbookingprok' ),
+			'name'              => _x( 'Services Category', 'taxonomy general name','salonbookingprok' ),
+			'singular_name'     => _x( 'Services Category', 'taxonomy singular name','salonbookingprok' ),
+			'search_items'      =>  __( 'Search Services Category','salonbookingprok' ),
+			'all_items'         => __( 'All Services Category','salonbookingprok' ),
+			'parent_item'       => __( 'Parent Services Category','salonbookingprok' ),
 			'parent_item_colon' => __( 'Parent Services Category:' ),
-			'edit_item' => __( 'Edit Services Category','salonbookingprok' ), 
-			'update_item' => __( 'Update Services Category','salonbookingprok' ),
-			'add_new_item' => __( 'Add New Services Category','salonbookingprok' ),
-			'new_item_name' => __( 'New Services Category Name','salonbookingprok' ),
-			'menu_name' => __( 'Services Categories','salonbookingprok' ),
+			'edit_item'         => __( 'Edit Services Category','salonbookingprok' ), 
+			'update_item'       => __( 'Update Services Category','salonbookingprok' ),
+			'add_new_item'      => __( 'Add New Services Category','salonbookingprok' ),
+			'new_item_name'     => __( 'New Services Category Name','salonbookingprok' ),
+			'menu_name'         => __( 'Services Categories','salonbookingprok' ),
 		  );    
 		 
-		  register_taxonomy('Services Category',array('post'), array(
-			'hierarchical' => true,
-			'labels' => $labels,
-			'show_ui' => true,
+		  register_taxonomy('sbprok_category',array('post'), array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'show_ui'           => true,
 			'show_admin_column' => true,
-			'query_var' => true,
-			'rewrite' => array( 'slug' => 'sbprok_category' ),
+			'query_var'         => true,
+			'rewrite'           => array( 'slug' => 'sbprok_category' ),
 		  ));
 		 
 		}
 
-		function test_plugin_top_menu(){
-			add_menu_page('Saloon', 'Saloon', 'manage_options', __FILE__, 'test_plugin_page');
-			add_submenu_page(__FILE__, 'Services','Services', 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
-			add_submenu_page(__FILE__, 'Services Category','Services Category', 'manage_options', 'edit.php?taxonomy=sbprok_category', NULL );
-		  }
-		  function test_plugin_page(){
-		   ?>
-			<div class='wrap'>
-			 <h2></h2>
-			</div>
-		   <?php
-		  }
+	/**
+	 * Add Metaboxes for Services.
+	 *
+	 * @since    1.0.0
+	 */
+
+	public function service_meta_boxes(){
+			$args = array(
+				array(
+					'id'        => 'salonbookingprok_Price',
+					'title'     => 'Price',
+					'post_type' => 'sbprok_services',
+					'context'   => 'side',
+					'args'      => array(
+									'desc'  => 'Price',
+									'field' => 'textfield',
+					                )
+				    ),
+				array(
+					 'id'        => 'salonbookingprok_duration',
+					 'title'     => 'Duration',
+					 'post_type' => 'sbprok_services',
+					 'context'   => 'side',
+					 'args'      => array(
+									  'desc'  => 'Duration',
+									  'field' => 'textfield',
+										)
+					),
+				array(
+					 'id'        => 'salonbookingprok_employees',
+					 'title'     => 'Employees',
+					 'post_type' => 'sbprok_services',
+					 'desc'     => 'Select the buildings affected',
+					 'context'   => 'side',
+					 'args'      => array(
+									  'desc'  => 'Employees',
+									  'field' => 'dropdown',
+										)
+					),
+				array(
+					 'id'        => 'salonbookingprok_min_capacity',
+					 'title'     => 'Min capacity',
+					 'post_type' => 'sbprok_services',
+					 'context'   => 'side',
+					 'args'      => array(
+									  'desc'  => 'Min capacity',
+									  'field' => 'numeric',
+										)
+					),
+				array(
+					 'id'        => 'salonbookingprok_max_capacity',
+					 'title'     => 'Max capacity',
+					 'post_type' => 'sbprok_services',
+					 'context'   => 'side',
+					 'args'      => array(
+									  'desc'  => 'Max capacity',
+									  'field' => 'numeric',
+					                    ) 
+					),
+				array(
+					 'id'        => 'salonbookingprok_show_service',
+					 'title'     => 'Show service on site',
+					 'post_type' => 'sbprok_services',
+					 'context'   => 'side',
+					 'type'      => 'switch',
+                     'style'     => 'rounded',
+					 'on_label'  => 'Yes',
+					 'off_label' => 'No',
+					 'args'      => array(
+									  'desc'  => 'Show service on site',
+									  'field' => 'switch',
+										) 
+					   ),	
+
+				);
+
+			$this->meta_helper->create_meta($args,'_salonbookingprok_meta_box', '_salonbookingprok_meta_box_nouce' );
+		}
 
 }
