@@ -135,8 +135,8 @@ class Salonbookingprok_Admin {
 	 * @since    1.0.0
 	 */
 	function menu_pages(){
-		add_menu_page('My Page Title', 'Salon', 'manage_options', 'salon', 'my_menu_output' );
-		
+		add_menu_page('Saloon', 'Saloon', 'manage_options', 'saloon', array($this, 'saloon_main_menu') );
+		add_submenu_page('saloon', 'sbprok_employee', 'Employees', 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
 	}
 
 	
@@ -308,4 +308,56 @@ class Salonbookingprok_Admin {
 			$this->meta_helper->create_meta($args,'_salonbookingprok_meta_box', '_salonbookingprok_meta_box_nouce' );
 		}
 
+	/**
+	 * callback main menu function.
+	 *
+	 * @since    1.0.0
+	 */
+	function saloon_main_menu(){
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/saloon_main_menu.php';
+	}
+	/**
+	 * callback sub menu functions.
+	 *
+	 * @since    1.0.0
+	 */
+	function employees_sub_menu() {
+		if($_POST) {
+			global $wpdb;
+			$username = $_POST['user_name'];
+			$email = $_POST['user_email'];
+			$password = $_POST['user_password'];
+			$confirmpassword = $_POST['user_confirm_password'];
+			$error = array();
+			if(username_exists($username)) {
+				$error= "<script>alert('Username Already Exists')</script>";
+			}
+			if(!is_email($email)) { 
+				$error= "<script>alert('Email Invalid')</script>";
+			}
+			if(email_exists($email)) {
+				echo "<script>alert('Email Already Exists')</script>";
+			}
+			if(strcmp($password, $confirmpassword)!==0) {
+				$error= "<script>alert('Password did not match')</script>";
+			}
+			if(count($error) == 0){
+				$userdata = array(
+					'user_login'    =>   $username,
+					'user_email'    =>   $email,
+					'user_pass'     =>   $password,
+				);
+				$user_id = wp_insert_user( $userdata );
+				$user_id_role = new WP_User($user_id);
+				$user_id_role->set_role('salonbookingprok_employee');
+				echo "<script type='text/javascript'>alert('user created successfully')</script>";
+			}
+			else{
+				print_r($error);
+			}
+		}
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/custom_employees_form.php';
+	}
 }
+
+?>
