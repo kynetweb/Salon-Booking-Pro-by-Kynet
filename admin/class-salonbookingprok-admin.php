@@ -99,5 +99,106 @@ class Salonbookingprok_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/salonbookingprok-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
+	/**
+	 * Register the menu pages.
+	 *
+	 * @since    1.0.0
+	 */
+	function menu_pages(){
+		add_menu_page('My Page Title', 'Salon', 'manage_options', 'salon', 'my_menu_output' );
+		
+	}
+
+	
+	function register_Services() {
+		$labels = array(
+			'name'               => _x( 'Service', 'post type general name', 'salonbookingprok' ),
+			'singular_name'      => _x( 'Services', 'post type singular name', 'salonbookingprok' ),
+			'menu_name'          => _x( 'Services', 'admin menu', 'salonbookingprok' ),
+			'name_admin_bar'     => _x( 'Services', 'add new on admin bar', 'salonbookingprok' ),
+			'add_new'            => _x( 'Add New', 'Services', 'salonbookingprok' ),
+			'add_new_item'       => __( 'Add New Services', 'salonbookingprok' ),
+			'new_item'           => __( 'New Services', 'salonbookingprok' ),
+			'edit_item'          => __( 'Edit Services', 'salonbookingprok' ),
+			'view_item'          => __( 'View Services', 'salonbookingprok' ),
+			'view_items'         => __('View %s', 'salonbookingprok'),
+			'all_items'          => __( 'All Services', 'salonbookingprok' ),
+			'search_items'       => __( 'Search Services', 'salonbookingprok' ),
+			'parent_item_colon'  => __( 'Parent Services:', 'salonbookingprok' ),
+			'not_found'          => __( 'No Services found.', 'salonbookingprok' ),
+			'not_found_in_trash' => __( 'No Services found in Trash.', 'salonbookingprok' ),
+			'archives'              =>  __('%s Archives', 'salonbookingprok'),
+			'attributes'            =>  __('%s Attributes', 'salonbookingprok'),
+			'update_item'           =>  __('Update %s', 'salonbookingprok'),
+			'featured_image'        =>  __( 'Profile Picture', 'salonbookingprok' ),
+            'set_featured_image'    =>  __( 'Set profile image', 'salonbookingprok' ),
+            'remove_featured_image' =>  __( 'Remove profile image', 'salonbookingprok' ),
+            'use_featured_image'    =>  __( 'Use as profile image', 'salonbookingprok' ),
+            'items_list'            =>  __('%s list', 'salonbookingprok'),
+			'items_list_navigation' =>  __('%s list navigation', 'salonbookingprok'),
+			'description'           => __( 'Demo', 'salonbookingprok' ),
+            'filter_items_list'     =>  __('Filter %s list', 'salonbookingprok')
+		);
+
+	 
+		$args = array(
+			'labels'             => $labels,
+			'public'             => true,
+			'publicly_queryable' => true,
+			'show_ui'            => true,
+			'show_in_menu'       => false, //<--- HERE
+			'query_var'          => true,
+			'rewrite'            => array( 'slug' => 'sbprok_services' ),
+			'capability_type'    => 'post',
+			'has_archive'        => true,
+			'hierarchical'       => false,
+			'menu_position'      => null,
+			'description'        => 'Demo discription.',
+			'supports'           => array( 'title', 'editor', 'author', 'thumbnail')
+		);
+	 
+		register_post_type( 'sbprok_services', $args );
+	}
+
+
+	  function service_hierarchical_taxonomy() {
+
+		  $labels = array(
+			'name' => _x( 'Services Category', 'taxonomy general name','salonbookingprok' ),
+			'singular_name' => _x( 'Services Category', 'taxonomy singular name','salonbookingprok' ),
+			'search_items' =>  __( 'Search Services Category','salonbookingprok' ),
+			'all_items' => __( 'All Services Category','salonbookingprok' ),
+			'parent_item' => __( 'Parent Services Category','salonbookingprok' ),
+			'parent_item_colon' => __( 'Parent Services Category:' ),
+			'edit_item' => __( 'Edit Services Category','salonbookingprok' ), 
+			'update_item' => __( 'Update Services Category','salonbookingprok' ),
+			'add_new_item' => __( 'Add New Services Category','salonbookingprok' ),
+			'new_item_name' => __( 'New Services Category Name','salonbookingprok' ),
+			'menu_name' => __( 'Services Categories','salonbookingprok' ),
+		  );    
+		 
+		  register_taxonomy('Services Category',array('post'), array(
+			'hierarchical' => true,
+			'labels' => $labels,
+			'show_ui' => true,
+			'show_admin_column' => true,
+			'query_var' => true,
+			'rewrite' => array( 'slug' => 'sbprok_category' ),
+		  ));
+		 
+		}
+
+		function test_plugin_top_menu(){
+			add_menu_page('Saloon', 'Saloon', 'manage_options', __FILE__, 'test_plugin_page');
+			add_submenu_page(__FILE__, 'Services','Services', 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
+			add_submenu_page(__FILE__, 'Services Category','Services Category', 'manage_options', 'edit.php?taxonomy=sbprok_category', NULL );
+		  }
+		  function test_plugin_page(){
+		   ?>
+			<div class='wrap'>
+			 <h2></h2>
+			</div>
+		   <?php
+		  }
 
 }
