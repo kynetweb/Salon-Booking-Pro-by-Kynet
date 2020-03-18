@@ -105,100 +105,59 @@ class Salonbookingprok_Admin {
 	 * @since    1.0.0
 	 */
 	function menu_pages(){
-		add_menu_page('My Page Title', 'Salon', 'manage_options', 'salon', 'my_menu_output' );
-		
+		add_menu_page('Saloon', 'Saloon', 'manage_options', 'saloon', array($this, 'saloon_main_menu') );
+		add_submenu_page('saloon', 'sbprok_employee', 'Employees', 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
 	}
-
-	
-	function register_Services() {
-		$labels = array(
-			'name'               => _x( 'Service', 'post type general name', 'salonbookingprok' ),
-			'singular_name'      => _x( 'Services', 'post type singular name', 'salonbookingprok' ),
-			'menu_name'          => _x( 'Services', 'admin menu', 'salonbookingprok' ),
-			'name_admin_bar'     => _x( 'Services', 'add new on admin bar', 'salonbookingprok' ),
-			'add_new'            => _x( 'Add New', 'Services', 'salonbookingprok' ),
-			'add_new_item'       => __( 'Add New Services', 'salonbookingprok' ),
-			'new_item'           => __( 'New Services', 'salonbookingprok' ),
-			'edit_item'          => __( 'Edit Services', 'salonbookingprok' ),
-			'view_item'          => __( 'View Services', 'salonbookingprok' ),
-			'view_items'         => __('View %s', 'salonbookingprok'),
-			'all_items'          => __( 'All Services', 'salonbookingprok' ),
-			'search_items'       => __( 'Search Services', 'salonbookingprok' ),
-			'parent_item_colon'  => __( 'Parent Services:', 'salonbookingprok' ),
-			'not_found'          => __( 'No Services found.', 'salonbookingprok' ),
-			'not_found_in_trash' => __( 'No Services found in Trash.', 'salonbookingprok' ),
-			'archives'              =>  __('%s Archives', 'salonbookingprok'),
-			'attributes'            =>  __('%s Attributes', 'salonbookingprok'),
-			'update_item'           =>  __('Update %s', 'salonbookingprok'),
-			'featured_image'        =>  __( 'Profile Picture', 'salonbookingprok' ),
-            'set_featured_image'    =>  __( 'Set profile image', 'salonbookingprok' ),
-            'remove_featured_image' =>  __( 'Remove profile image', 'salonbookingprok' ),
-            'use_featured_image'    =>  __( 'Use as profile image', 'salonbookingprok' ),
-            'items_list'            =>  __('%s list', 'salonbookingprok'),
-			'items_list_navigation' =>  __('%s list navigation', 'salonbookingprok'),
-			'description'           => __( 'Demo', 'salonbookingprok' ),
-            'filter_items_list'     =>  __('Filter %s list', 'salonbookingprok')
-		);
-
-	 
-		$args = array(
-			'labels'             => $labels,
-			'public'             => true,
-			'publicly_queryable' => true,
-			'show_ui'            => true,
-			'show_in_menu'       => false, //<--- HERE
-			'query_var'          => true,
-			'rewrite'            => array( 'slug' => 'sbprok_services' ),
-			'capability_type'    => 'post',
-			'has_archive'        => true,
-			'hierarchical'       => false,
-			'menu_position'      => null,
-			'description'        => 'Demo discription.',
-			'supports'           => array( 'title', 'editor', 'author', 'thumbnail')
-		);
-	 
-		register_post_type( 'sbprok_services', $args );
+	/**
+	 * callback main menu function.
+	 *
+	 * @since    1.0.0
+	 */
+	function saloon_main_menu(){
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/saloon_main_menu.php';
 	}
-
-
-	  function service_hierarchical_taxonomy() {
-
-		  $labels = array(
-			'name' => _x( 'Services Category', 'taxonomy general name','salonbookingprok' ),
-			'singular_name' => _x( 'Services Category', 'taxonomy singular name','salonbookingprok' ),
-			'search_items' =>  __( 'Search Services Category','salonbookingprok' ),
-			'all_items' => __( 'All Services Category','salonbookingprok' ),
-			'parent_item' => __( 'Parent Services Category','salonbookingprok' ),
-			'parent_item_colon' => __( 'Parent Services Category:' ),
-			'edit_item' => __( 'Edit Services Category','salonbookingprok' ), 
-			'update_item' => __( 'Update Services Category','salonbookingprok' ),
-			'add_new_item' => __( 'Add New Services Category','salonbookingprok' ),
-			'new_item_name' => __( 'New Services Category Name','salonbookingprok' ),
-			'menu_name' => __( 'Services Categories','salonbookingprok' ),
-		  );    
-		 
-		  register_taxonomy('Services Category',array('post'), array(
-			'hierarchical' => true,
-			'labels' => $labels,
-			'show_ui' => true,
-			'show_admin_column' => true,
-			'query_var' => true,
-			'rewrite' => array( 'slug' => 'sbprok_category' ),
-		  ));
-		 
+	/**
+	 * callback sub menu functions.
+	 *
+	 * @since    1.0.0
+	 */
+	function employees_sub_menu() {
+		if($_POST) {
+			global $wpdb;
+			$username = $_POST['user_name'];
+			$email = $_POST['user_email'];
+			$password = $_POST['user_password'];
+			$confirmpassword = $_POST['user_confirm_password'];
+			$error = array();
+			if(username_exists($username)) {
+				$error= "<script>alert('Username Already Exists')</script>";
+			}
+			if(!is_email($email)) { 
+				$error= "<script>alert('Email Invalid')</script>";
+			}
+			if(email_exists($email)) {
+				echo "<script>alert('Email Already Exists')</script>";
+			}
+			if(strcmp($password, $confirmpassword)!==0) {
+				$error= "<script>alert('Password did not match')</script>";
+			}
+			if(count($error) == 0){
+				$userdata = array(
+					'user_login'    =>   $username,
+					'user_email'    =>   $email,
+					'user_pass'     =>   $password,
+				);
+				$user_id = wp_insert_user( $userdata );
+				$user_id_role = new WP_User($user_id);
+				$user_id_role->set_role('salonbookingprok_employee');
+				echo "<script type='text/javascript'>alert('user created successfully')</script>";
+			}
+			else{
+				print_r($error);
+			}
 		}
-
-		function test_plugin_top_menu(){
-			add_menu_page('Saloon', 'Saloon', 'manage_options', __FILE__, 'test_plugin_page');
-			add_submenu_page(__FILE__, 'Services','Services', 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
-			add_submenu_page(__FILE__, 'Services Category','Services Category', 'manage_options', 'edit.php?taxonomy=sbprok_category', NULL );
-		  }
-		  function test_plugin_page(){
-		   ?>
-			<div class='wrap'>
-			 <h2></h2>
-			</div>
-		   <?php
-		  }
-
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/custom_employees_form.php';
+	}
 }
+
+?>
