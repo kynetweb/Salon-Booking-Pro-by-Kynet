@@ -36,10 +36,10 @@ class Salonbookingprok_Metaboxes {
 
     public function add_metabox()
     {
+        $prefix = $this->meta_prefix;
         foreach( $this->boxes as $box )
             add_meta_box(
-
-                $box['id'], 
+                $prefix.$box['id'], 
                 $box['title'], 
                 array( $this, 'mb_callback' ), 
                 $box['post_type'], 
@@ -86,8 +86,8 @@ class Salonbookingprok_Metaboxes {
     */
     private function multiple_fields( $box, $post_id )
     {
-       $post_meta = get_post_meta( $post_id, $this->meta_prefix.$box['id'], true );
-        $fields    = $box['args']['fields'];
+        $post_meta  =     get_post_meta( $post_id, $box['id'], true );
+        $fields     =     $box['args']['fields'];
 
         if(empty($post_meta)){
             $post_meta = array();
@@ -99,7 +99,7 @@ class Salonbookingprok_Metaboxes {
         }
         foreach($fields as $field){
 
-            $field_id   = $this->meta_prefix.$field['id'];
+            $field_id   =  $this->meta_prefix.$field['id'];
             $box['id']  =  $field_id;
             $box['args']['desc']    =  $field['desc'];
             $box['value'] = $post_meta[$field_id];
@@ -133,16 +133,22 @@ class Salonbookingprok_Metaboxes {
     */
     private function textfield( $box, $post_id )
     {
-        if(array_key_exists("value", $box)){
-            $post_meta = $box['value'];
-        } else {
-            $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
-        }
+       $post_meta = $this->meta_value($box, $post_id);
         printf(
             '<label><input type="text" name="%s" value="%s" /></label> <br/><small>%s</small><br/>',
             $box['id'],
             $post_meta,
             $box['args']['desc']
+        );
+    }
+    private function numeric($box, $post_id){
+       
+        $post_meta = $this->meta_value($box, $post_id);
+        printf(
+            '<label><input type="number" name="%s" value="%s" /></label> <br/><small>%s</small><br/>',
+                $box['id'],
+                $post_meta,
+                $box['args']['desc']
         );
     }
 
@@ -151,7 +157,7 @@ class Salonbookingprok_Metaboxes {
     * @since: 1.0
     */
     private function checkbox($box, $post_id){
-            $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
+        $post_meta = $this->meta_value($box, $post_id);
             printf(
                    '<label>%s: </label><input type="checkbox" name="%s" %s /> <small>%s</small><br/>',
                    $box['title'],
@@ -173,21 +179,21 @@ class Salonbookingprok_Metaboxes {
                 echo '</select>'; 
             }
 
-    private function numeric($box, $post_id){
-            $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
-            printf(
-                '<label><input type="number" name="%s" value="%s" /></label> <br/><small>%s</small><br/>',
-                    $box['id'],
-                    $post_meta,
-                    $box['args']['desc']
-                );
-            }
+ 
     private function switch($box, $post_id){
             $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
             printf(
                 rwmb_the_value( $field_id )
                 );
-            }
+    }
+    private function meta_value($box, $post_id){
+        if(array_key_exists("value", $box)){
+            $post_meta = $box['value'];
+        } else {
+            $post_meta = get_post_meta( $post_id, $box['id'], true );
+        }
+        return $post_meta;
+    }
     
 
 }

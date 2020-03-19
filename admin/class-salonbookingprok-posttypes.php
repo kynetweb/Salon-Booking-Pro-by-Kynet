@@ -127,7 +127,7 @@ class Salonbookingprok_Posttypes {
 			'archives'              =>  __('%s Archives', 'salonbookingprok'),
 			'attributes'            =>  __('%s Attributes', 'salonbookingprok'),
 			'update_item'           =>  __('Update %s', 'salonbookingprok'),
-			'featured_image'        =>  __( 'featured image', 'salonbookingprok' ),
+			'featured_image'        =>  __( 'Featured image', 'salonbookingprok' ),
             'set_featured_image'    =>  __( 'Set featured image', 'salonbookingprok' ),
             'remove_featured_image' =>  __( 'Remove featured image', 'salonbookingprok' ),
             'use_featured_image'    =>  __( 'Use as featured image', 'salonbookingprok' ),
@@ -150,7 +150,7 @@ class Salonbookingprok_Posttypes {
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'menu_position'      => null,
-			'supports'           => array( 'title', 'editor', 'author', 'thumbnail','description')
+			'supports'           => array( 'title', 'editor', 'thumbnail')
 		);
 	 
 		register_post_type( 'sbprok_services', $args );
@@ -179,7 +179,7 @@ class Salonbookingprok_Posttypes {
 			'menu_name'         => __( 'Services Categories','salonbookingprok' ),
 		  );    
 		 
-		  register_taxonomy('sbprok_category',array('post'), array(
+		  register_taxonomy('sbprok_category', array('sbprok_services'), array(
 			'hierarchical'      => true,
 			'labels'            => $labels,
 			'show_ui'           => true,
