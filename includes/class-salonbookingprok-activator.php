@@ -23,7 +23,7 @@
 class Salonbookingprok_Activator {
 
 	/**
-	 * Short Description. (use period)
+	 * Short Description. This function fires after plugin activation
 	 *
 	 * Long Description.
 	 *
@@ -31,6 +31,7 @@ class Salonbookingprok_Activator {
 	 */
 	
 	public static function activate() {
+		
 
 		add_role('salonbookingprok_employee', __(
 			'Employees','salonbookingprok'),

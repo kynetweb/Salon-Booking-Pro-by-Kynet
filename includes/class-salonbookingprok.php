@@ -117,6 +117,21 @@ class Salonbookingprok {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-salonbookingprok-admin.php';
 
 		/**
+		 * The class responsible for defining all actions that occur in the admin area.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-salonbookingprok-pages.php';
+
+		/**
+		 * The class responsible for defining all actions that occur in the admin area.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-salonbookingprok-posttypes.php';
+
+		/**
+		 * The class responsible for defining all actions that occur in the admin area.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-salonbookingprok-meta.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
@@ -153,13 +168,19 @@ class Salonbookingprok {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new Salonbookingprok_Admin( $this->get_plugin_name(), $this->get_version() );
+		$admin_pages = new Salonbookingprok_Pages( $this->get_plugin_name(), $this->get_version() );
+		$admin_posttypes = new Salonbookingprok_Posttypes( $this->get_plugin_name(), $this->get_version() );
+		$admin_meta = new Salonbookingprok_Meta( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'menu_pages');  // add menus
-		$this->loader->add_action( 'init', $plugin_admin, 'register_Services' );
-		$this->loader->add_action('admin_menu',  $plugin_admin, 'test_plugin_top_menu');
-		$this->loader->add_action( 'init', $plugin_admin,'service_hierarchical_taxonomy', 0 );
+		
+		$this->loader->add_action( 'admin_menu', $admin_pages, 'menu_pages');  // add menus
+		$this->loader->add_action( 'init', $admin_posttypes, 'register_services' );
+		$this->loader->add_action( 'init', $admin_posttypes,'service_hierarchical_taxonomy', 0 );
+		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'service_meta_boxes', 0 );
+		$this->loader->add_action( 'save_post', $admin_meta,'save_service_meta_boxes', 0 );
+		
 
 	}
 
