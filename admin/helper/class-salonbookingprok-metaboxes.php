@@ -24,6 +24,7 @@ class Salonbookingprok_Metaboxes {
     private $boxes;
 	private $action;
     private $nouce;
+    private $meta_prefix = "_";
     
     public function create_meta( $args, $action, $nouce )
     {
@@ -37,7 +38,7 @@ class Salonbookingprok_Metaboxes {
     {
         foreach( $this->boxes as $box )
             add_meta_box(
- 
+
                 $box['id'], 
                 $box['title'], 
                 array( $this, 'mb_callback' ), 
@@ -58,12 +59,14 @@ class Salonbookingprok_Metaboxes {
 		
         switch( $box['args']['field'] )
         {
+            case 'multiple_fields':
+                $this->multiple_fields( $box, $post->ID );
+            break;
             case 'textfield':
                 $this->textfield( $box, $post->ID );
             break;
             case 'checkbox':
-                $this->checkbox(
- $box, $post->ID );
+                $this->checkbox($box, $post->ID );
             break;
             case 'dropdown':
                 $this->columnDropdown( $box, $post->ID );
@@ -74,10 +77,54 @@ class Salonbookingprok_Metaboxes {
             case 'radio':
                 $this->switch( $box, $post->ID );
             break;
-            case 'layouts':
-            $this->teamlayouts( $box, $post->ID );
-            break;
+            
         }
+    }
+    /**
+    * Service Details
+    * @since: 1.0
+    */
+    private function multiple_fields( $box, $post_id )
+    {
+       $post_meta = get_post_meta( $post_id, $this->meta_prefix.$box['id'], true );
+        $fields    = $box['args']['fields'];
+
+        if(empty($post_meta)){
+            $post_meta = array();
+            foreach($fields as $field){
+                $id  =  $this->meta_prefix.$field['id'];
+                $post_meta[$id] = NULL;
+            }
+
+        }
+        foreach($fields as $field){
+
+            $field_id   = $this->meta_prefix.$field['id'];
+            $box['id']  =  $field_id;
+            $box['args']['desc']    =  $field['desc'];
+            $box['value'] = $post_meta[$field_id];
+
+            switch( $field['type'])
+            {
+                case 'textfield':
+                    $this->textfield( $box, $post_id );
+                break;
+                case 'checkbox':
+                    $this->checkbox($box, $post_id );
+                break;
+                case 'dropdown':
+                    $this->columnDropdown( $box, $post_id );
+                break;
+                case 'numeric':
+                    $this->numeric( $box, $post_id );
+                break;
+                case 'radio':
+                    $this->switch( $box, $post_id );
+                break;
+                
+            }
+        }
+       
     }
 
     /**
@@ -86,7 +133,11 @@ class Salonbookingprok_Metaboxes {
     */
     private function textfield( $box, $post_id )
     {
-        $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
+        if(array_key_exists("value", $box)){
+            $post_meta = $box['value'];
+        } else {
+            $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
+        }
         printf(
             '<label><input type="text" name="%s" value="%s" /></label> <br/><small>%s</small><br/>',
             $box['id'],
