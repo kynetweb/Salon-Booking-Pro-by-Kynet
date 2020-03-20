@@ -121,6 +121,9 @@ class Salonbookingprok_Metaboxes {
                 case 'radio':
                     $this->switch( $box, $post_id );
                 break;
+                case 'datetime':
+                    $this->timee( $box, $post_id );
+                break;
                 
             }
         }
@@ -135,7 +138,7 @@ class Salonbookingprok_Metaboxes {
     {
        $post_meta = $this->meta_value($box, $post_id);
         printf(
-            '<label><input type="text" name="%s" value="%s" /></label> <br/><small>%s</small><br/>',
+            '<label><input type="text" id="'.$box['id'].'" name="%s" value="%s" /></label> <br/><small>%s</small><br/>',
             $box['id'],
             $post_meta,
             $box['args']['desc']
@@ -166,7 +169,7 @@ class Salonbookingprok_Metaboxes {
                    $box['args']['desc']
                );
            }
-           
+
            
     private function columnDropdown($box, $post_id){
             $meta_id   =   "_".$box['id'];
@@ -185,6 +188,17 @@ class Salonbookingprok_Metaboxes {
             printf(
                 rwmb_the_value( $field_id )
                 );
+    }
+    
+    private function timee($box, $post_id){
+        $post_meta = $this->meta_value($box, $post_id);
+        printf(
+               '<label>%s: </label><input type="datetime" name="%s" %s /> <small>%s</small><br/>',
+               $box['title'],
+               $box['id'],
+               checked( 1, $post_meta, false ),
+               $box['args']['desc']
+           );
     }
     private function meta_value($box, $post_id){
         if(array_key_exists("value", $box)){

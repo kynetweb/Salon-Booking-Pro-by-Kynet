@@ -2,9 +2,12 @@
 	'use strict';
 	//
 	$(window).load(function(){
+		$('#_sbprok_time').datepicker();
 		$('#_salonbookingprok_employees').select2();
+		
 	});
-
+			
+    
 	/**
 	 * All of the code for your admin-facing JavaScript source
 	 * should reside in this file.
