@@ -31,8 +31,6 @@ class Salonbookingprok_Activator {
 	 */
 	
 	public static function activate() {
-		
-
 		add_role('salonbookingprok_employee', __(
 			'Employees','salonbookingprok'),
 			array(

@@ -58,22 +58,25 @@ class Salonbookingprok_Pages {
 	 * @since    1.0.0
 	 */
 	function menu_pages(){
-		add_menu_page('Saloon', 'Saloon', 'manage_options', 'saloon', array($this, 'saloon_main_menu') );
-		add_submenu_page('saloon', 'sbprok_employee', 'Employees', 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
+		add_menu_page(__('Saloon', 'salonbookingprok'), 'Saloon', 'manage_options', 'saloon', array($this, 'saloon_main_menu') );
+		add_submenu_page('saloon', __('Saloon Employee', 'salonbookingprok'), 'Employees', 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
 	}
+	
     /**
 	 * callback main menu function.
 	 *
 	 * @since    1.0.0
 	 */
 	function saloon_main_menu(){
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/saloon_main_menu.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/salonbookingprok-main-menu.php';
 	}
+
 	/**
-	 * callback sub menu functions.
+	 * callback employee form sub menu functions.
 	 *
 	 * @since    1.0.0
 	 */
+
 	function employees_sub_menu() {
 		if($_POST) {
 			global $wpdb;
@@ -81,35 +84,95 @@ class Salonbookingprok_Pages {
 			$email = $_POST['user_email'];
 			$password = $_POST['user_password'];
 			$confirmpassword = $_POST['user_confirm_password'];
-			$error = array();
 			if(username_exists($username)) {
-				$error= "<script>alert('Username Already Exists')</script>";
-			}
-			if(!is_email($email)) { 
-				$error= "<script>alert('Email Invalid')</script>";
+				$message = __( '<b>Error: </b>Username already registered. Please try some other username.<br>', 'salonbookingprok' );
 			}
 			if(email_exists($email)) {
-				echo "<script>alert('Email Already Exists')</script>";
+				$message .= __( '<b>Error: </b>Email already registered. Please try some other Email.<br>', 'salonbookingprok' );
 			}
 			if(strcmp($password, $confirmpassword)!==0) {
-				$error= "<script>alert('Password did not match')</script>";
+				$message .= __( '<b>Error: </b>Password did not match.<br>', 'salonbookingprok' );
 			}
-			if(count($error) == 0){
+			if(count($message) == 0){
 				$userdata = array(
 					'user_login'    =>   $username,
 					'user_email'    =>   $email,
 					'user_pass'     =>   $password,
 				);
 				$user_id = wp_insert_user( $userdata );
+				if(isset($_POST['employee_address'])){
+					$employee_address = $_POST['employee_address'];
+					update_user_meta( $user_id, 'employee_address', $employee_address );
+				}
+				if(isset($_POST['employee_phone'])){
+					$employee_phone = $_POST['employee_phone'];
+					update_user_meta( $user_id, 'employee_phone', $employee_phone );
+				}
+				if(isset($_POST['active_status'])){
+					$active_status = $_POST['active_status'];
+					update_user_meta( $user_id, 'active_status', $active_status );
+				}
 				$user_id_role = new WP_User($user_id);
 				$user_id_role->set_role('salonbookingprok_employee');
-				echo "<script type='text/javascript'>alert('user created successfully')</script>";
+				$class = 'notice notice-success';
+				$message = __( 'User created successfully.', 'salonbookingprok' );
+				printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) ); 
 			}
 			else{
-				print_r($error);
+				printf( '<div class="notice notice-error"><p>%1$s</p></div>', $message ); 
 			}
 		}
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/custom_employees_form.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/salonbookingprok-employees-form.php';
 	}
 
+	/**
+	 * user meta fields.
+	 *
+	 * @since    1.0.0
+	 */
+
+	function user_custom_fields( $user ) {
+		$employee_address = esc_attr( get_the_author_meta( 'employee_address', $user->ID ) );
+		$employee_phone = esc_attr( get_the_author_meta( 'employee_phone', $user->ID ) );
+		$active_status = get_the_author_meta( 'active_status', $user->ID);
+		?>
+		<h3><?php _e('Additional Employee Information'); ?></h3>
+		<table class="form-table">
+			<tr>
+				<th>
+					<label for="employee_address"><?php _e('Address'); ?></label>
+				</th>
+				<td>
+					<input type="text" name="employee_address" id="employee_address" value="<?php echo $employee_address; ?>"  /><br />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<label for="employee_phone"><?php _e('Phone'); ?></label>
+				</th>
+				<td>
+					<input type="text" name="employee_phone" id="employee_phone" value="<?php echo $employee_phone; ?>"  /><br />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<?php _e('Active'); ?>
+				</th>
+				<td>
+					<input type="checkbox" name="active_status" <?php if ($active_status == 'active' ) { ?>checked="checked"<?php } ?> value="active" /> 
+				</td>
+			</tr>
+			
+			
+		</table>
+	<?php 
+	}
+	function save_user_custom_fields( $user_id ) {
+		if ( !current_user_can( 'edit_user', $user_id ) )
+			return FALSE;
+			update_usermeta( $user_id, 'employee_address', $_POST['employee_address'] );
+			update_usermeta( $user_id, 'employee_phone', $_POST['employee_phone'] );
+			update_usermeta( $user_id, 'active_status', $_POST['active_status'] );
+		
+	}
 }

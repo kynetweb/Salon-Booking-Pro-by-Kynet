@@ -23,6 +23,24 @@
             <input type="password" name="user_confirm_password" placeholder="Confirm Password" required/>
         </div>
     </p>
+    <p>
+        <label> Address </label>
+        <div>
+            <input type="text" name="employee_address" />
+        </div>
+    </p>
+    <p>
+        <label> Phone </label>
+        <div>
+            <input type="text" name="employee_phone" />
+        </div>
+    </p>
+    <p>
+        <label>Active</label>
+        <div>
+            <input type="checkbox" name="active_status" value ="active"/>
+        </div>
+    </p>
     <br/>
     <input type="submit" id="ga_butt" name="user_form_submit" value="Submit"/>
 </form>

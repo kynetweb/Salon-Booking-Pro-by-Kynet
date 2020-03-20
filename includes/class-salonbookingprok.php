@@ -166,24 +166,25 @@ class Salonbookingprok {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
-
 		$plugin_admin = new Salonbookingprok_Admin( $this->get_plugin_name(), $this->get_version() );
 		$admin_pages = new Salonbookingprok_Pages( $this->get_plugin_name(), $this->get_version() );
 		$admin_posttypes = new Salonbookingprok_Posttypes( $this->get_plugin_name(), $this->get_version() );
 		$admin_meta = new Salonbookingprok_Meta( $this->get_plugin_name(), $this->get_version() );
-
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		
-		$this->loader->add_action( 'admin_menu', $admin_pages, 'menu_pages');  // add menus
+		 // add menus
+		$this->loader->add_action( 'admin_menu', $admin_pages, 'menu_pages'); 
+		// employee address 
+		$this->loader->add_action('show_user_profile', $admin_pages, 'user_custom_fields' );
+		$this->loader->add_action( 'edit_user_profile', $admin_pages, 'user_custom_fields' );
+		$this->loader->add_action( 'personal_options_update', $admin_pages, 'save_user_custom_fields' );
+		$this->loader->add_action('edit_user_profile_update', $admin_pages, 'save_user_custom_fields' );
+		// services post
 		$this->loader->add_action( 'init', $admin_posttypes, 'register_services' );
 		$this->loader->add_action( 'init', $admin_posttypes,'service_hierarchical_taxonomy', 0 );
 		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'service_meta_boxes', 0 );
 		$this->loader->add_action( 'save_post', $admin_meta,'save_service_meta_boxes', 0 );
-		
-
 	}
-
 	/**
 	 * Register all of the hooks related to the public-facing functionality
 	 * of the plugin.
@@ -192,14 +193,10 @@ class Salonbookingprok {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
 		$plugin_public = new Salonbookingprok_Public( $this->get_plugin_name(), $this->get_version() );
-
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
 	}
-
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
 	 *
