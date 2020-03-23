@@ -1,9 +1,5 @@
 (function( $ ) {
 	'use strict';
-	//
-	$(window).load(function(){
-		$('#_salonbookingprok_employees').select2();
-	});
 
 	/**
 	 * All of the code for your admin-facing JavaScript source
@@ -34,4 +30,5 @@
 	 */
 
 })( jQuery );
+
 

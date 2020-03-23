@@ -1,10 +1,12 @@
-<?php /**
+<?php
+
+/**
  * The admin-specific functionality of the plugin.
  *
  * @link       #
  * @since      1.0.0
  *
- * @package    Salonbookingprok 
+ * @package    Salonbookingprok
  * @subpackage Salonbookingprok/admin
  */
 
@@ -39,16 +41,6 @@ class Salonbookingprok_Admin {
 	private $version;
 
 	/**
-	 * The meta_helper that's responsible for maintaining and registering all meta fileds.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      Salonbookingprok_Metaboxes    $loader    Maintains and registers all hooks for the plugin.
-	 */
-	protected $meta_helper;
-
-
-	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
@@ -59,23 +51,6 @@ class Salonbookingprok_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		$this->load_Helper();
-
-	}
-	
-	/**
-	 * Load the required Helper's for this plugin.
-	 *
-	 *
-	 * @since    1.0.0
-	 */
-	private function load_Helper() {
-		/**
-		 * The helper class responsible for defining and crating the meta Fileds for all post types.
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/helper/class-salonbookingprok-metaboxes.php';
-
-		$this->meta_helper = new Salonbookingprok_Metaboxes();
 
 	}
 
@@ -97,10 +72,9 @@ class Salonbookingprok_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		
+
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/salonbookingprok-admin.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'css/select2.min.css', array(), $this->version, 'all' );
-		
+		wp_enqueue_style('thickbox'); 
 
 	}
 
@@ -122,7 +96,41 @@ class Salonbookingprok_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		wp_enqueue_script( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/salonbookingprok-admin.js', array( 'jquery' ), $this->version, true );
+
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/salonbookingprok-admin.js', array( 'jquery' ), $this->version, false );
+		
+		wp_enqueue_script('media-upload');
+		wp_enqueue_script('thickbox');
+		
+
 	}
+	function my_profile_upload_js() { ?>
+    
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+			var uploadID = ''; /*setup the var*/
+			jQuery(document).find("input[id^='uploadimage']").live('click', function(){
+				uploadID = jQuery(this).prev('input'); /*grab the specific input*/
+				formfield = jQuery('.profile_image').attr('name');
+				tb_show('', 'media-upload.php?type=image&amp;TB_iframe=true');
+				window.send_to_editor = function(html) {
+				console.log("hello");
+				imgurl = jQuery(html).attr('src');
+				uploadID.val(imgurl); /*assign the value to the input*/
+				tb_remove();
+			};
+				  
+			});
+			
+			
+			
+			
+		});
+		</script>
+	
+	<?php }
+	
+	
 }
+
+?>

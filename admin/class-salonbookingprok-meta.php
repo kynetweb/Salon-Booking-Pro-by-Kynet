@@ -38,7 +38,7 @@ class Salonbookingprok_Meta {
 	 * @var      string    $version    The current version of this plugin.
 	 */
     private $version;
-    
+
     /**
 	 * Initialize the class and set its properties.
 	 *
@@ -84,96 +84,78 @@ class Salonbookingprok_Meta {
 	public function service_meta_boxes(){
         $args = array(
             array(
-                'id'        => 'salonbookingprok_service_details',
+                'id'        => 'sbprok_service_details',
                 'title'     => 'Service Details',
                 'post_type' => 'sbprok_services',
                 'context'   => 'normal',
                 'args'      => array(
-                                'field' => 'multiple_fields',
-                                'fields' => array(
-                                    array(
-                                        'id' 	=> 'salonbookingprok_price',
-                                        'desc'	=> 'Price',
-                                        'type' 	=>	'textfield'
-                                    ),
-                                    array(
-                                        'id' 	=> 'salonbookingprok_duration',
-                                        'desc'	=> 'Duration',
-                                        'type' 	=> 'textfield'
-                                    )
+                    'field' => 'multiple_fields',
+                    'fields' => array(
+                        array(
+                            'id' 	=> 'sbprok_price',
+                            'title' =>	'Price',
+                            'type' 	=>	'textfield',
+                            'desc'	=>  'Price',
+                            'type' 	=>	'textfield'
+                        ),
+                        array(
+                            'id' 	=> 'sbprok_duration',
+                            'title' => 'Duration',
+                            'desc'	=> 'Duration',
+                            'type' 	=> 'textfield'
+                        ),
+                        array(
+                            'id' 	=> 'sbprok_max_capacity',
+                            'title' => 'Maximum Capacity',
+                            'desc'	=> 'maximum allowed person per booking',
+                            'type' 	=> 'numeric'
+                        )
 
-                                )
-                            )
-                ),
+                    )
+                )               
+            ),
             array(
-                'id'        => 'salonbookingprok_Price',
-                'title'     => 'Price',
+                'id' 	    =>  'sbprok_show',
+                'title'     =>	'Show service on site',
                 'post_type' => 'sbprok_services',
+                'type' 	    =>	'checkbox',
                 'context'   => 'normal',
                 'args'      => array(
-                                'desc'  => 'Price',
-                                'field' => 'textfield',
-                                )
-                ),
+                                'field' => 'checkbox',
+                                'desc'	=>  'Show',
+                                'type' 	=>	'checkbox'
+                               )
+                
+            ),
             array(
-                 'id'        => 'salonbookingprok_duration',
-                 'title'     => 'Duration',
-                 'post_type' => 'sbprok_services',
-                 'context'   => 'side',
-                 'args'      => array(
-                                  'desc'  => 'Duration',
-                                  'field' => 'textfield',
-                                )
-                ),
-            array(
-                 'id'        => 'salonbookingprok_employees',
-                 'title'     => 'Employees',
-                 'post_type' => 'sbprok_services',
-                 'desc'     => 'Select the buildings affected',
-                 'context'   => 'side',
-                 'args'      => array(
-                                  'desc'  => 'Employees',
-                                  'field' => 'dropdown',
-                                    )
-                ),
-            array(
-                 'id'        => 'salonbookingprok_min_capacity',
-                 'title'     => 'Min capacity',
-                 'post_type' => 'sbprok_services',
-                 'context'   => 'side',
-                 'args'      => array(
-                                  'desc'  => 'Min capacity',
-                                  'field' => 'numeric',
-                                    )
-                ),
-            array(
-                 'id'        => 'salonbookingprok_max_capacity',
-                 'title'     => 'Max capacity',
-                 'post_type' => 'sbprok_services',
-                 'context'   => 'side',
-                 'args'      => array(
-                                  'desc'  => 'Max capacity',
-                                  'field' => 'numeric',
-                                    ) 
-                ),
-            array(
-                 'id'        => 'salonbookingprok_show_service',
-                 'title'     => 'Show service on site',
-                 'post_type' => 'sbprok_services',
-                 'context'   => 'side',
-                 'type'      => 'switch',
-                 'style'     => 'rounded',
-                 'on_label'  => 'Yes',
-                 'off_label' => 'No',
-                 'args'      => array(
-                                  'desc'  => 'Show service on site',
-                                  'field' => 'switch',
-                                    ) 
-                   ),	
+                'id' 	    =>  'sbprok_payment_mode',
+                'title'     =>	'Payment',
+                'post_type' => 'sbprok_services',
+                'type'    	=>	'checkbox',
+                'context'   => 'normal',
+                'args'      => array(
+                                'field' => 'checkbox',
+                                'desc'	=>  'Yes',
+                                'type' 	=>	'checkbox'
+                               )
+            ),
+            // array(
+            //     'id'        => 'sbprok_service_access',
+            //     'title'     => 'Service Access',
+            //     'post_type' => 'sbprok_services',
+            //     'context'   => 'normal',
+            //     'args'      => array(
+            //         'field' => 'multiple_fields',
+            //         'fields' => array(
+                        
+                        
+            //         )
+            //     )             
+            // ),
 
-            );
+        );
 
-        $this->meta_helper->create_meta($args,'_salonbookingprok_meta_box', '_salonbookingprok_meta_box_nouce' );
+        $this->meta_helper->create_meta($args,'_sbprok_meta_box', '_sbprok_meta_box_nouce' );
     }
     /**
     * Save meta Data
@@ -181,9 +163,8 @@ class Salonbookingprok_Meta {
     */
     public function save_service_meta_boxes( $post_id ){
         
-        
         // verify meta box nonce
-        if ( !isset( $_POST['_salonbookingprok_meta_box_nouce'] ) || !wp_verify_nonce( $_POST['_salonbookingprok_meta_box_nouce'], '_salonbookingprok_meta_box' ) ){
+        if ( !isset( $_POST['_sbprok_meta_box_nouce'] ) || !wp_verify_nonce( $_POST['_sbprok_meta_box_nouce'], '_sbprok_meta_box' ) ){
             return;
         }
         
@@ -197,17 +178,61 @@ class Salonbookingprok_Meta {
         }
         
         // store details
-
-        if ( isset( $_POST['_salonbookingprok_price'] ) || isset( $_POST['_salonbookingprok_duration'] ) ) {
+       
+       
+        if ( isset( $_POST['_sbprok_price'] ) || isset( $_POST['_sbprok_duration'] ) || isset( $_POST['_sbprok_max_capacity'])) {
             $details = array(
-                '_salonbookingprok_price' => !empty( $_POST['_salonbookingprok_price'] ) ? sanitize_text_field( $_POST['_salonbookingprok_price'] ) : '',
-                '_salonbookingprok_duration' => !empty( $_POST['_salonbookingprok_duration'] ) ? sanitize_text_field( $_POST['_salonbookingprok_duration'] ) : '',
+                '_sbprok_price' => !empty( $_POST['_sbprok_price'] ) ? sanitize_text_field( $_POST['_sbprok_price'] ) : '',
+                '_sbprok_duration' => !empty( $_POST['_sbprok_duration'] ) ? sanitize_text_field( $_POST['_sbprok_duration'] ) : '',
+                '_sbprok_max_capacity' => !empty( $_POST['_sbprok_max_capacity'] ) ? sanitize_text_field( $_POST['_sbprok_max_capacity'] ) : ''
 
             );
-            update_post_meta( $post_id, '_salonbookingprok_service_details', $details );
+            update_post_meta( $post_id, '_sbprok_service_details', $details );
             
         }
         
+        if ( isset( $_POST['_sbprok_show']) ){
+            $my_data = $_POST['home_slider_display'] ? true : false;
+            update_post_meta( $post_id, '_sbprok_show');
+        }
+      
+        if (isset( $_POST['_sbprok_payment_mode'])){
+            $my_data = $_POST['home_slider_display'] ? true : false;
+            update_post_meta( $post_id, '_sbprok_payment_mode');
+        }
         
+    }
+
+    public function appointment_meta_boxes(){
+        $args = array(
+            array(
+                'id'        => 'sbprok_appointment',
+                'title'     => 'Appointment Details',
+                'post_type' => 'sbprok_appoints',
+                'context'   => 'normal',
+                'args'      => array(
+                    'field' => 'multiple_fields',
+                    'fields' => array(
+                        array(
+                            'id' 	=> 'sbprok_day',
+                            'title' =>	'Day',
+                            'desc'	=>  'Day',
+                            'type' 	=>	'textfield'
+                        ),
+                        array(
+                            'id' 	=> 'sbprok_time',
+                            'title' => 'Time',
+                            'desc'	=> 'Time',
+                            'type' 	=> 'textfield'
+                        ),
+
+                    )
+                )               
+            ),
+            
+            
+        );
+
+        $this->meta_helper->create_meta($args,'_sbprok_appoint_meta_box', '_sbprok_meta_box_nouce' );
     }
 }

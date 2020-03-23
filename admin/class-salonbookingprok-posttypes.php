@@ -127,7 +127,7 @@ class Salonbookingprok_Posttypes {
 			'archives'              =>  __('%s Archives', 'salonbookingprok'),
 			'attributes'            =>  __('%s Attributes', 'salonbookingprok'),
 			'update_item'           =>  __('Update %s', 'salonbookingprok'),
-			'featured_image'        =>  __( 'featured image', 'salonbookingprok' ),
+			'featured_image'        =>  __( 'Featured image', 'salonbookingprok' ),
             'set_featured_image'    =>  __( 'Set featured image', 'salonbookingprok' ),
             'remove_featured_image' =>  __( 'Remove featured image', 'salonbookingprok' ),
             'use_featured_image'    =>  __( 'Use as featured image', 'salonbookingprok' ),
@@ -150,12 +150,59 @@ class Salonbookingprok_Posttypes {
 			'has_archive'        => true,
 			'hierarchical'       => false,
 			'menu_position'      => null,
-			'supports'           => array( 'title', 'editor', 'author', 'thumbnail','description')
+			'supports'           => array( 'title', 'editor', 'thumbnail')
 		);
 	 
 		register_post_type( 'sbprok_services', $args );
 	}
 
+	function register_appointments() {
+		$labels = array(
+		'name'                  => _x( 'Appointments', 'post type general name', 'salonbookingprok' ),
+		'singular_name'         => _x( 'Appointment', 'post type singular name', 'salonbookingprok' ),
+		'menu_name'             => _x( 'Appointments', 'admin menu', 'salonbookingprok' ),
+		'name_admin_bar'        => _x( 'Appointments', 'add new on admin bar', 'salonbookingprok' ),
+		'add_new'               => _x( 'Add New', 'Appointment', 'salonbookingprok' ),
+		'add_new_item'          => __( 'Add New Appointments', 'salonbookingprok' ),
+		'new_item'              => __( 'New Appointments', 'salonbookingprok' ),
+		'edit_item'             => __( 'Edit Appointment', 'salonbookingprok' ),
+		'view_item'             => __( 'View Appointments', 'salonbookingprok' ),
+		'view_items'            => __('View %s', 'salonbookingprok'),
+		'all_items'             => __( 'All Appointments', 'salonbookingprok' ),
+		'search_items'          => __( 'Search Appointments', 'salonbookingprok' ),
+		'parent_item_colon'     => __( 'Parent Appointments:', 'salonbookingprok' ),
+		'not_found'             => __( 'No Appointments found.', 'salonbookingprok' ),
+		'not_found_in_trash'    => __( 'No Appointments found in Trash.', 'salonbookingprok' ),
+		'archives'              => __('%s Archives', 'salonbookingprok'),
+		'attributes'            => __('%s Attributes', 'salonbookingprok'),
+		'update_item'           => __('Update %s', 'salonbookingprok'),
+		'featured_image'        => __( 'featured image', 'salonbookingprok' ),
+		'set_featured_image'    => __( 'Set featured image', 'salonbookingprok' ),
+		'remove_featured_image' => __( 'Remove featured image', 'salonbookingprok' ),
+		'use_featured_image'    => __( 'Use as featured image', 'salonbookingprok' ),
+		'items_list'            => __('%s list', 'salonbookingprok'),
+		'items_list_navigation' => __('%s list navigation', 'salonbookingprok'),
+		'filter_items_list'     => __('Filter %s list', 'salonbookingprok')
+		);
+		
+		
+		$args = array(
+		'labels'             => $labels,
+		'public'             => true,
+		'publicly_queryable' => true,
+		'show_ui'            => true,
+		'show_in_menu'       => true, //<--- HERE
+		'query_var'          => true,
+		'rewrite'            => array( 'slug' => 'sbprok_appoints' ),
+		'capability_type'    => 'post',
+		'has_archive'        => true,
+		'hierarchical'       => false,
+		'menu_position'      => null,
+		'supports'           => array( 'title', 'editor', 'author', 'thumbnail','description')
+		);
+		
+		register_post_type( 'sbprok_appoints', $args );
+		}
 
 	/**
 	 * Register Taxonomy for Services.
@@ -179,7 +226,7 @@ class Salonbookingprok_Posttypes {
 			'menu_name'         => __( 'Services Categories','salonbookingprok' ),
 		  );    
 		 
-		  register_taxonomy('sbprok_category',array('post'), array(
+		  register_taxonomy('sbprok_category', array('sbprok_services'), array(
 			'hierarchical'      => true,
 			'labels'            => $labels,
 			'show_ui'           => true,
