@@ -190,6 +190,7 @@ class Salonbookingprok_Meta {
         
     }
 
+    /*** apointment meta boxes ***/
     public function appointment_meta_boxes(){
         $args = array(
             array(
@@ -217,15 +218,60 @@ class Salonbookingprok_Meta {
                 )               
             ),
             array(
-                'id' 	    =>  'sbprok_customer',
+                'id' 	    =>  'sbprok_customers',
                 'title'     =>	'Customer',
                 'post_type' => 'sbprok_appoints',
                 'type'    	=>	'customer_dropdown',
                 'context'   => 'normal',
                 'args'      => array(
-                                'field' => 'customer_dropdown',
-                                'type' 	=> 'customer_dropdown'
+                                'field' => 'multiple_fields',
+                                'fields' => array(
+                                    array(
+                                        'id' 	=> 'sbprok_customer',
+                                        'title' =>	'Customer',
+                                        'desc'	=>  'Customer',
+                                        'type' 	=>	'customer_dropdown'
+                                    ),
+                                    array(
+                                        'id' 	=> 'sbprok_create_new',
+                                        'title' => 'Create New',
+                                        'desc'  => 'Create New',
+                                        'type' 	=> 'button'
+                                       
+                                    ),
+                                    array(
+                                        'id' 	=> 'sbprok_first_name',
+                                        'title' =>	'First Name',
+                                        'desc'	=>  'First Name',
+                                        'type' 	=>	'create_user_textfield'
+                                    ),
+                                    array(
+                                        'id' 	=> 'sbprok_last_name',
+                                        'title' =>	'Last Name',
+                                        'desc'	=>  'Last Name',
+                                        'type' 	=>	'create_user_textfield'
+                                    ),
+                                    array(
+                                        'id' 	=> 'sbprok_email',
+                                        'title' =>	'Email',
+                                        'desc'	=>  'Email',
+                                        'type' 	=>	'create_user_textfield'
+                                    ),
+                                    array(
+                                        'id' 	=> 'sbprok_phone',
+                                        'title' =>	'Phone',
+                                        'desc'	=>  'Phone',
+                                        'type' 	=>	'create_user_textfield'
+                                    ),
+                                    array(
+                                        'id' 	=> 'sbprok_address',
+                                        'title' =>	'Address',
+                                        'desc'	=>  'Address',
+                                        'type' 	=>	'create_user_textfield'
+                                    ),
+            
                                )
+                )
             ),  
             array(
                 'id' 	    =>  'sbprok_services',
@@ -254,4 +300,64 @@ class Salonbookingprok_Meta {
         
         $this->meta_helper->create_meta($args,'_sbprok_appoint_meta_box', '_sbprok_meta_box_nouce' );
     }
+
+    /**
+    * Save meta Data
+    * @since: 1.0
+    */
+    public function save_appointment_meta_boxes( $post_id ){
+        
+        // verify meta box nonce
+        if ( !isset( $_POST['_sbprok_meta_box_nouce'] ) || !wp_verify_nonce( $_POST['_sbprok_meta_box_nouce'], '_sbprok_meta_box' ) ){
+            return;
+        }
+        
+        // return if autosave
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ){
+            return;
+        }
+        // Check the user's permissions.
+        if ( ! current_user_can( 'edit_post', $post_id ) ){
+            return;
+        }
+
+    // store appointment meta boxes details
+       
+       
+    if ( isset( $_POST['_sbprok_customer'] ) || isset( $_POST['_sbprok_first_name'] )) {
+        $details = array(
+            '_sbprok_day' => !empty( $_POST['_sbprok_day'] ) ? strip_tags( $_POST['_sbprok_day'] ) : '',
+            '_sbprok_time' => !empty( $_POST['_sbprok_time'] ) ? strip_tags( $_POST['_sbprok_time'] ) : ''
+        );
+        update_post_meta( $post_id, '_sbprok_service_details', $details );
+        
+    }
+
+    if ( isset( $_POST['_sbprok_customer'] ) || isset( $_POST['_sbprok_first_name'] ) || isset( $_POST['_sbprok_last_name']) || isset( $_POST['_sbprok_email']) || isset( $_POST['_sbprok_phone']) || isset( $_POST['_sbprok_address'])) {
+        $details = array(
+            '_sbprok_customer' => !empty( $_POST['_sbprok_customer'] ) ? sanitize_text_field( $_POST['_sbprok_customer'] ) : '',
+            '_sbprok_first_name' => !empty( $_POST['_sbprok_first_name'] ) ? sanitize_text_field( $_POST['_sbprok_first_name'] ) : '',
+            '_sbprok_last_name' => !empty( $_POST['_sbprok_last_name'] ) ? sanitize_text_field( $_POST['_sbprok_last_name'] ) : '',
+            '_sbprok_email' => !empty( $_POST['_sbprok_email'] ) ? sanitize_text_field( $_POST['_sbprok_email'] ) : '',
+            '_sbprok_phone' => !empty( $_POST['_sbprok_phone'] ) ? sanitize_text_field( $_POST['_sbprok_phone'] ) : '',
+            '_sbprok_address' => !empty( $_POST['_sbprok_address'] ) ? sanitize_text_field( $_POST['_sbprok_address'] ) : ''
+
+
+        );
+        update_post_meta( $post_id, '_sbprok_service_details', $details );
+        
+    }
+    
+    if ( isset( $_POST['_sbprok_services']) ){
+        update_post_meta( $post_id, '_sbprok_services', strip_tags( $_POST['_sbprok_services'] ) );
+    }
+  
+    if (isset( $_POST['_sbprok_employee'])){
+        $my_data = $_POST['home_slider_display'] ? true : false;
+        update_post_meta( $post_id, '_sbprok_employee', strip_tags( $_POST['_sbprok_employee'] ) );
+     }
+    
+   }
+
+ 
 }

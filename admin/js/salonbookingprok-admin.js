@@ -2,7 +2,7 @@
 	'use strict';
 	//
 	$(window).load(function(){
-
+        /**** display date and time */
 		var exclude = ["16-11-2015", "17-11-2015", "18-11-2015", "19-11-2015", "20-11-2015", "26-03-2020"];
 		$('#_sbprok_day').datepicker({
 			beforeShowDay: function(date) {
@@ -23,10 +23,17 @@
 			dropdown: true,
 			scrollbar: true
 		});
-		$('#_salonbookingprok_employees').select2();
+		/**** */
 		
-	});
-			
+		$('#_salonbookingprok_employees').select2();
+
+		/**** create new button */
+		$('.js-toggle').click(function() {
+			$('.hidden_fields').toggle();
+		  });
+	    });
+		/**** */	
+		
     
 	/**
 	 * All of the code for your admin-facing JavaScript source

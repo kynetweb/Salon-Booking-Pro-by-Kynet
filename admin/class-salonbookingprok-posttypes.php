@@ -157,6 +157,7 @@ class Salonbookingprok_Posttypes {
 	}
 
 	function register_appointments() {
+		$supports = array ('');
 		$labels = array(
 		'name'                  => _x( 'Appointments', 'post type general name', 'salonbookingprok' ),
 		'singular_name'         => _x( 'Appointment', 'post type singular name', 'salonbookingprok' ),
@@ -198,7 +199,7 @@ class Salonbookingprok_Posttypes {
 		'has_archive'        => true,
 		'hierarchical'       => false,
 		'menu_position'      => null,
-		'supports'           => array( 'title', 'editor', 'author', 'thumbnail','description')
+		'supports'           => $supports
 		);
 		
 		register_post_type( 'sbprok_appoints', $args );

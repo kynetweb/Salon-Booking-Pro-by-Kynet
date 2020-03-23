@@ -62,6 +62,9 @@ class Salonbookingprok_Metaboxes {
             case 'multiple_fields':
                 $this->multiple_fields( $box, $post->ID );
             break;
+            case 'create_user_textfield':
+                    $this->create_user_textfield( $box, $post_id );
+                break;
             case 'textfield':
                 $this->textfield( $box, $post->ID );
             break;
@@ -86,6 +89,9 @@ class Salonbookingprok_Metaboxes {
             case 'service_dropdown':
                 $this->service_dropdown( $box, $post_id );
             break;
+            case 'button':
+                $this->create_new_button( $box, $post_id );
+                break;
             
         }
     }
@@ -118,6 +124,9 @@ class Salonbookingprok_Metaboxes {
                 case 'textfield':
                     $this->textfield( $box, $post_id );
                 break;
+                case 'create_user_textfield':
+                    $this->create_user_textfield( $box, $post_id );
+                break;
                 case 'checkbox':
                     $this->checkbox($box, $post_id );
                 break;
@@ -139,6 +148,9 @@ class Salonbookingprok_Metaboxes {
                 case 'service_dropdown':
                 $this->service_dropdown( $box, $post_id );
                 break;
+                case 'button':
+                $this->create_new_button( $box, $post_id );
+                break;
             }
         }
        
@@ -153,6 +165,16 @@ class Salonbookingprok_Metaboxes {
        $post_meta = $this->meta_value($box, $post_id);
         printf(
             '<label><input type="text" id="'.$box['id'].'" name="%s" value="%s" /></label> <br/><small>%s</small><br/>',
+            $box['id'],
+            $post_meta,
+            $box['args']['desc']
+        );
+    }
+    private function create_user_textfield( $box, $post_id )
+    {
+       $post_meta = $this->meta_value($box, $post_id);
+        printf(
+            '<label class="hidden_fields" style="display:none;"><input type="text" id="'.$box['id'].'"  name="%s" value="%s" /> <br/><small>%s</small><br/></label>',
             $box['id'],
             $post_meta,
             $box['args']['desc']
@@ -235,10 +257,22 @@ class Salonbookingprok_Metaboxes {
         if($the_query->have_posts() ) : while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
                <option> <?php the_title(); ?></option>    
              <?php  endwhile; 
- endif;  
- echo '</select>'; 
+        endif;  
+        echo '</select>'; 
         
-} 
+    } 
+
+    private function create_new_button($box, $post_id){
+        $post_meta = $this->meta_value($box, $post_id);
+        
+        printf(
+            '<label><input type="button" id="'.$box['id'].'" class="js-toggle" name="%s" value="'.$box['args']['desc'].'" /></label> <br/><small>%s</small><br/>',
+            $box['id'],
+            $post_meta
+        );
+
+        
+    } 
 
     private function switch($box, $post_id){
             $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
