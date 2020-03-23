@@ -2,7 +2,27 @@
 	'use strict';
 	//
 	$(window).load(function(){
-		$('#_sbprok_time').datepicker();
+
+		var exclude = ["16-11-2015", "17-11-2015", "18-11-2015", "19-11-2015", "20-11-2015", "26-03-2020"];
+		$('#_sbprok_day').datepicker({
+			beforeShowDay: function(date) {
+				var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
+				return [!~$.inArray(day, exclude) && (date.getDay() != 0)];
+			  },
+			changeMonth: true,
+			changeYear: true,
+			minDate:new Date()
+		});
+		$('#_sbprok_time').timepicker({
+			timeFormat: 'h:mm p',
+			interval: 30,
+			minTime: '09',
+			maxTime: '6:00pm',
+			startTime: '09:00',
+			dynamic: false,
+			dropdown: true,
+			scrollbar: true
+		});
 		$('#_salonbookingprok_employees').select2();
 		
 	});

@@ -138,20 +138,7 @@ class Salonbookingprok_Meta {
                                 'desc'	=>  'Yes',
                                 'type' 	=>	'checkbox'
                                )
-            ),
-            // array(
-            //     'id'        => 'sbprok_service_access',
-            //     'title'     => 'Service Access',
-            //     'post_type' => 'sbprok_services',
-            //     'context'   => 'normal',
-            //     'args'      => array(
-            //         'field' => 'multiple_fields',
-            //         'fields' => array(
-                        
-                        
-            //         )
-            //     )             
-            // ),
+            ),  
 
         );
 
@@ -229,10 +216,42 @@ class Salonbookingprok_Meta {
                     )
                 )               
             ),
-            
-            
+            array(
+                'id' 	    =>  'sbprok_customer',
+                'title'     =>	'Customer',
+                'post_type' => 'sbprok_appoints',
+                'type'    	=>	'customer_dropdown',
+                'context'   => 'normal',
+                'args'      => array(
+                                'field' => 'customer_dropdown',
+                                'type' 	=> 'customer_dropdown'
+                               )
+            ),  
+            array(
+                'id' 	    =>  'sbprok_services',
+                'title'     =>	'Service Name',
+                'post_type' =>  'sbprok_appoints',
+                'type'    	=>	'service_dropdown',
+                'context'   =>  'normal',
+                'args'      => array(
+                                'field' => 'service_dropdown',
+                                'type' 	=> 'service_dropdown'
+                               )
+            ),  
+            array(
+                'id' 	    =>  'sbprok_employee',
+                'title'     =>	'Employee',
+                'post_type' =>  'sbprok_appoints',
+                'type'    	=>	'employ_dropdown',
+                'context'   =>  'normal',
+                'args'      => array(
+                                'field' => 'employ_dropdown',
+                                'type' 	=> 'employ_dropdown'
+                               )
+            ),  
+   
         );
-
+        
         $this->meta_helper->create_meta($args,'_sbprok_appoint_meta_box', '_sbprok_meta_box_nouce' );
     }
 }

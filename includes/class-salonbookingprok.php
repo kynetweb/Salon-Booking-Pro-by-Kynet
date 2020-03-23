@@ -180,7 +180,6 @@ class Salonbookingprok {
 		$this->loader->add_action( 'personal_options_update', $admin_pages, 'save_user_custom_fields' );
 		$this->loader->add_action('edit_user_profile_update', $admin_pages, 'save_user_custom_fields' );
 		// services post
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'wpse_enqueue_datepicker' );
 		$this->loader->add_action( 'init', $admin_posttypes, 'register_services' );
 		$this->loader->add_action( 'init', $admin_posttypes, 'register_appointments' );
 		$this->loader->add_action( 'init', $admin_posttypes,'service_hierarchical_taxonomy', 0 );

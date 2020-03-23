@@ -77,6 +77,15 @@ class Salonbookingprok_Metaboxes {
             case 'radio':
                 $this->switch( $box, $post->ID );
             break;
+            case 'customer_dropdown':
+                $this->customer_dropdown( $box, $post->ID );
+            break;
+            case 'employ_dropdown':
+                $this->employ_dropdown( $box, $post_id );
+            break;
+            case 'service_dropdown':
+                $this->service_dropdown( $box, $post_id );
+            break;
             
         }
     }
@@ -121,10 +130,15 @@ class Salonbookingprok_Metaboxes {
                 case 'radio':
                     $this->switch( $box, $post_id );
                 break;
-                case 'datetime':
-                    $this->timee( $box, $post_id );
+                case 'customer_dropdown':
+                    $this->customer_dropdown( $box, $post_id );
                 break;
-                
+                case 'employ_dropdown':
+                    $this->employ_dropdown( $box, $post_id );
+                break;
+                case 'service_dropdown':
+                $this->service_dropdown( $box, $post_id );
+                break;
             }
         }
        
@@ -174,7 +188,7 @@ class Salonbookingprok_Metaboxes {
     private function columnDropdown($box, $post_id){
             $meta_id   =   "_".$box['id'];
             $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
-            $blogusers = get_users( array( 'fields' => array( 'display_name' ) ) );
+            $blogusers = get_users([ 'role__in' => [ 'author', 'subscriber' ] ] );
             echo '<select name="'.$meta_id.'[]" id="'.$meta_id.'" multiple="multiple">';  
             foreach ($blogusers as $user) { 
                 echo '<option', $post_meta == $user->display_name ? ' selected="selected"' : '', '>'.$user->display_name.'</option>';   
@@ -182,7 +196,50 @@ class Salonbookingprok_Metaboxes {
                 echo '</select>'; 
             }
 
- 
+    private function customer_dropdown($box, $post_id){
+            $meta_id   =   "_".$box['id'];
+            $blogusers = get_users( array( 'fields' => array( 'display_name' ) ) );
+            echo '<select name="'.$meta_id.'[]" id="'.$meta_id.'">';  
+            foreach ($blogusers as $user) { 
+                echo '<option>'.$user->display_name.'</option>';   
+                }  
+                echo '</select>'; 
+    } 
+
+    private function employ_dropdown($box, $post_id){
+            $meta_id   =   "_".$box['id'];
+            $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
+            $args = array(
+                'role' => 'administrator',
+                'orderby' => 'user_nicename',
+                'order' => 'ASC'
+             ); 
+            $employees = get_users($args);
+            echo '<select name="'.$meta_id.'[]" id="'.$meta_id.'">';  
+            foreach ($employees as $employee) { 
+                echo '<option>'.$employee->display_name.'</option>';   
+                }  
+                echo '</select>'; 
+    } 
+
+    private function service_dropdown($box, $post_id){
+        $meta_id   =   "_".$box['id'];
+        $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
+        $args = array(
+            'post_type'=> 'sbprok_services',
+            'order'    => 'ASC'
+            );              
+        
+        $the_query = new WP_Query( $args );
+        echo '<select name="'.$meta_id.'[]" id="'.$meta_id.'">';  
+        if($the_query->have_posts() ) : while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
+               <option> <?php the_title(); ?></option>    
+             <?php  endwhile; 
+ endif;  
+ echo '</select>'; 
+        
+} 
+
     private function switch($box, $post_id){
             $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
             printf(
@@ -190,16 +247,7 @@ class Salonbookingprok_Metaboxes {
                 );
     }
     
-    private function timee($box, $post_id){
-        $post_meta = $this->meta_value($box, $post_id);
-        printf(
-               '<label>%s: </label><input type="datetime" name="%s" %s /> <small>%s</small><br/>',
-               $box['title'],
-               $box['id'],
-               checked( 1, $post_meta, false ),
-               $box['args']['desc']
-           );
-    }
+   
     private function meta_value($box, $post_id){
         if(array_key_exists("value", $box)){
             $post_meta = $box['value'];
