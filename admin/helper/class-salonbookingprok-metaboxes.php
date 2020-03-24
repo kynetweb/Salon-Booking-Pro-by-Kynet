@@ -5,7 +5,7 @@
  *
  * @link       #
  * @since      1.0.0
- *
+ * 
  * @package    Salonbookingprok
  * @subpackage Salonbookingprok/admin/helper
  */
@@ -62,9 +62,6 @@ class Salonbookingprok_Metaboxes {
             case 'multiple_fields':
                 $this->multiple_fields( $box, $post->ID );
             break;
-            case 'create_user_textfield':
-                    $this->create_user_textfield( $box, $post_id );
-                break;
             case 'textfield':
                 $this->textfield( $box, $post->ID );
             break;
@@ -83,16 +80,9 @@ class Salonbookingprok_Metaboxes {
             case 'customer_dropdown':
                 $this->customer_dropdown( $box, $post->ID );
             break;
-            case 'employ_dropdown':
-                $this->employ_dropdown( $box, $post_id );
-            break;
-            case 'service_dropdown':
-                $this->service_dropdown( $box, $post_id );
-            break;
-            case 'button':
-                $this->create_new_button( $box, $post_id );
-                break;
-            
+            case 'appointment_dropdown':
+                $this->appointment_dropdown( $box, $post_id );
+            break; 
         }
     }
     /**
@@ -124,9 +114,6 @@ class Salonbookingprok_Metaboxes {
                 case 'textfield':
                     $this->textfield( $box, $post_id );
                 break;
-                case 'create_user_textfield':
-                    $this->create_user_textfield( $box, $post_id );
-                break;
                 case 'checkbox':
                     $this->checkbox($box, $post_id );
                 break;
@@ -142,15 +129,9 @@ class Salonbookingprok_Metaboxes {
                 case 'customer_dropdown':
                     $this->customer_dropdown( $box, $post_id );
                 break;
-                case 'employ_dropdown':
-                    $this->employ_dropdown( $box, $post_id );
-                break;
-                case 'service_dropdown':
-                $this->service_dropdown( $box, $post_id );
-                break;
-                case 'button':
-                $this->create_new_button( $box, $post_id );
-                break;
+                case 'appointment_dropdown':
+                    $this->appointment_dropdown( $box, $post_id );
+                break;   
             }
         }
        
@@ -170,16 +151,7 @@ class Salonbookingprok_Metaboxes {
             $box['args']['desc']
         );
     }
-    private function create_user_textfield( $box, $post_id )
-    {
-       $post_meta = $this->meta_value($box, $post_id);
-        printf(
-            '<label class="hidden_fields" style="display:none;"><input type="text" id="'.$box['id'].'"  name="%s" value="%s" /> <br/><small>%s</small><br/></label>',
-            $box['id'],
-            $post_meta,
-            $box['args']['desc']
-        );
-    }
+    
     private function numeric($box, $post_id){
        
         $post_meta = $this->meta_value($box, $post_id);
@@ -208,10 +180,9 @@ class Salonbookingprok_Metaboxes {
 
            
     private function columnDropdown($box, $post_id){
-            $meta_id   =   "_".$box['id'];
             $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
             $blogusers = get_users([ 'role__in' => [ 'author', 'subscriber' ] ] );
-            echo '<select name="'.$meta_id.'[]" id="'.$meta_id.'" multiple="multiple">';  
+            echo '<select name="'.$box['id'].'[]" id="'.$box['id'].'" multiple="multiple">';  
             foreach ($blogusers as $user) { 
                 echo '<option', $post_meta == $user->display_name ? ' selected="selected"' : '', '>'.$user->display_name.'</option>';   
                 }  
@@ -219,60 +190,52 @@ class Salonbookingprok_Metaboxes {
             }
 
     private function customer_dropdown($box, $post_id){
-            $meta_id   =   "_".$box['id'];
             $blogusers = get_users( array( 'fields' => array( 'display_name' ) ) );
-            echo '<select name="'.$meta_id.'[]" id="'.$meta_id.'">';  
+            echo '<select name="'.$box['id'].'[]" id="'.$box['id'].'">';  
             foreach ($blogusers as $user) { 
                 echo '<option>'.$user->display_name.'</option>';   
                 }  
                 echo '</select>'; 
+                echo '<label><input type="button" id="'.$box['id'].'" class="js-toggle" name="_sbprok_create_new" value="Create New" /></label> <br/><small></small><br/>';
+                echo '<div class ="hidden_fields" style="display:none;"> <label><input type="text" id="_sbprok_first_name" name="_sbprok_first_name" value=""> <br><small>First Name</small><br></label>
+                <label ><input type="text" id="_sbprok_last_name" name="_sbprok_last_name" value=""> <br><small>Last Name</small><br></label>
+                <label ><input type="text" id="_sbprok_email" name="_sbprok_email" value=""> <br><small>Email</small><br></label>
+                <label ><input type="text" id="_sbprok_phone" name="_sbprok_phone" value=""> <br><small>Phone</small><br></label>
+                <label ><input type="text" id="_sbprok_address" name="_sbprok_address" value=""> <br><small>Address</small><br></label>
+                </div>';
     } 
 
-    private function employ_dropdown($box, $post_id){
-            $meta_id   =   "_".$box['id'];
-            $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
-            $args = array(
-                'role' => 'administrator',
-                'orderby' => 'user_nicename',
-                'order' => 'ASC'
-             ); 
-            $employees = get_users($args);
-            echo '<select name="'.$meta_id.'[]" id="'.$meta_id.'">';  
-            foreach ($employees as $employee) { 
-                echo '<option>'.$employee->display_name.'</option>';   
-                }  
-                echo '</select>'; 
+    private function appointment_dropdown($box, $post_id){
+            if($box['id'] == "_sbprok_services"){
+                $post_meta = get_post_meta( $post_id,$box['id'], true );
+                $args = array(
+                    'post_type'=> 'sbprok_services',
+                    'order'    => 'ASC'
+                    );              
+                
+                $the_query = new WP_Query( $args );
+                echo '<select name="'.$box['id'].'[]" id="'.$box['id'].'">';  
+                if($the_query->have_posts() ) : while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
+                       <option> <?php the_title(); ?></option>    
+                     <?php  endwhile; 
+                endif;  
+                echo '</select>';  
+            }else{
+                $post_meta = get_post_meta( $post_id, $box['id'], true );
+                $args = array(
+                    'role' => 'administrator',
+                    'orderby' => 'user_nicename',
+                    'order' => 'ASC'
+                 ); 
+                $employees = get_users($args);
+                echo '<select name="'.$box['id'].'[]" id="'.$box['id'].'">';  
+                foreach ($employees as $employee) { 
+                    echo '<option>'.$employee->display_name.'</option>';   
+                    }  
+                    echo '</select>'; 
+            }   
     } 
 
-    private function service_dropdown($box, $post_id){
-        $meta_id   =   "_".$box['id'];
-        $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
-        $args = array(
-            'post_type'=> 'sbprok_services',
-            'order'    => 'ASC'
-            );              
-        
-        $the_query = new WP_Query( $args );
-        echo '<select name="'.$meta_id.'[]" id="'.$meta_id.'">';  
-        if($the_query->have_posts() ) : while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
-               <option> <?php the_title(); ?></option>    
-             <?php  endwhile; 
-        endif;  
-        echo '</select>'; 
-        
-    } 
-
-    private function create_new_button($box, $post_id){
-        $post_meta = $this->meta_value($box, $post_id);
-        
-        printf(
-            '<label><input type="button" id="'.$box['id'].'" class="js-toggle" name="%s" value="'.$box['args']['desc'].'" /></label> <br/><small>%s</small><br/>',
-            $box['id'],
-            $post_meta
-        );
-
-        
-    } 
 
     private function switch($box, $post_id){
             $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
