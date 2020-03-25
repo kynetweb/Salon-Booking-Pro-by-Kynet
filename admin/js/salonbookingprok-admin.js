@@ -32,9 +32,16 @@
 			$('.hidden_fields').toggle();
 		  });
 	    });
-		/**** */	
-		
-    
+		/**** */
+		$('#calendar').fullCalendar({
+            editable: true,
+            header: {
+             left: 'prev,next today',
+             center: 'title',
+             right: 'month,agendaWeek,agendaDay'
+            }
+
+    }); 
 	/**
 	 * All of the code for your admin-facing JavaScript source
 	 * should reside in this file.

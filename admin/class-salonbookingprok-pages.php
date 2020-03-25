@@ -60,6 +60,7 @@ class Salonbookingprok_Pages {
 	function menu_pages(){
 		add_menu_page(__('Saloon', 'salonbookingprok'), 'Saloon', 'manage_options', 'saloon', array($this, 'saloon_main_menu') );
 		add_submenu_page('saloon', __('Saloon Employee', 'salonbookingprok'), 'Employees', 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
+		add_submenu_page('saloon', __('Calendar', 'salonbookingprok'), 'Calendar', 'manage_options', 'sbprok_calendar',  array($this, 'calendar_sub_menu')  );
 	}
 	
     /**
@@ -70,6 +71,17 @@ class Salonbookingprok_Pages {
 	function saloon_main_menu(){
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/salonbookingprok-main-menu.php';
 	}
+
+	/**
+	 * callback calendar form sub menu functions.
+	 *
+	 * @since    1.0.0
+	 */
+
+	function calendar_sub_menu() { ?>
+   <div id="calendar"></div>
+  
+	<?php }
 
 	/**
 	 * callback employee form sub menu functions.
@@ -124,6 +136,7 @@ class Salonbookingprok_Pages {
 		}
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/salonbookingprok-employees-form.php';
 	}
+
 
 	/**
 	 * user meta fields.
