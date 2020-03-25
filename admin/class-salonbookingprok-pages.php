@@ -79,7 +79,25 @@ class Salonbookingprok_Pages {
 	 */
 
 	function calendar_sub_menu() { ?>
-   <div id="calendar"></div>
+	<style>
+
+body {
+  margin: 40px 10px;
+  padding: 0;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+#calendar {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+</style>
+
+  <div id='loading'></div>
+
+  <div id='calendar'></div>
   
 	<?php }
 

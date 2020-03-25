@@ -103,7 +103,11 @@ class Salonbookingprok_Admin {
 		wp_enqueue_style( $this->plugin_name.'-datepickr', plugin_dir_url( __FILE__ ) . 'css/datepic.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-timepickr', plugin_dir_url( __FILE__ ) . 'css/jquery.timepicker.min.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-css1', plugin_dir_url( __FILE__ ) . 'css/fullcalendar.min.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name.'-css2', plugin_dir_url( __FILE__ ) . 'css/fullcalendar.print.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css2', plugin_dir_url( __FILE__ ) . 'css/calendr/core/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css3', plugin_dir_url( __FILE__ ) . 'css/calendr/daygrid/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css4', plugin_dir_url( __FILE__ ) . 'css/calendr/timegrid/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css5', plugin_dir_url( __FILE__ ) . 'css/calendr/list/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css6', plugin_dir_url( __FILE__ ) . 'css/calendr/bootstrap/main.css', array(), $this->version, 'all' );
 
 	}
 
@@ -129,7 +133,16 @@ class Salonbookingprok_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/salonbookingprok-admin.js', array( 'jquery-ui-datepicker','jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-timepickar', plugin_dir_url( __FILE__ ) . 'js/Timepicker.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc1', plugin_dir_url( __FILE__ ) . 'js/moment.min.js', array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( $this->plugin_name.'-sc3', plugin_dir_url( __FILE__ ) . 'jsfullcalendar.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc2', plugin_dir_url( __FILE__ ) . 'js/fullcalendar.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc3', plugin_dir_url( __FILE__ ) . 'js/packages/core/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc4', plugin_dir_url( __FILE__ ) . 'js/packages/interaction/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc5', plugin_dir_url( __FILE__ ) . 'js/packages/daygrid/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc6', plugin_dir_url( __FILE__ ) . 'js/packages/timegrid/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc7', plugin_dir_url( __FILE__ ) . 'js/packages/list/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc8', plugin_dir_url( __FILE__ ) . 'js/packages/list/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc9', plugin_dir_url( __FILE__ ) . 'js/packages/list/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc10', plugin_dir_url( __FILE__ ) . 'js/php/list/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc11', plugin_dir_url( __FILE__ ) . 'js/packages/bootstrap/main.js', array( 'jquery' ), $this->version, true );
 		
 	}
 

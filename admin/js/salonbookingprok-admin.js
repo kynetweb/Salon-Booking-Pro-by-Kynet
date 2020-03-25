@@ -33,15 +33,67 @@
 		  });
 	    });
 		/**** */
-		$('#calendar').fullCalendar({
-            editable: true,
-            header: {
-             left: 'prev,next today',
-             center: 'title',
-             right: 'month,agendaWeek,agendaDay'
-            }
 
-    }); 
+		/**** Calendar */
+		document.addEventListener('DOMContentLoaded', function() {
+			var calendarEl = document.getElementById('calendar');
+		
+			var calendar = new FullCalendar.Calendar(calendarEl, {
+			  plugins: [ 'dayGrid', 'timeGrid', 'list', 'interaction' ],
+			  header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+			  },
+			  defaultDate: '2020-02-12',
+			  navLinks: true, // can click day/week names to navigate views
+			  editable: true,
+			  eventLimit: true, // allow "more" link when too many events
+			  events: [
+				{
+				  title: 'All Day Event',
+				  start: '2020-02-01',
+				},
+				{
+				  title: 'Long Event',
+				  start: '2020-02-07',
+				  end: '2020-02-10'
+				},
+				{
+				  groupId: 999,
+				  title: 'Repeating Event',
+				  start: '2020-02-09T16:00:00'
+				},
+				{
+				  groupId: 999,
+				  title: 'Repeating Event',
+				  start: '2020-02-16T16:00:00'
+				},
+				{
+				  title: 'Meeting',
+				  start: '2020-02-12T10:30:00',
+				  end: '2020-02-12T12:30:00'
+				},
+				{
+				  title: 'Meeting',
+				  start: '2020-02-12T14:30:00'
+				},
+				{
+				  title: 'Happy Hour',
+				  start: '2020-02-12T17:30:00'
+				},
+				{
+				  title: 'Click for Google',
+				  url: 'http://google.com/',
+				  start: '2020-02-28'
+				}
+			  ]
+			});
+		
+			calendar.render();
+		  });
+		
+	
 	/**
 	 * All of the code for your admin-facing JavaScript source
 	 * should reside in this file.
