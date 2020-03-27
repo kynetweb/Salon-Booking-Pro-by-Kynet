@@ -45,10 +45,7 @@
 					center: 'title',
 					right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
 				},
-				eventConstraint: {
-					start: moment().format('YYYY-MM-DD'),
-					end: '2100-01-01' // prevent to drag to previous date.
-				},
+				
 				defaultDate: '2020-02-12',
 				navLinks: true, // can click day/week names to navigate views
 				businessHours: true, // display business hours
@@ -100,7 +97,14 @@
 						rendering: 'background',
 						color: '#ff9f89'
 					}
-				]
+				],
+				eventDrop: function(info) {
+					alert(info.event.title + " was dropped on " + info.event.start.toISOString());
+				
+					if (!confirm("Are you sure about this change?")) {
+					  info.revert();
+					}
+				  }
 			});
 	
 			calendar.render();
