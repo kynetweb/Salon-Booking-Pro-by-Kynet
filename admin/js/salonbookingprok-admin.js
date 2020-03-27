@@ -37,61 +37,74 @@
 		/**** Calendar */
 		document.addEventListener('DOMContentLoaded', function() {
 			var calendarEl = document.getElementById('calendar');
-		
+	
 			var calendar = new FullCalendar.Calendar(calendarEl, {
-			  plugins: [ 'dayGrid', 'timeGrid', 'list', 'interaction' ],
-			  header: {
-				left: 'prev,next today',
-				center: 'title',
-				right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-			  },
-			  defaultDate: '2020-02-12',
-			  navLinks: true, // can click day/week names to navigate views
-			  editable: true,
-			  eventLimit: true, // allow "more" link when too many events
-			  events: [
-				{
-				  title: 'All Day Event',
-				  start: '2020-02-01',
+				plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
 				},
-				{
-				  title: 'Long Event',
-				  start: '2020-02-07',
-				  end: '2020-02-10'
+				eventConstraint: {
+					start: moment().format('YYYY-MM-DD'),
+					end: '2100-01-01' // prevent to drag to previous date.
 				},
-				{
-				  groupId: 999,
-				  title: 'Repeating Event',
-				  start: '2020-02-09T16:00:00'
-				},
-				{
-				  groupId: 999,
-				  title: 'Repeating Event',
-				  start: '2020-02-16T16:00:00'
-				},
-				{
-				  title: 'Meeting',
-				  start: '2020-02-12T10:30:00',
-				  end: '2020-02-12T12:30:00'
-				},
-				{
-				  title: 'Meeting',
-				  start: '2020-02-12T14:30:00'
-				},
-				{
-				  title: 'Happy Hour',
-				  start: '2020-02-12T17:30:00'
-				},
-				{
-				  title: 'Click for Google',
-				  url: 'http://google.com/',
-				  start: '2020-02-28'
-				}
-			  ]
+				defaultDate: '2020-02-12',
+				navLinks: true, // can click day/week names to navigate views
+				businessHours: true, // display business hours
+				editable: true,
+				events: [
+					{
+						title: 'Business Lunch',
+						start: '2020-02-03T13:00:00',
+						constraint: 'businessHours'
+					},
+					{
+						title: 'Meeting',
+						start: '2020-02-13T11:00:00',
+						constraint: 'availableForMeeting', // defined below
+						color: '#257e4a'
+					},
+					{
+						title: 'Conference',
+						start: '2020-02-18',
+						end: '2020-02-20'
+					},
+			
+					// areas where "Meeting" must be dropped
+					{
+						groupId: 'availableForMeeting',
+						start: '2020-02-11T10:00:00',
+						end: '2020-02-11T16:00:00',
+						rendering: 'background'
+					},
+					{
+						groupId: 'availableForMeeting',
+						start: '2020-02-13T10:00:00',
+						end: '2020-02-13T16:00:00',
+						rendering: 'background'
+					},
+	
+					// red areas where no events can be dropped
+					{
+						start: '2020-02-24',
+						end: '2020-02-28',
+						overlap: false,
+						rendering: 'background',
+						color: '#ff9f89'
+					},
+					{
+						start: '2020-02-06',
+						end: '2020-02-08',
+						overlap: false,
+						rendering: 'background',
+						color: '#ff9f89'
+					}
+				]
 			});
-		
+	
 			calendar.render();
-		  });
+		});
 		
 	
 	/**
