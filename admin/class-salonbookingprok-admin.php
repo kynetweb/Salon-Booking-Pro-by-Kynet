@@ -108,6 +108,7 @@ class Salonbookingprok_Admin {
 		wp_enqueue_style( $this->plugin_name.'-css4', plugin_dir_url( __FILE__ ) . 'css/calendr_css/timegrid/main.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-css5', plugin_dir_url( __FILE__ ) . 'css/calendr_css/list/main.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-css6', plugin_dir_url( __FILE__ ) . 'css/calendr_css/bootstrap/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css6', plugin_dir_url( __FILE__ ) . 'css/calendr_css/bootstrap/main.min.css', array(), $this->version, 'all' );
 
 	}
 
@@ -142,8 +143,8 @@ class Salonbookingprok_Admin {
 		wp_enqueue_script( $this->plugin_name.'-sc8', plugin_dir_url( __FILE__ ) . 'js/php/list/main.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc9', plugin_dir_url( __FILE__ ) . 'js/packages/interaction/main.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc10', plugin_dir_url( __FILE__ ) . 'js/packages/bootstrap/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc11', plugin_dir_url( __FILE__ ) . "js/packages/sweetalert/sweetalert.min.js", array( 'jquery' ), $this->version, true );
 		
 	}
-
 
 }

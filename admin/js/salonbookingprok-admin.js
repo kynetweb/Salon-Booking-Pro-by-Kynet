@@ -46,65 +46,83 @@
 					right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
 				},
 				
-				defaultDate: '2020-02-12',
+				defaultDate: '2020-03-12',
 				navLinks: true, // can click day/week names to navigate views
 				businessHours: true, // display business hours
+				selectable: true,
 				editable: true,
 				events: [
 					{
 						title: 'Business Lunch',
-						start: '2020-02-03T13:00:00',
+						start: '2020-03-28T13:00:00',
 						constraint: 'businessHours'
 					},
 					{
 						title: 'Meeting',
-						start: '2020-02-13T11:00:00',
+						start: '2020-03-13T11:00:00',
 						constraint: 'availableForMeeting', // defined below
 						color: '#257e4a'
 					},
 					{
 						title: 'Conference',
-						start: '2020-02-18',
-						end: '2020-02-20'
+						start: '2020-03-18',
+						end: '2020-03-20'
 					},
 			
 					// areas where "Meeting" must be dropped
 					{
 						groupId: 'availableForMeeting',
-						start: '2020-02-11T10:00:00',
-						end: '2020-02-11T16:00:00',
+						start: '2020-03-11T10:00:00',
+						end: '2020-03-11T16:00:00',
 						rendering: 'background'
 					},
 					{
 						groupId: 'availableForMeeting',
-						start: '2020-02-13T10:00:00',
-						end: '2020-02-13T16:00:00',
+						start: '2020-03-13T10:00:00',
+						end: '2020-03-13T16:00:00',
 						rendering: 'background'
 					},
 	
 					// red areas where no events can be dropped
 					{
-						start: '2020-02-24',
-						end: '2020-02-28',
+						start: '2020-03-24',
+						end: '2020-03-28',
 						overlap: false,
 						rendering: 'background',
 						color: '#ff9f89'
 					},
 					{
-						start: '2020-02-06',
-						end: '2020-02-08',
+						start: '2020-03-06',
+						end: '2020-03-08',
 						overlap: false,
 						rendering: 'background',
 						color: '#ff9f89'
 					}
 				],
-				eventDrop: function(info) {
-					alert(info.event.title + " was dropped on " + info.event.start.toISOString());
 				
-					if (!confirm("Are you sure about this change?")) {
-					  info.revert();
+				eventDrop: function(info) {
+					var now = new Date();
+					if (info.event.start <= now){
+						alert("Cannot Drag to past date.");
+						info.revert();
+					}else{
+						if (!confirm("Are you sure about this change?")) {
+							info.revert();
+						  }else{
+							alert(info.event.title + " was dropped on " + info.event.start.toISOString());
+							Update(id, start, end);
+						  }
 					}
-				  }
+				  },
+				  
+				eventClick: function(info) {
+					/*Open Sweet Alert*/
+						swal({
+						  title: info.event.title,//Event Title
+						  text: "Start From : "+info.event.start.toISOString(),//Event Start Date
+						  icon: "success",
+						});
+					}
 			});
 	
 			calendar.render();
