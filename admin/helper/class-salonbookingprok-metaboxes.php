@@ -59,9 +59,6 @@ class Salonbookingprok_Metaboxes {
 		
         switch( $box['args']['field'] )
         {
-            case 'multiple_fields':
-                $this->multiple_fields( $box, $post->ID );
-            break;
             case 'textfield':
                 $this->textfield( $box, $post->ID );
             break;
@@ -74,76 +71,30 @@ class Salonbookingprok_Metaboxes {
 			case 'numeric':
                 $this->numeric( $box, $post->ID );
             break;
-            case 'radio':
-                $this->switch( $box, $post->ID );
+            case 'service_details':
+                $this->service_details( $box, $post->ID );
             break;
-            case 'customer_dropdown':
-                $this->customer_dropdown( $box, $post->ID );
+            case 'appointment_schedule':
+            $this->appointment_schedule( $box, $post->ID );
             break;
-            case 'appointment_dropdown':
-                $this->appointment_dropdown( $box, $post_id );
-            break; 
+            case 'customer_selection':
+            $this->customer_selection( $box, $post->ID );
+            break;
+            case 'service_selection':
+            $this->service_selection( $box, $post->ID );
+            break;
+            case 'employee_selection':
+            $this->employee_selection( $box, $post->ID );
+            break;
         }
     }
-    /**
-    * Service Details
-    * @since: 1.0
-    */
-    private function multiple_fields( $box, $post_id )
-    {
-        $post_meta  =     get_post_meta( $post_id, $box['id'], true );
-        $fields     =     $box['args']['fields'];
-
-        if(empty($post_meta)){
-            $post_meta = array();
-            foreach($fields as $field){
-                $id  =  $this->meta_prefix.$field['id'];
-                $post_meta[$id] = NULL;
-            }
-
-        }
-        foreach($fields as $field){
-
-            $field_id   =  $this->meta_prefix.$field['id'];
-            $box['id']  =  $field_id;
-            $box['args']['desc']    =  $field['desc'];
-            $box['value'] = $post_meta[$field_id];
-
-            switch( $field['type'])
-            {
-                case 'textfield':
-                    $this->textfield( $box, $post_id );
-                break;
-                case 'checkbox':
-                    $this->checkbox($box, $post_id );
-                break;
-                case 'dropdown':
-                    $this->columnDropdown( $box, $post_id );
-                break;
-                case 'numeric':
-                    $this->numeric( $box, $post_id );
-                break;
-                case 'radio':
-                    $this->switch( $box, $post_id );
-                break;
-                case 'customer_dropdown':
-                    $this->customer_dropdown( $box, $post_id );
-                break;
-                case 'appointment_dropdown':
-                    $this->appointment_dropdown( $box, $post_id );
-                break;   
-            }
-        }
-       
-    }
-
     /**
     * Text box field
     * @since: 1.0
     */
     private function textfield( $box, $post_id )
     {
-       $post_meta = $this->meta_value($box, $post_id);
+        $post_meta = $this->meta_value($box, $post_id);
         printf(
             '<label><input type="text" id="'.$box['id'].'" name="%s" value="%s" /></label> <br/><small>%s</small><br/>',
             $box['id'],
@@ -151,7 +102,10 @@ class Salonbookingprok_Metaboxes {
             $box['args']['desc']
         );
     }
-    
+    /**
+    * Numeric
+    * @since: 1.0
+    */
     private function numeric($box, $post_id){
        
         $post_meta = $this->meta_value($box, $post_id);
@@ -169,6 +123,7 @@ class Salonbookingprok_Metaboxes {
     */
     private function checkbox($box, $post_id){
         $post_meta = $this->meta_value($box, $post_id);
+        print_r($post_meta);
             printf(
                    '<label>%s: </label><input type="checkbox" name="%s" %s /> <small>%s</small><br/>',
                    $box['title'],
@@ -176,75 +131,144 @@ class Salonbookingprok_Metaboxes {
                    checked( 1, $post_meta, false ),
                    $box['args']['desc']
                );
-           }
-
-           
-    private function columnDropdown($box, $post_id){
-            $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
-            $blogusers = get_users([ 'role__in' => [ 'author', 'subscriber' ] ] );
-            echo '<select name="'.$box['id'].'[]" id="'.$box['id'].'" multiple="multiple">';  
-            foreach ($blogusers as $user) { 
-                echo '<option', $post_meta == $user->display_name ? ' selected="selected"' : '', '>'.$user->display_name.'</option>';   
-                }  
-                echo '</select>'; 
-            }
-
-    private function customer_dropdown($box, $post_id){
-            $blogusers = get_users( array( 'fields' => array( 'display_name' ) ) );
-            echo '<select name="'.$box['id'].'[]" id="'.$box['id'].'">';  
-            foreach ($blogusers as $user) { 
-                echo '<option>'.$user->display_name.'</option>';   
-                }  
-                echo '</select>'; 
-                echo '<label><input type="button" id="'.$box['id'].'" class="js-toggle" name="_sbprok_create_new" value="Create New" /></label> <br/><small></small><br/>';
-                echo '<div class ="hidden_fields" style="display:none;"> <label><input type="text" id="_sbprok_first_name" name="_sbprok_first_name" value=""> <br><small>First Name</small><br></label>
-                <label ><input type="text" id="_sbprok_last_name" name="_sbprok_last_name" value=""> <br><small>Last Name</small><br></label>
-                <label ><input type="text" id="_sbprok_email" name="_sbprok_email" value=""> <br><small>Email</small><br></label>
-                <label ><input type="text" id="_sbprok_phone" name="_sbprok_phone" value=""> <br><small>Phone</small><br></label>
-                <label ><input type="text" id="_sbprok_address" name="_sbprok_address" value=""> <br><small>Address</small><br></label>
-                </div>';
-    } 
-
-    private function appointment_dropdown($box, $post_id){
-            if($box['id'] == "_sbprok_services"){
-                $post_meta = get_post_meta( $post_id,$box['id'], true );
-                $args = array(
-                    'post_type'=> 'sbprok_services',
-                    'order'    => 'ASC'
-                    );              
-                
-                $the_query = new WP_Query( $args );
-                echo '<select name="'.$box['id'].'[]" id="'.$box['id'].'">';  
-                if($the_query->have_posts() ) : while ( $the_query->have_posts() ) : $the_query->the_post(); ?>
-                       <option> <?php the_title(); ?></option>    
-                     <?php  endwhile; 
-                endif;  
-                echo '</select>';  
-            }else{
-                $post_meta = get_post_meta( $post_id, $box['id'], true );
-                $args = array(
-                    'role' => 'administrator',
-                    'orderby' => 'user_nicename',
-                    'order' => 'ASC'
-                 ); 
-                $employees = get_users($args);
-                echo '<select name="'.$box['id'].'[]" id="'.$box['id'].'">';  
-                foreach ($employees as $employee) { 
-                    echo '<option>'.$employee->display_name.'</option>';   
-                    }  
-                    echo '</select>'; 
-            }   
-    } 
-
-
-    private function switch($box, $post_id){
-            $post_meta = get_post_meta( $post_id, "_".$box['id'], true );
-            printf(
-                rwmb_the_value( $field_id )
-                );
     }
-    
-   
+    /**
+    * Service details
+    * @since: 1.0
+    */  
+    private function service_details($box, $post_id){
+        $post_meta = $this->meta_value($box, $post_id);
+        print_r($post_meta);
+        ?>
+        <div class="sbprok-row">
+            <div class="sbprok-col-4">
+            <label><?php echo __('Price', 'salonbookingprok') ?></label>
+            <input class="sbprok-input" type="text" name="<?php echo $box['id'] ?>[_price]" value="<?php echo $post_meta['_price'] ?>" />
+            </div>
+
+            <div class="sbprok-col-4">
+            <label><?php echo __('Duration', 'salonbookingprok') ?></label>
+            <input class="sbprok-input" type="text" name="<?php echo $box['id'] ?>[_duration]" value="<?php echo $post_meta['_duration'] ?>" />
+            </div>
+
+            <div class="sbprok-col-4">
+            <label><?php echo __('Maximum allowed person per booking', 'salonbookingprok') ?></label>
+            <input class="sbprok-input" type="number" name="<?php echo $box['id'] ?>[_max_capacity]" value="<?php echo $post_meta['_max_capacity'] ?>" />
+            </div>
+        </div>
+        
+        <?php   
+    }
+    /**
+    * Service details
+    * @since: 1.0
+    */  
+    private function appointment_schedule($box, $post_id){
+        $post_meta = $this->meta_value($box, $post_id);
+        print_r($post_meta);
+        ?>
+        <div class="sbprok-row">
+            <div class="sbprok-col-6">
+            <label><?php echo __('Date', 'salonbookingprok') ?></label>
+            <input class="sbprok-input" data-sbprok="datepicker" type="text" name="<?php echo $box['id'] ?>[_date]"  />
+            </div>
+
+            <div class="sbprok-col-6">
+            <label><?php echo __('Time', 'salonbookingprok') ?></label>
+            <input class="sbprok-input" data-sbprok="timepicker" type="text" name="<?php echo $box['id'] ?>[_time]"  />
+            </div>
+        </div>
+        <?php 
+    }
+     /**
+    * Customer Selection
+    * @since: 1.0
+    */  
+    private function customer_selection($box, $post_id){
+        $post_meta = $this->meta_value($box, $post_id);
+        print_r($post_meta);
+        $blogusers = get_users( array( 
+                    'fields' => array( 'display_name','id' ),
+                    'role__in'     => array('salonbookingprok_customer'),
+                     )
+                );
+        echo '<select data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'">';  
+        foreach ($blogusers as $user) { 
+            echo '<option value="'.$user->id.'">'.$user->display_name.'</option>';   
+        }  
+        echo '</select>';  ?>
+        <input type="button" id="sbprok-form-toggle" value="Create New">
+       
+         <div class="sbprok-row" id="sbprok-cust-form" style="display:none">
+            
+            <div class="sbprok-col-4">
+            <label><?php echo __('First name', 'salonbookingprok') ?></label>
+            <input class="sbprok-input" type="text" name="_sbprok_fname"  />
+            </div>
+
+            <div class="sbprok-col-4">
+            <label><?php echo __('Last name', 'salonbookingprok') ?></label>
+            <input class="sbprok-input"  type="text" name="_sbprok_lname"  />
+            </div>
+
+            <div class="sbprok-col-4">
+            <label><?php echo __('Email', 'salonbookingprok') ?></label>
+            <input class="sbprok-input" type="email" name="_sbprok_email"  />
+            </div>
+
+            <div class="sbprok-col-4">
+            <label><?php echo __('Phone', 'salonbookingprok') ?></label>
+            <input class="sbprok-input" type="text" name="_sbprok_phone"  />
+            </div>
+
+            <div class="sbprok-col-4">
+            <label><?php echo __('Address', 'salonbookingprok') ?></label>
+            <input class="sbprok-input" type="text" name="_sbprok_address"  />
+            </div>
+            <input tppe="button" value="Save"/>
+        </div>
+        <?php
+    }
+     /**
+    * Service selection
+    * @since: 1.0
+    */  
+    private function service_selection($box, $post_id){
+        $post_meta = $this->meta_value($box, $post_id);
+        print_r($post_meta);
+        $services = get_posts( array( 
+                        'numberposts' => -1,
+                        'post_type'   => 'sbprok_services'
+                     )
+                );
+        echo '<select data-sbprok="select2" name="'.$box['id'].'[]" id="'.$box['id'].'" multiple>';     
+        foreach ($services as $service) { 
+            echo '<option value="'.$service->ID.'">'.$service->post_title.'</option>';   
+        }  
+        echo '</select>';  
+    }
+    /**
+    * Employee details
+    * @since: 1.0
+    */  
+    private function employee_selection($box, $post_id){
+        $post_meta = $this->meta_value($box, $post_id);
+        print_r($post_meta);
+        $blogusers = get_users( array( 
+            'fields' => array( 'display_name','id' ),
+            'role__in'     => array('salonbookingprok_employee'),
+             )
+        );
+        echo '<select  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'">';  
+        foreach ($blogusers as $user) { 
+            echo '<option value="'.$user->id.'">'.$user->display_name.'</option>';   
+        } 
+        echo '</select>';  
+    }
+    /**
+    * get meta value 
+    * @since: 1.0
+    */  
     private function meta_value($box, $post_id){
         if(array_key_exists("value", $box)){
             $post_meta = $box['value'];

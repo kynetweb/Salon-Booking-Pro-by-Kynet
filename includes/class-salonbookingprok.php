@@ -183,10 +183,10 @@ class Salonbookingprok {
 		$this->loader->add_action( 'init', $admin_posttypes, 'register_services' );
 		$this->loader->add_action( 'init', $admin_posttypes, 'register_appointments' );
 		$this->loader->add_action( 'init', $admin_posttypes,'service_hierarchical_taxonomy', 0 );
-		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'service_meta_boxes', 0 );
-		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'appointment_meta_boxes', 0 );
+		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'service_meta_boxes');
+		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'appointment_meta_boxes');
 		$this->loader->add_action( 'save_post', $admin_meta,'save_service_meta_boxes', 0 );
-		$this->loader->add_action( 'save_post', $admin_meta,'save_appointment_meta_boxes', 0 );	
+		$this->loader->add_action( 'save_post', $admin_meta,'save_appointment_meta_boxes', 1 );	
 	}
 	/**
 	 * Register all of the hooks related to the public-facing functionality

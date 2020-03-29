@@ -1,10 +1,9 @@
 (function( $ ) {
 	'use strict';
-	//
-	$(window).load(function(){
-        /**** display date and time */
+		$(document).ready(function(){
 		var exclude = ["16-11-2015", "17-11-2015", "18-11-2015", "19-11-2015", "20-11-2015", "26-03-2020"];
-		$('#_sbprok_day').datepicker({
+		//datepicker
+		$('input[data-sbprok="datepicker"]').datepicker({
 			beforeShowDay: function(date) {
 				var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
 				return [!~$.inArray(day, exclude) && (date.getDay() != 0)];
@@ -13,7 +12,8 @@
 			changeYear: true,
 			minDate:new Date()
 		});
-		$('#_sbprok_time').timepicker({
+		//timepicker
+		$('input[data-sbprok="timepicker"]').timepicker({
 			timeFormat: 'h:mm p',
 			interval: 30,
 			minTime: '09',
@@ -23,17 +23,15 @@
 			dropdown: true,
 			scrollbar: true
 		});
-		/**** */
-		
-		$('#_salonbookingprok_employees').select2();
+		//select2
+		$('select[data-sbprok="select2"]').select2();
 
 		/**** create new button */
-		$('.js-toggle').click(function() {
-			$('.hidden_fields').toggle();
+		$('#sbprok-form-toggle').click(function() {
+			$('#sbprok-cust-form').toggle();
 		  });
-	    });
 		/**** */
-
+	    });
 		/**** Calendar */
 		document.addEventListener('DOMContentLoaded', function() {
 			var calendarEl = document.getElementById('calendar');
