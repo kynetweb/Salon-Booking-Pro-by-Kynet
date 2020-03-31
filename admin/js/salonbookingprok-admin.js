@@ -49,54 +49,28 @@
 				businessHours: true, // display business hours
 				selectable: true,
 				editable: true,
-				events: [
-					{
-						title: 'Business Lunch',
-						start: '2020-03-28T13:00:00',
-						constraint: 'businessHours'
-					},
-					{
-						title: 'Meeting',
-						start: '2020-03-13T11:00:00',
-						constraint: 'availableForMeeting', // defined below
-						color: '#257e4a'
-					},
-					{
-						title: 'Conference',
-						start: '2020-03-18',
-						end: '2020-03-20'
-					},
-			
-					// areas where "Meeting" must be dropped
-					{
-						groupId: 'availableForMeeting',
-						start: '2020-03-11T10:00:00',
-						end: '2020-03-11T16:00:00',
-						rendering: 'background'
-					},
-					{
-						groupId: 'availableForMeeting',
-						start: '2020-03-13T10:00:00',
-						end: '2020-03-13T16:00:00',
-						rendering: 'background'
-					},
-	
-					// red areas where no events can be dropped
-					{
-						start: '2020-03-24',
-						end: '2020-03-28',
-						overlap: false,
-						rendering: 'background',
-						color: '#ff9f89'
-					},
-					{
-						start: '2020-03-06',
-						end: '2020-03-08',
-						overlap: false,
-						rendering: 'background',
-						color: '#ff9f89'
-					}
-				],
+				events: function(info, timezone, callback) { //include the parameters fullCalendar supplies to you!
+
+					var events = [];
+					$.ajax({
+					  url: myAjax.ajaxurl,
+					  type: 'POST',
+					  dataType: "json",
+					  data: { action : 'get_ajax_posts' },
+					  success: function (response) {	
+						$.each( response, function( key, value ) {
+							if (value  != null) {
+								  events.push({
+									title: value.post_title,
+									start: "2020-03-22"
+								  });
+								}
+							
+						});
+						callback(events); //you have to pass the list of events to fullCalendar!
+					  }
+					});
+				  },
 				
 				eventDrop: function(info) {
 					var now = new Date();

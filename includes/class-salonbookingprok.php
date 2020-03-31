@@ -172,6 +172,8 @@ class Salonbookingprok {
 		$admin_meta = new Salonbookingprok_Meta( $this->get_plugin_name(), $this->get_version() );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'wp_ajax_nopriv_get_data',$plugin_admin, 'get_ajax_posts' );
+		$this->loader->add_action( 'wp_ajax_get_ajax_posts',$plugin_admin, 'get_ajax_posts');
 		 // add menus
 		$this->loader->add_action( 'admin_menu', $admin_pages, 'menu_pages'); 
 		// employee address 
@@ -186,7 +188,8 @@ class Salonbookingprok {
 		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'service_meta_boxes');
 		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'appointment_meta_boxes');
 		$this->loader->add_action( 'save_post', $admin_meta,'save_service_meta_boxes', 0 );
-		$this->loader->add_action( 'save_post', $admin_meta,'save_appointment_meta_boxes', 1 );	
+		$this->loader->add_action( 'save_post', $admin_meta,'save_appointment_meta_boxes', 1 );
+		
 	}
 	/**
 	 * Register all of the hooks related to the public-facing functionality

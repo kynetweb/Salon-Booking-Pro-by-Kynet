@@ -132,6 +132,7 @@ class Salonbookingprok_Admin {
 		 */ 
 		wp_enqueue_script( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/salonbookingprok-admin.js', array( 'jquery-ui-datepicker','jquery' ), $this->version, true );
+		wp_localize_script( $this->plugin_name, 'myAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ))); 
 		wp_enqueue_script( $this->plugin_name.'-timepickar', plugin_dir_url( __FILE__ ) . 'js/Timepicker.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc1', plugin_dir_url( __FILE__ ) . 'js/moment.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc2', plugin_dir_url( __FILE__ ) . 'js/fullcalendar.min.js', array( 'jquery' ), $this->version, true );
@@ -143,8 +144,53 @@ class Salonbookingprok_Admin {
 		wp_enqueue_script( $this->plugin_name.'-sc8', plugin_dir_url( __FILE__ ) . 'js/php/list/main.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc9', plugin_dir_url( __FILE__ ) . 'js/packages/interaction/main.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc10', plugin_dir_url( __FILE__ ) . 'js/packages/bootstrap/main.js', array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( $this->plugin_name.'-sc11', plugin_dir_url( __FILE__ ) . "js/packages/sweetalert/sweetalert.min.js", array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc11', plugin_dir_url( __FILE__ ) . 'js/packages/sweetalert/sweetalert.min.js', array( 'jquery' ), $this->version, true );
 		
+	}
+
+	function get_ajax_posts() {
+		$services = array(
+			'post_type' => array('sbprok_appoints'),
+			'posts_per_page' => 40,
+			'nopaging' => true,
+			'order' => 'DESC',
+			'orderby' => 'date'
+		);
+	
+		// $services = array( 
+		// 	'numberposts' => -1,
+		// 	'post_type'   => 'sbprok_appoints'
+		// );
+
+	$ajaxposts = get_posts( $services ); // changed to get_posts from wp_query, because `get_posts` returns an array
+
+    echo json_encode( $ajaxposts );
+
+		// // Query Arguments
+		// $args = array(
+		// 	'post_type' => array('sbprok_appoints'),
+		// 	'numberposts' => -1
+		// );
+	
+	
+		// // The Query
+		// $ajaxposts = new WP_Query( $args );
+	
+		
+	
+		// // The Query
+		// if ( $ajaxposts->have_posts() ) {
+		// 	while ( $ajaxposts->have_posts() ) {
+		// 		$ajaxposts->the_post();
+		// 		$response .= 'test';
+		// 	}
+		// } else {
+		// 	$response .= "test2";
+		// }
+	
+		//echo $response;
+	
+		exit; // leave ajax call
 	}
 
 }

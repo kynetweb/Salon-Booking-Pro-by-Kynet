@@ -176,8 +176,7 @@ class Salonbookingprok_Meta {
         if ( !isset( $_POST['_sbprok_meta_box_nouce'] ) || !wp_verify_nonce( $_POST['_sbprok_meta_box_nouce'], '_sbprok_meta_box' ) ){
             // return;
         }
-      
-        
+       
         // return if autosave
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ){
             return;
@@ -189,14 +188,12 @@ class Salonbookingprok_Meta {
         
         // store details
        
-       
         if ( isset( $_POST['_sbprok_service_details'] ))  {
 
             $details = array(
                 '_price' => !empty( $_POST['_sbprok_service_details']['_price'] ) ? sanitize_text_field( $_POST['_sbprok_service_details']['_price'] ) : '',
                 '_duration' => !empty( $_POST['_sbprok_service_details']['_duration'] ) ? sanitize_text_field( $_POST['_sbprok_service_details']['_duration'] ) : '',
                 '_max_capacity' => !empty( $_POST['_sbprok_service_details']['_max_capacity'] ) ? sanitize_text_field( $_POST['_sbprok_service_details']['_max_capacity'] ) : ''
-
             );
             update_post_meta( $post_id, '_sbprok_service_details', $details );
             
@@ -224,8 +221,7 @@ class Salonbookingprok_Meta {
         // verify meta box nonce
         if ( !isset( $_POST['_sbprok_meta_box_nouce'] ) || !wp_verify_nonce( $_POST['_sbprok_meta_box_nouce'], '_sbprok_meta_box' ) ){
             return;
-        }
-        
+        } 
         // return if autosave
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ){
             return;
@@ -236,8 +232,7 @@ class Salonbookingprok_Meta {
         }
 
     // store appointment meta boxes details
-       
-       
+           
     if ( isset( $_POST['_sbprok_appt_schedule'] ) ) {
         $details = array(
             '_date' => !empty( $_POST['_sbprok_appt_schedule']['_date'] ) ?  $_POST['_sbprok_appt_schedule']['_date'] : '',
@@ -248,8 +243,7 @@ class Salonbookingprok_Meta {
     }
 
     if ( isset( $_POST['_sbprok_customer'] ) ) {
-        update_post_meta( $post_id, '_sbprok_customer', $_POST['_sbprok_customer'] );
-        
+        update_post_meta( $post_id, '_sbprok_customer', $_POST['_sbprok_customer'] );   
     }
     
     if ( isset( $_POST['_sbprok_services']) ){
