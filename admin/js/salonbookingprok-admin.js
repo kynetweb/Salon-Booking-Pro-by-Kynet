@@ -49,7 +49,7 @@
 				businessHours: true, // display business hours
 				selectable: true,
 				editable: true,
-				events: function(info, timezone, callback) { //include the parameters fullCalendar supplies to you!
+				events: function(info, successCallback, failureCallback) { //include the parameters fullCalendar supplies to you!
 
 					var events = [];
 					$.ajax({
@@ -57,17 +57,16 @@
 					  type: 'POST',
 					  dataType: "json",
 					  data: { action : 'get_ajax_posts' },
-					  success: function (response) {	
+					  success: function (response) {					
 						$.each( response, function( key, value ) {
 							if (value  != null) {
 								  events.push({
 									title: value.post_title,
-									start: "2020-03-22"
+									start: value.post_date
 								  });
 								}
-							
 						});
-						callback(events); //you have to pass the list of events to fullCalendar!
+						successCallback(events)
 					  }
 					});
 				  },
@@ -84,7 +83,7 @@
 							alert(info.event.title + " was dropped on " + info.event.start.toISOString());
 							Update(id, start, end);
 						  }
-					}
+					 }
 				  },
 				  
 				eventClick: function(info) {

@@ -157,39 +157,8 @@ class Salonbookingprok_Admin {
 			'orderby' => 'date'
 		);
 	
-		// $services = array( 
-		// 	'numberposts' => -1,
-		// 	'post_type'   => 'sbprok_appoints'
-		// );
-
 	$ajaxposts = get_posts( $services ); // changed to get_posts from wp_query, because `get_posts` returns an array
-
     echo json_encode( $ajaxposts );
-
-		// // Query Arguments
-		// $args = array(
-		// 	'post_type' => array('sbprok_appoints'),
-		// 	'numberposts' => -1
-		// );
-	
-	
-		// // The Query
-		// $ajaxposts = new WP_Query( $args );
-	
-		
-	
-		// // The Query
-		// if ( $ajaxposts->have_posts() ) {
-		// 	while ( $ajaxposts->have_posts() ) {
-		// 		$ajaxposts->the_post();
-		// 		$response .= 'test';
-		// 	}
-		// } else {
-		// 	$response .= "test2";
-		// }
-	
-		//echo $response;
-	
 		exit; // leave ajax call
 	}
 
