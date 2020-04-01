@@ -156,10 +156,13 @@ class Salonbookingprok_Admin {
 			'order' => 'DESC',
 			'orderby' => 'date'
 		);
-	
-	$ajaxposts = get_posts( $services ); // changed to get_posts from wp_query, because `get_posts` returns an array
-    echo json_encode( $ajaxposts );
-		exit; // leave ajax call
-	}
+		
+		$ajaxposts = get_posts( $services ); // changed to get_posts from wp_query, because `get_posts` returns an array
+		foreach($ajaxposts as $ajaxpost){
+			$schedule[]  = get_post_meta( $ajaxpost->ID, "_sbprok_appt_schedule", true );
+		}
+		echo json_encode( $schedule );
+			exit; // leave ajax call
+		}
 
 }

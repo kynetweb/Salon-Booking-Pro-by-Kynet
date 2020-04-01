@@ -57,15 +57,17 @@
 					  type: 'POST',
 					  dataType: "json",
 					  data: { action : 'get_ajax_posts' },
-					  success: function (response) {					
-						$.each( response, function( key, value ) {
+					  success: function (response) {	
+							console.log(response);			
+						$.each( response, function( key, value ) {	
 							if (value  != null) {
+								var dates = new Date(value._date+' '+value._time).toISOString();
 								  events.push({
-									title: value.post_title,
-									start: value.post_date
+									title: "test",
+									start: dates
 								  });
 								}
-						});
+					});
 						successCallback(events)
 					  }
 					});

@@ -143,7 +143,7 @@ class Salonbookingprok_Posttypes {
 			'public'             => true,
 			'publicly_queryable' => true,
 			'show_ui'            => true,
-			'show_in_menu'       => true, //<--- HERE
+			'show_in_menu'       => false, //<--- HERE
 			'query_var'          => true,
 			'rewrite'            => array( 'slug' => 'sbprok_services' ),
 			'capability_type'    => 'post',
@@ -192,7 +192,7 @@ class Salonbookingprok_Posttypes {
 		'public'             => true,
 		'publicly_queryable' => true,
 		'show_ui'            => true,
-		'show_in_menu'       => true, //<--- HERE
+		'show_in_menu'       => false, //<--- HERE
 		'query_var'          => true,
 		'rewrite'            => array( 'slug' => 'sbprok_appoints' ),
 		'capability_type'    => 'post',

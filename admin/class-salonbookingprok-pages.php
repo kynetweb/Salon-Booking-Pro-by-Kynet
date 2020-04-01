@@ -58,9 +58,14 @@ class Salonbookingprok_Pages {
 	 * @since    1.0.0
 	 */
 	function menu_pages(){
-		add_menu_page(__('Saloon', 'salonbookingprok'), 'Saloon', 'manage_options', 'saloon', array($this, 'saloon_main_menu') );
-		add_submenu_page('saloon', __('Saloon Employee', 'salonbookingprok'), 'Employees', 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
-		add_submenu_page('saloon', __('Calendar', 'salonbookingprok'), 'Calendar', 'manage_options', 'sbprok_calendar',  array($this, 'calendar_sub_menu')  );
+		add_menu_page(__('Saloon Booking Pro', 'salonbookingprok'), __('Saloon Booking Pro', 'salonbookingprok'), 'manage_options', 'salonbookingprok', array($this, 'saloon_main_menu') );
+		add_submenu_page('salonbookingprok', __('Calendar', 'salonbookingprok'), __('Calendar', 'salonbookingprok'), 'manage_options', 'sbprok_calendar',  array($this, 'calendar_sub_menu')  );
+		add_submenu_page( 'salonbookingprok', __('Services', 'salonbookingprok'), __('Services', 'salonbookingprok'), 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
+		add_submenu_page( 'salonbookingprok', __('Service Categories', 'salonbookingprok'), __('Service Categories', 'salonbookingprok'), 'manage_options', 'edit-tags.php?taxonomy=sbprok_category', NULL );
+		add_submenu_page( 'salonbookingprok', __('Bookings', 'salonbookingprok'), __('Bookings', 'salonbookingprok'), 'manage_options', 'edit.php?post_type=sbprok_appoints', NULL );
+		add_submenu_page('salonbookingprok', __('Employees', 'salonbookingprok'), __('Employees', 'salonbookingprok'), 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
+		add_submenu_page('salonbookingprok', __('Settings', 'salonbookingprok'), __('Settings', 'salonbookingprok'), 'manage_options', 'salonbookingprok',  array($this, 'saloon_main_menu')  );
+		remove_submenu_page('salonbookingprok','salonbookingprok');
 	}
 	
     /**
