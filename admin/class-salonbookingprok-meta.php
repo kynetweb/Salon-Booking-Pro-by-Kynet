@@ -238,7 +238,7 @@ class Salonbookingprok_Meta {
             '_date' => !empty( $_POST['_sbprok_appt_schedule']['_date'] ) ?  $_POST['_sbprok_appt_schedule']['_date'] : '',
             '_time' => !empty( $_POST['_sbprok_appt_schedule']['_time']  ) ? $_POST['_sbprok_appt_schedule']['_time'] : ''
         );
-        update_post_meta( $post_id, '_sbprok_appointment', $details );
+        update_post_meta( $post_id, '_sbprok_appt_schedule', $details );
         
     }
 
