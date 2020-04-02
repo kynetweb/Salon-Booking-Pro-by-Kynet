@@ -2,7 +2,9 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
-
+.sbprok-row {
+    display: flex;
+}
  .sbprok-col-4 {
     max-width: 32.333%;
     flex: 0 0 33.3333%;
@@ -11,7 +13,7 @@
 }
 .sbprok-row label {
     display: block;
-    margin-bottom: 11px;
+    margin-bottom: 5px;
 }
 .sbprok-col-6 {
     display: inline-block;
@@ -19,11 +21,11 @@
     flex: 0 0 50%;
     max-width: 45%;
 }
-.sbprok-input {
-    width: 310px;
+.sbprok-input, .sbprok-select {
+    width: 200px;
 }
 .select2 {
-    width: 314px !important;
+    width: 200px !important;
 }
 #sbprok-cust-form label {
     margin-top: 15px;

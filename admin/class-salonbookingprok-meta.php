@@ -132,7 +132,7 @@ class Salonbookingprok_Meta {
                         'field' =>  'appointment_schedule'
                 )             
             ),
-            array(
+          /*  array(
                 'id' 	    =>  'sbprok_customer',
                 'title'     =>	'Customer',
                 'post_type' =>  'sbprok_appoints',
@@ -141,7 +141,7 @@ class Salonbookingprok_Meta {
                 'args'      =>  array(
                     'field' => 'customer_selection',     
                 )
-            ),  
+            ),  */
             array(
                 'id' 	    =>  'sbprok_services',
                 'title'     =>	'Select Service',
@@ -236,14 +236,16 @@ class Salonbookingprok_Meta {
     if ( isset( $_POST['_sbprok_appt_schedule'] ) ) {
         $details = array(
             '_date' => !empty( $_POST['_sbprok_appt_schedule']['_date'] ) ?  $_POST['_sbprok_appt_schedule']['_date'] : '',
-            '_time' => !empty( $_POST['_sbprok_appt_schedule']['_time']  ) ? $_POST['_sbprok_appt_schedule']['_time'] : ''
+            '_time' => !empty( $_POST['_sbprok_appt_schedule']['_time']  ) ? $_POST['_sbprok_appt_schedule']['_time'] : '',
+            '_customer' => !empty( $_POST['_sbprok_appt_schedule']['_customer']  ) ? $_POST['_sbprok_appt_schedule']['_customer'] : '',
+            
         );
         update_post_meta( $post_id, '_sbprok_appt_schedule', $details );
         
     }
 
     if ( isset( $_POST['_sbprok_customer'] ) ) {
-        update_post_meta( $post_id, '_sbprok_customer', $_POST['_sbprok_customer'] );   
+       // update_post_meta( $post_id, '_sbprok_customer', $_POST['_sbprok_customer'] );   
     }
     
     if ( isset( $_POST['_sbprok_services']) ){
