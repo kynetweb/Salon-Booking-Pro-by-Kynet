@@ -60,16 +60,12 @@
 					  success: function (response) {
 							$.each(response[0], function(){	
 							if(this._date != null){
-								var idd   = this.id;
-								var dates = new Date(this._date+' '+this._time).toISOString();
-								$.each(response[1], function(){
-									if(this.ID == idd){
+								var name   = this.name;
+								var dates  = new Date(this._date+' '+this._time).toISOString();
 											events.push({
-											title: this.post_title,
+											title: name,
 											start: dates
 											});
-									}
-						    });
 							}
 						
 							});
@@ -78,6 +74,7 @@
 						}
 					});
 				},
+				
 				
 				eventDrop: function(info) {
 					var now = new Date();
