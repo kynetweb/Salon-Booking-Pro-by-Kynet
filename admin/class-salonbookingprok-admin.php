@@ -169,17 +169,23 @@ class Salonbookingprok_Admin {
 			foreach($service_id as $service_ids){
 				foreach($service_names as $service_name){
 					if($service_ids == $service_name->ID){
-                      $titles[] = $service_name->post_title;
+					  $titles[]          = $service_name->post_title;
+					  $durations         = get_post_meta( $service_name->ID, "_sbprok_service_details", true );
+					  $final_durations[] = $durations["_duration"];
+					  
 					}
 				}
 			}
-			$service_idds['name'] = implode(",",$titles);
-			$service_idds['id']   = implode(",",$service_id);
-			$date_time            = get_post_meta( $ajaxpost->ID, "_sbprok_appt_schedule", true );
-			$schedule[]           = array_merge($service_idds,$date_time);
-			$titles               = (array) null;
+			$service_idds['name']       = implode(",",$titles);
+			$service_idds['id']         = implode(",",$service_id);
+			$service_idds['duration']   = implode(",",$final_durations);
+			$date_time                  = get_post_meta( $ajaxpost->ID, "_sbprok_appt_schedule", true );
+			$schedule[]                 = array_merge($service_idds,$date_time);
+			$titles                     = (array) null;
+			$durations                  = (array) null;
+			$final_durations            = (array) null;
 		}
-		echo json_encode( array($schedule,$service_names) );
+		echo json_encode( array($schedule,$service_id) );
 			exit; 
 		}
 

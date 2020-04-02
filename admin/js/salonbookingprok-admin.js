@@ -49,6 +49,7 @@
 				businessHours: true, // display business hours
 				selectable: true,
 				editable: true,
+				
 				events: function(info, successCallback, failureCallback) { //include the parameters fullCalendar supplies to you!
 
 					var events = [];
@@ -58,14 +59,30 @@
 					  dataType: "json",
 					  data: { action : 'get_ajax_posts' },
 					  success: function (response) {
-							$.each(response[0], function(){	
+							$.each(response[0], function(){
 							if(this._date != null){
-								var name   = this.name;
-								var dates  = new Date(this._date+' '+this._time).toISOString();
-											events.push({
-											title: name,
-											start: dates
-											});
+								var name           = this.name;
+								var final_time     = this._time;
+								var duration       = this.duration;
+								var duration_ar    = duration.split(',');
+								for (var a in duration_ar)
+								{
+									var variable = duration_ar[a];
+									var time_arr = variable.split(':');
+									var end_time = moment(final_time, "hh:mm A")
+								                .add(time_arr[0], 'hour')
+												.add(time_arr[1], 'minutes')
+												.format('LT');
+								var final_time = end_time;
+								}
+								
+								var dates    = new Date(this._date+' '+this._time).toISOString();
+								var end_date = new Date(this._date+' '+end_time).toISOString();
+												events.push({
+												title: name,
+												start: dates,
+												end: end_date
+												});
 							}
 						
 							});
@@ -85,17 +102,21 @@
 						if (!confirm("Are you sure about this change?")) {
 							info.revert();
 						  }else{
-							alert(info.event.title + " was dropped on " + info.event.start.toISOString());
+							alert(info.event.title + " was dropped on " + info.event.start);
 							Update(id, start, end);
 						  }
 					 }
 				  },
 				  
 				eventClick: function(info) {
+					var formDate   = moment(info.event.start).format('YYYY-MM-DD');
+					var start_time = moment(info.event.start).format('hh:mm a');
+					var end_time   = moment(info.event.end).format('hh:mm a');
 					/*Open Sweet Alert*/
 						swal({
 						  title: info.event.title,//Event Title
-						  text: "Start From : "+info.event.start.toISOString(),//Event Start Date
+						  text: "Date : "+formDate+" \n"+
+						        "Start From : "+start_time+" To "+end_time,//Event Start Date
 						  icon: "success",
 						});
 					}
