@@ -57,21 +57,27 @@
 					  type: 'POST',
 					  dataType: "json",
 					  data: { action : 'get_ajax_posts' },
-					  success: function (response) {	
-							console.log(response);			
-						$.each( response, function( key, value ) {	
-							if (value  != null) {
-								var dates = new Date(value._date+' '+value._time).toISOString();
-								  events.push({
-									title: "test",
-									start: dates
-								  });
-								}
+					  success: function (response) {
+							$.each(response[0], function(){	
+							if(this._date != null){
+								var idd   = this.id;
+								var dates = new Date(this._date+' '+this._time).toISOString();
+								$.each(response[1], function(){
+									if(this.ID == idd){
+											events.push({
+											title: this.post_title,
+											start: dates
+											});
+									}
+						    });
+							}
+						
+							});
+							successCallback(events);
+													
+						}
 					});
-						successCallback(events)
-					  }
-					});
-				  },
+				},
 				
 				eventDrop: function(info) {
 					var now = new Date();

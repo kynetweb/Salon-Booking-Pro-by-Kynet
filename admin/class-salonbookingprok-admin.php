@@ -149,20 +149,31 @@ class Salonbookingprok_Admin {
 	}
 
 	function get_ajax_posts() {
-		$services = array(
-			'post_type' => array('sbprok_appoints'),
-			'posts_per_page' => 40,
-			'nopaging' => true,
-			'order' => 'DESC',
-			'orderby' => 'date'
-		);
+		$services      = array(
+							'post_type' => array('sbprok_appoints'),
+							'posts_per_page' => 40,
+							'nopaging' => true,
+							'order' => 'DESC',
+							'orderby' => 'date'
+						 );
 		
-		$ajaxposts = get_posts( $services ); // changed to get_posts from wp_query, because `get_posts` returns an array
+		$ajaxposts     = get_posts( $services );
+		$array         = array(
+							'ID'=>$name[0],
+							'post_type'=>'sbprok_services'
+							);
+		$service_names = get_posts($array);
+
 		foreach($ajaxposts as $ajaxpost){
-			$schedule[]  = get_post_meta( $ajaxpost->ID, "_sbprok_appt_schedule", true );
+			$service_id  = get_post_meta( $ajaxpost->ID, "_sbprok_services", true );
+				foreach($service_id as $id){
+					$service_ids['id'] = $id;
+				}
+			$date_time  = get_post_meta( $ajaxpost->ID, "_sbprok_appt_schedule", true );
+			$schedule[] = array_merge($service_ids,$date_time);
 		}
-		echo json_encode( $schedule );
-			exit; // leave ajax call
+		echo json_encode( array($schedule,$service_names) );
+			exit; 
 		}
 
 }
