@@ -12,7 +12,7 @@
 			//   },
 			  onSelect: function(dateText, inst) {
 				$.ajax({
-					url: Ajax_urls.ajaxurl,
+					url: sbprokAjax.ajaxurl,
 					type: 'POST',
 					data: { action : 'get_ajax_dates' },
 					success: function (res) {
@@ -80,7 +80,7 @@
 
 					var events = [];
 					$.ajax({
-					  url: Ajax_urls.ajaxurl,
+					  url: sbprokAjax.ajaxurl,
 					  type: 'POST',
 					  dataType: "json",
 					  data: { action : 'get_ajax_posts' },

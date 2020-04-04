@@ -131,8 +131,6 @@ class Salonbookingprok_Admin {
 		 * class.
 		 */ 
 		wp_enqueue_script( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version, true );
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) .'js/salonbookingprok-admin.js', array( 'jquery-ui-datepicker','jquery' ), $this->version, true );
-		wp_localize_script( $this->plugin_name, 'Ajax_urls', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ))); 
 		wp_enqueue_script( $this->plugin_name.'-timepickar', plugin_dir_url( __FILE__ ) . 'js/Timepicker.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc1', plugin_dir_url( __FILE__ ) . 'js/moment.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc2', plugin_dir_url( __FILE__ ) . 'js/fullcalendar.min.js', array( 'jquery' ), $this->version, true );
@@ -145,7 +143,9 @@ class Salonbookingprok_Admin {
 		wp_enqueue_script( $this->plugin_name.'-sc9', plugin_dir_url( __FILE__ ) . 'js/packages/interaction/main.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc10', plugin_dir_url( __FILE__ ) . 'js/packages/bootstrap/main.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc11', plugin_dir_url( __FILE__ ) . 'js/packages/sweetalert/sweetalert.min.js', array( 'jquery' ), $this->version, true );
-		
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) .'js/salonbookingprok-admin.js', array( 'jquery-ui-datepicker','jquery' ), $this->version, true );
+		wp_localize_script( $this->plugin_name, 'sbprokAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ))); 
+	
 	}
 
 	function get_ajax_posts() {
