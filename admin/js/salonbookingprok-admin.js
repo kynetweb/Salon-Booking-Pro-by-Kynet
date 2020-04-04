@@ -1,17 +1,40 @@
 (function( $ ) {
 	'use strict';
 		$(document).ready(function(){
-		var exclude = ["16-11-2015", "17-11-2015", "18-11-2015", "19-11-2015", "20-11-2015", "26-03-2020"];
+			
+		var exclude = ["April 10, 2020", "April 18, 2020", "April 22, 2020", "April 28, 2020"];
 		//datepicker
 		$('input[data-sbprok="datepicker"]').datepicker({
-			beforeShowDay: function(date) {
-				var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
-				return [!~$.inArray(day, exclude) && (date.getDay() != 0)];
-			  },
+			// beforeShowDay: function(date) {
+			// 	var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
+			// 	return [!~$.inArray(day, exclude)];
+			//    // return [!~$.inArray(day, exclude) && (date.getDay() != 0)]; disable sunday and prev dates.
+			//   },
+			  onSelect: function(dateText, inst) {
+				$.ajax({
+					url: Ajax_urls.ajaxurl,
+					type: 'POST',
+					data: { action : 'get_ajax_dates' },
+					success: function (res) {
+							 console.log("test");					  
+					  },
+					  error: function(e, ts, et) { 
+						console.log("error");	
+						  alert(ts) }
+				  });
+				var date = $(this).val();
+				if($.inArray(date, exclude) > -1){
+					$('.errorMsg').html('<span style="color:red">We are unavailable at: '+ date+ '</span>');
+					return false;
+				}else{
+					$('.errorMsg').html("");
+				}
+			},
 			changeMonth: true,
 			changeYear: true,
 			minDate:new Date()
 		});
+
 		//timepicker
 		$('input[data-sbprok="timepicker"]').timepicker({
 			timeFormat: 'h:mm p',
@@ -23,6 +46,7 @@
 			dropdown: true,
 			scrollbar: true
 		});
+
 		//select2
 		$('select[data-sbprok="select2"]').select2();
 
@@ -31,7 +55,9 @@
 			$('#sbprok-cust-form').toggle();
 		  });
 		/**** */
-	    });
+
+		});
+		
 		/**** Calendar */
 		document.addEventListener('DOMContentLoaded', function() {
 			var calendarEl = document.getElementById('calendar');
@@ -54,7 +80,7 @@
 
 					var events = [];
 					$.ajax({
-					  url: myAjax.ajaxurl,
+					  url: Ajax_urls.ajaxurl,
 					  type: 'POST',
 					  dataType: "json",
 					  data: { action : 'get_ajax_posts' },
@@ -73,7 +99,7 @@
 								                .add(time_arr[0], 'hour')
 												.add(time_arr[1], 'minutes')
 												.format('LT');
-								var final_time = end_time;
+								    var final_time = end_time;
 								}
 								
 								var dates    = new Date(this._date+' '+this._time).toISOString();
