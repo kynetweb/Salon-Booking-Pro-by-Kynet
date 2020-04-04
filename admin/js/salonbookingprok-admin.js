@@ -1,9 +1,17 @@
 (function( $ ) {
 	'use strict';
 		$(document).ready(function(){
-			
-		var exclude = ["April 10, 2020", "April 18, 2020", "April 22, 2020", "April 28, 2020"];
 		//datepicker
+		var exclude;
+		$.ajax({
+			url: sbprokAjax.ajaxurl,
+			type: 'POST',
+			dataType: "json",
+			data: { action : 'get_ajax_dates' },
+			success: function (res) {
+				exclude = res;
+			  }
+		  });
 		$('input[data-sbprok="datepicker"]').datepicker({
 			// beforeShowDay: function(date) {
 			// 	var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
@@ -11,23 +19,14 @@
 			//    // return [!~$.inArray(day, exclude) && (date.getDay() != 0)]; disable sunday and prev dates.
 			//   },
 			  onSelect: function(dateText, inst) {
-				$.ajax({
-					url: sbprokAjax.ajaxurl,
-					type: 'POST',
-					data: { action : 'get_ajax_dates' },
-					success: function (res) {
-							 console.log("test");					  
-					  },
-					  error: function(e, ts, et) { 
-						console.log("error");	
-						  alert(ts) }
-				  });
 				var date = $(this).val();
 				if($.inArray(date, exclude) > -1){
-					$('.errorMsg').html('<span style="color:red">We are unavailable at: '+ date+ '</span>');
+					$('.errorMsg').html('<span>We are unavailable at: '+ date+ '</span>');
+					$('.errorMsg').css({"color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "250px", "height": "35px", "text-align": "center"});
 					return false;
 				}else{
 					$('.errorMsg').html("");
+					$('.errorMsg').css({"color":" ","background-color": " ", "border-color": " "});
 				}
 			},
 			changeMonth: true,

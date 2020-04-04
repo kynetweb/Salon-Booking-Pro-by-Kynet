@@ -174,8 +174,8 @@ class Salonbookingprok {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'wp_ajax_nopriv_get_data',$plugin_admin, 'get_ajax_posts' );
 		$this->loader->add_action( 'wp_ajax_get_ajax_posts',$plugin_admin, 'get_ajax_posts');
-		$this->loader->add_action( 'wp_ajax_nopriv_get_data',$plugin_admin, 'get_ajax_dates' );
-		$this->loader->add_action( 'wp_ajax_get_ajax_posts',$plugin_admin, 'get_ajax_dates');
+		$this->loader->add_action( 'wp_ajax_nopriv_get_data',$plugin_admin, 'get_ajax_dates');
+		$this->loader->add_action( 'wp_ajax_get_ajax_dates',$plugin_admin, 'get_ajax_dates');
 		 // add menus
 		$this->loader->add_action( 'admin_menu', $admin_pages, 'menu_pages'); 
 		// employee address 

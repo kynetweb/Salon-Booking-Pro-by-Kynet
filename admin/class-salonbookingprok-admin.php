@@ -190,7 +190,9 @@ class Salonbookingprok_Admin {
 		}
 
 		function get_ajax_dates() {
-			echo "test";
+			$date_array = ["April 10, 2020", "April 18, 2020", "April 22, 2020", "April 28, 2020"];
+			echo json_encode($date_array);
+			exit; 
 		 
 		}
 }
