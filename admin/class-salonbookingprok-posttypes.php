@@ -154,6 +154,28 @@ class Salonbookingprok_Posttypes {
 		);
 	 
 		register_post_type( 'sbprok_services', $args );
+
+		$tax_labels = array(
+			'name'              => _x( 'Services Category', 'taxonomy general name','salonbookingprok' ),
+			'singular_name'     => _x( 'Services Category', 'taxonomy singular name','salonbookingprok' ),
+			'search_items'      =>  __( 'Search Services Category','salonbookingprok' ),
+			'all_items'         => __( 'All Services Category','salonbookingprok' ),
+			'parent_item'       => __( 'Parent Services Category','salonbookingprok' ),
+			'parent_item_colon' => __( 'Parent Services Category:' ),
+			'edit_item'         => __( 'Edit Services Category','salonbookingprok' ), 
+			'update_item'       => __( 'Update Services Category','salonbookingprok' ),
+			'add_new_item'      => __( 'Add New Services Category','salonbookingprok' ),
+			'new_item_name'     => __( 'New Services Category Name','salonbookingprok' ),
+			'menu_name'         => __( 'Services Categories','salonbookingprok' ),
+		  );    
+		  register_taxonomy('sbprok_category', array('sbprok_services'), array(
+			'hierarchical'      => true,
+			'labels'            => $tax_labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'query_var'         => true,
+			'rewrite'           => array( 'slug' => 'sbprok_category' ),
+		  ));
 	}
 
 	function register_appointments() {
@@ -201,42 +223,7 @@ class Salonbookingprok_Posttypes {
 		'menu_position'      => null,
 		'supports'           => $supports
 		);
-		
 		register_post_type( 'sbprok_appoints', $args );
-		}
-
-	/**
-	 * Register Taxonomy for Services.
-	 *
-	 * @since    1.0.0
-	 */
-
-	function service_hierarchical_taxonomy() {
-
-		  $labels = array(
-			'name'              => _x( 'Services Category', 'taxonomy general name','salonbookingprok' ),
-			'singular_name'     => _x( 'Services Category', 'taxonomy singular name','salonbookingprok' ),
-			'search_items'      =>  __( 'Search Services Category','salonbookingprok' ),
-			'all_items'         => __( 'All Services Category','salonbookingprok' ),
-			'parent_item'       => __( 'Parent Services Category','salonbookingprok' ),
-			'parent_item_colon' => __( 'Parent Services Category:' ),
-			'edit_item'         => __( 'Edit Services Category','salonbookingprok' ), 
-			'update_item'       => __( 'Update Services Category','salonbookingprok' ),
-			'add_new_item'      => __( 'Add New Services Category','salonbookingprok' ),
-			'new_item_name'     => __( 'New Services Category Name','salonbookingprok' ),
-			'menu_name'         => __( 'Services Categories','salonbookingprok' ),
-		  );    
-		 
-		  register_taxonomy('sbprok_category', array('sbprok_services'), array(
-			'hierarchical'      => true,
-			'labels'            => $labels,
-			'show_ui'           => true,
-			'show_admin_column' => true,
-			'query_var'         => true,
-			'rewrite'           => array( 'slug' => 'sbprok_category' ),
-		  ));
-		 
 	}
 }
-
 ?>

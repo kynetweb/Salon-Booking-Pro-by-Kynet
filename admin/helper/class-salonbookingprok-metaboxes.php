@@ -220,9 +220,10 @@ class Salonbookingprok_Metaboxes {
                     'role__in'     => array('salonbookingprok_customer'),
                      )
                 );
-                echo '<select data-sbprok="select2" name="'.$box['id'].'["_customer"]" id="'.$post_meta['_customer'].'">';  
+                echo '<select data-sbprok="select2" name="'.$box['id'].'[_customer]" id="'.$post_meta['_customer'].'">';  
+                echo '<option value="">Select Customer</option>';
                 foreach ($blogusers as $user) { 
-                    echo '<option value="'.$user->id.'">'.$user->display_name.'</option>';   
+                    echo '<option value="'.$user->id.'" '.($user->id == $post_meta["_customer"] ? "selected" : "").'>'.$user->display_name.'</option>';   
                 }  
                 echo '</select>'; 
             ?>
@@ -305,15 +306,16 @@ class Salonbookingprok_Metaboxes {
     */  
     private function employee_selection($box, $post_id){
         $post_meta = $this->meta_value($box, $post_id);
-      //  print_r($post_meta);
+        //print_r($post_meta);
         $blogusers = get_users( array( 
             'fields' => array( 'display_name','id' ),
             'role__in'     => array('salonbookingprok_employee'),
              )
         );
         echo '<select  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'">';  
+        echo "<option value=''>Select Employee</option>";
         foreach ($blogusers as $user) { 
-            echo '<option value="'.$user->id.'">'.$user->display_name.'</option>';   
+            echo '<option value="'.$user->id.'" '.($user->id == $post_meta ? "selected" : "").'>'.$user->display_name.'</option>';   
         } 
         echo '</select>';  
     }

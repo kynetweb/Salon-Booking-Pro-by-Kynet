@@ -117,19 +117,24 @@ class Salonbookingprok {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-salonbookingprok-admin.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the admin area.
+		 * The class responsible for all admin pages
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-salonbookingprok-pages.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the admin area.
+		 * The class responsible for defining all custom post types
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-salonbookingprok-posttypes.php';
 
 		/**
-		 * The class responsible for defining all actions that occur in the admin area.
+		 * The class responsible for defining all custom meta boxes in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-salonbookingprok-meta.php';
+
+		/**
+		 * The class responsible for defining admin ajax functions.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-salonbookingprok-ajax.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -166,31 +171,38 @@ class Salonbookingprok {
 	 * @access   private
 	 */
 	private function define_admin_hooks() {
+		//init admin classes
 		$plugin_admin = new Salonbookingprok_Admin( $this->get_plugin_name(), $this->get_version() );
 		$admin_pages = new Salonbookingprok_Pages( $this->get_plugin_name(), $this->get_version() );
 		$admin_posttypes = new Salonbookingprok_Posttypes( $this->get_plugin_name(), $this->get_version() );
 		$admin_meta = new Salonbookingprok_Meta( $this->get_plugin_name(), $this->get_version() );
+		$admin_ajax = new Salonbookingprok_Ajax( $this->get_plugin_name(), $this->get_version() );
+
+		// add admin pages
+		$this->loader->add_action( 'admin_menu', $admin_pages, 'menu_pages'); 
+
+		// admin script and styles
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-		$this->loader->add_action( 'wp_ajax_nopriv_get_data',$plugin_admin, 'get_ajax_posts' );
-		$this->loader->add_action( 'wp_ajax_get_ajax_posts',$plugin_admin, 'get_ajax_posts');
-		$this->loader->add_action( 'wp_ajax_nopriv_get_data',$plugin_admin, 'get_ajax_dates');
-		$this->loader->add_action( 'wp_ajax_get_ajax_dates',$plugin_admin, 'get_ajax_dates');
-		 // add menus
-		$this->loader->add_action( 'admin_menu', $admin_pages, 'menu_pages'); 
+
+		// custom post types & meta
+		$this->loader->add_action( 'init', $admin_posttypes, 'register_services' );
+		$this->loader->add_action( 'init', $admin_posttypes, 'register_appointments' );
+		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'service_meta_boxes');
+		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'appointment_meta_boxes');
+		$this->loader->add_action( 'save_post', $admin_meta,'save_service_meta_boxes', 0 );
+		$this->loader->add_action( 'save_post', $admin_meta,'save_appointment_meta_boxes', 1 );
+
+		
+		$this->loader->add_action( 'wp_ajax_get_bookings',$admin_ajax, 'get_bookings');
+		$this->loader->add_action( 'wp_ajax_get_availbility',$admin_ajax, 'get_availbility');
+		 
 		// employee address 
 		$this->loader->add_action('show_user_profile', $admin_pages, 'user_custom_fields' );
 		$this->loader->add_action( 'edit_user_profile', $admin_pages, 'user_custom_fields' );
 		$this->loader->add_action( 'personal_options_update', $admin_pages, 'save_user_custom_fields' );
 		$this->loader->add_action('edit_user_profile_update', $admin_pages, 'save_user_custom_fields' );
-		// services post
-		$this->loader->add_action( 'init', $admin_posttypes, 'register_services' );
-		$this->loader->add_action( 'init', $admin_posttypes, 'register_appointments' );
-		$this->loader->add_action( 'init', $admin_posttypes,'service_hierarchical_taxonomy', 0 );
-		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'service_meta_boxes');
-		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'appointment_meta_boxes');
-		$this->loader->add_action( 'save_post', $admin_meta,'save_service_meta_boxes', 0 );
-		$this->loader->add_action( 'save_post', $admin_meta,'save_appointment_meta_boxes', 1 );
+		
 		
 	}
 	/**

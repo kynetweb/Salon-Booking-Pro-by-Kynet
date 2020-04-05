@@ -1,3 +1,30 @@
+/**
+	 * All of the code for your admin-facing JavaScript source
+	 * should reside in this file.
+	 *
+	 * Note: It has been assumed you will write jQuery code here, so the
+	 * $ function reference has been prepared for usage within the scope
+	 * of this function.
+	 *
+	 * This enables you to define handlers, for when the DOM is ready:
+	 *
+	 * $(function() {
+	 *
+	 * });
+	 *
+	 * When the window is loaded:
+	 *
+	 * $( window ).load(function() {
+	 *
+	 * });
+	 *
+	 * ...and/or other possibilities.
+	 *
+	 * Ideally, it is not considered best practise to attach more than a
+	 * single DOM-ready or window-load handler for a particular page.
+	 * Although scripts in the WordPress core, Plugins and Themes may be
+	 * practising this, we should strive to set a better example in our own work.
+	 */
 (function( $ ) {
 	'use strict';
 		$(document).ready(function(){
@@ -7,19 +34,17 @@
 			url: sbprokAjax.ajaxurl,
 			type: 'POST',
 			dataType: "json",
-			data: { action : 'get_ajax_dates' },
+			data: { action : 'get_availbility' },
 			success: function (res) {
 				exclude = res;
 			  }
 		  });
 		$('input[data-sbprok="datepicker"]').datepicker({
-			// beforeShowDay: function(date) {
-			// 	var day = jQuery.datepicker.formatDate('dd-mm-yy', date);
-			// 	return [!~$.inArray(day, exclude)];
-			//    // return [!~$.inArray(day, exclude) && (date.getDay() != 0)]; disable sunday and prev dates.
-			//   },
 			  onSelect: function(dateText, inst) {
 				var date = $(this).val();
+				var startDate = new Date(dateText);
+				var selDay = startDate.getDay();
+				alert(selDay);
 				if($.inArray(date, exclude) > -1){
 					$('.errorMsg').html('<span>We are unavailable at: '+ date+ '</span>');
 					$('.errorMsg').css({"color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "250px", "height": "35px", "text-align": "center"});
@@ -82,7 +107,7 @@
 					  url: sbprokAjax.ajaxurl,
 					  type: 'POST',
 					  dataType: "json",
-					  data: { action : 'get_ajax_posts' },
+					  data: { action : 'get_bookings' },
 					  success: function (response) {
 							$.each(response[0], function(){
 							if(this._date != null){
@@ -149,35 +174,6 @@
 	
 			calendar.render();
 		});
-		
-	
-	/**
-	 * All of the code for your admin-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
 
 })( jQuery );
 

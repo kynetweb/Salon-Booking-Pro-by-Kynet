@@ -234,12 +234,14 @@ class Salonbookingprok_Meta {
     // store appointment meta boxes details
            
     if ( isset( $_POST['_sbprok_appt_schedule'] ) ) {
+        
         $details = array(
             '_date' => !empty( $_POST['_sbprok_appt_schedule']['_date'] ) ?  $_POST['_sbprok_appt_schedule']['_date'] : '',
             '_time' => !empty( $_POST['_sbprok_appt_schedule']['_time']  ) ? $_POST['_sbprok_appt_schedule']['_time'] : '',
             '_customer' => !empty( $_POST['_sbprok_appt_schedule']['_customer']  ) ? $_POST['_sbprok_appt_schedule']['_customer'] : '',
             
         );
+
         update_post_meta( $post_id, '_sbprok_appt_schedule', $details );
         
     }
