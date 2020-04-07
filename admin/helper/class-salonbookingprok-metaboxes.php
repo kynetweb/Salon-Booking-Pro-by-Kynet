@@ -202,14 +202,16 @@ class Salonbookingprok_Metaboxes {
         <div class="sbprok-row">
             <div class="sbprok-col-4">
             <label><?php echo __('Date', 'salonbookingprok') ?></label>
-            <input class="sbprok-input" data-sbprok="datepicker" type="text" value="<?php echo $post_meta['_date'] ?>" name="<?php echo $box['id'] ?>[_date]"  />
+            <input class="sbprok-input datepic" data-sbprok="datepicker" type="text" value="<?php echo $post_meta['_date'] ?>" name="<?php echo $box['id'] ?>[_date]"  />
            <div class="errorMsg">
            </div>
             </div>
 
             <div class="sbprok-col-4">
             <label><?php echo __('Time', 'salonbookingprok') ?></label>
-            <input class="sbprok-input" data-sbprok="timepicker" type="text" value="<?php echo $post_meta['_time'] ?>" name="<?php echo $box['id'] ?>[_time]"  />
+            <input class="sbprok-input" required="required" data-sbprok="timepicker" type="text" value="<?php echo $post_meta['_time'] ?>" name="<?php echo $box['id'] ?>[_time]"  />
+            <div class="errorMsgtime">
+           </div>
             </div>
 
             <div class="sbprok-col-4">

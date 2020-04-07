@@ -45,9 +45,9 @@
 
 		$('input[data-sbprok="datepicker"]').datepicker({
 			  onSelect: function(dateText, inst) {
-				    date      = $(this).val();
-				var startDate = new Date(dateText);
-				var selDay    = startDate.getDay();
+				    date       = $(this).val();
+				var startDate  = new Date(dateText);
+				var selDay     = startDate.getDay();
 				
 				if($.inArray(selDay, exclude) > -1){ 	 
 					$('.errorMsg').html('<span>We are unavailable at: '+ date+ '</span>');
@@ -64,14 +64,19 @@
 		});
 
 		/**** timepicker */
-		$('input[data-sbprok="timepicker"]').timepicker({
+		$('input[data-sbprok="timepicker"]').timepicker({	
 			change: function(dateText, inst){
-					    var time = $(this).val();
+						var time = $(this).val();
+						if(date == undefined){
+                           date = $(".datepic").val();
+						 }		
+						$('.errorMsgtime').css("display","none");
 					    $.each(date_time_array, function(index, value) {
                             if (time == value[date]) {
-							alert("already booked");
-							exit();
-						    }	
+								$('.errorMsgtime').html('<span>This time is already booked.Please choose another time slot. </span>');
+								$('.errorMsgtime').css({"display":"block","color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "250px", "height": "35px", "text-align": "center"});
+							    $('input[data-sbprok="timepicker"]').val('');
+						    }
 					    }); 
 			        },
 			timeFormat: 'h:mm p',
