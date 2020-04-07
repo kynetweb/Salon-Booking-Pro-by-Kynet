@@ -27,26 +27,22 @@
 	 */
 (function( $ ) {
 	'use strict';
-		$(document).ready(function(){
-	    var service_sel;
-		var time;
-		var date;	
-		//datepicker
+	$(document).ready(function(){
+		/**** datepicker */
+		var date;
 		var exclude;
-		var ex_time;
-		var service_time;
+		var date_time_array;
 		$.ajax({
 			url: sbprokAjax.ajaxurl,
 			type: 'POST',
 			dataType: "json",
 			data: { action : 'get_availbility' },
 			success: function (res) {
-				console.log(res[0])
-				service_time = res[0];
-				ex_time      = res[1];
-				exclude      = res[2];
+				date_time_array = res[0];
+				exclude         = res[1];
 			  }
 		  });
+
 		$('input[data-sbprok="datepicker"]').datepicker({
 			  onSelect: function(dateText, inst) {
 				    date      = $(this).val();
@@ -67,11 +63,17 @@
 			minDate:new Date()
 		});
 
-		//timepicker
+		/**** timepicker */
 		$('input[data-sbprok="timepicker"]').timepicker({
 			change: function(dateText, inst){
-				 time = $(this).val();
-			},
+					    var time = $(this).val();
+					    $.each(date_time_array, function(index, value) {
+                            if (time == value[date]) {
+							alert("already booked");
+							exit();
+						    }	
+					    }); 
+			        },
 			timeFormat: 'h:mm p',
 			interval: 30,
 			minTime: '09',
@@ -82,21 +84,7 @@
 			scrollbar: true
 		});
 	   
-		$( "#_sbprok_services" ).change(function() {
-			service_sel = $("#_sbprok_services li").first().contents().filter(function() {
-				return this.nodeType == 3;
-			}).text();
-			
-			$.each(service_time, function(){
-				if(date == this.date && time == this.time && service_sel == this.service){ 	
-					alert("already booked");
-					exit();
-				}
-			  }); 
-
-		 });
-
-		//select2
+		/**** select2 */
 		$('select[data-sbprok="select2"]').select2();
 
 		/**** create new button */
@@ -107,9 +95,9 @@
 
 		});
 		
-		/**** Calendar */
-		document.addEventListener('DOMContentLoaded', function() {
-			var calendarEl = document.getElementById('calendar');
+	/**** Calendar */
+	document.addEventListener('DOMContentLoaded', function() {
+		var calendarEl = document.getElementById('calendar');
 	
 			var calendar = new FullCalendar.Calendar(calendarEl, {
 				plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
@@ -189,9 +177,9 @@
 					var end_time   = moment(info.event.end).format('hh:mm a');
 					/*Open Sweet Alert*/
 						swal({
-						  title: info.event.title,//Event Title
+						  title: info.event.title,
 						  text: "Date : "+formDate+" \n"+
-						        "Start From : "+start_time+" To "+end_time,//Event Start Date
+						        "Start From : "+start_time+" To "+end_time,
 						  icon: "success",
 						});
 					}
