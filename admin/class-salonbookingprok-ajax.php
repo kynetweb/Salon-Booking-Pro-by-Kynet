@@ -99,9 +99,42 @@ class Salonbookingprok_Ajax {
 		}
 
 		function get_availbility() {
-			$date_array = ["April 10, 2020", "April 18, 2020", "April 22, 2020", "April 28, 2020"];
-			echo json_encode($date_array);
+			$services      = array(
+				'post_type' => array('sbprok_appoints'),
+				'posts_per_page' => 40,
+				'nopaging' => true,
+				'order' => 'DESC',
+				'orderby' => 'date'
+			 );
+
+			$ajaxposts     = get_posts($services);
+			$array         = array(
+				'ID'=>$name[0],
+				'post_type'=>'sbprok_services'
+				);
+			$service_names = get_posts($array);
+			$i =0;
+			foreach($ajaxposts as $ajaxpost){
+				$date_time      = get_post_meta( $ajaxpost->ID, "_sbprok_appt_schedule", true );
+				$services_sel   = get_post_meta( $ajaxpost->ID, "_sbprok_services", true );
+				foreach($date_time as $date_times){
+					$times[]      = $date_times;
+					$time['time'] = $date_time["_time"];
+					$date['date'] = $date_time["_date"];
+				}
+				foreach($services_sel as $services_sels){
+					foreach($service_names as $service_name){
+						if($services_sels == $service_name->ID){
+						   $services['service']  = $service_name->post_title;
+						}
+					}
+				}
+				$s_t_d_aray           = array_merge($time,$services);
+				$service_t_d_aray[]   = array_merge($s_t_d_aray,$date);
+				$i++;
+			}
+			$date_array  = [3, 4];
+			echo json_encode(array($service_t_d_aray,$times,$date_array));
 			exit; 
-		 
 		}
 }

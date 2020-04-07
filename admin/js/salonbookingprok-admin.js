@@ -28,24 +28,32 @@
 (function( $ ) {
 	'use strict';
 		$(document).ready(function(){
+	    var service_sel;
+		var time;
+		var date;	
 		//datepicker
 		var exclude;
+		var ex_time;
+		var service_time;
 		$.ajax({
 			url: sbprokAjax.ajaxurl,
 			type: 'POST',
 			dataType: "json",
 			data: { action : 'get_availbility' },
 			success: function (res) {
-				exclude = res;
+				console.log(res[0])
+				service_time = res[0];
+				ex_time      = res[1];
+				exclude      = res[2];
 			  }
 		  });
 		$('input[data-sbprok="datepicker"]').datepicker({
 			  onSelect: function(dateText, inst) {
-				var date = $(this).val();
+				    date      = $(this).val();
 				var startDate = new Date(dateText);
-				var selDay = startDate.getDay();
-				alert(selDay);
-				if($.inArray(date, exclude) > -1){
+				var selDay    = startDate.getDay();
+				
+				if($.inArray(selDay, exclude) > -1){ 	 
 					$('.errorMsg').html('<span>We are unavailable at: '+ date+ '</span>');
 					$('.errorMsg').css({"color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "250px", "height": "35px", "text-align": "center"});
 					return false;
@@ -61,6 +69,9 @@
 
 		//timepicker
 		$('input[data-sbprok="timepicker"]').timepicker({
+			change: function(dateText, inst){
+				 time = $(this).val();
+			},
 			timeFormat: 'h:mm p',
 			interval: 30,
 			minTime: '09',
@@ -70,6 +81,20 @@
 			dropdown: true,
 			scrollbar: true
 		});
+	   
+		$( "#_sbprok_services" ).change(function() {
+			service_sel = $("#_sbprok_services li").first().contents().filter(function() {
+				return this.nodeType == 3;
+			}).text();
+			
+			$.each(service_time, function(){
+				if(date == this.date && time == this.time && service_sel == this.service){ 	
+					alert("already booked");
+					exit();
+				}
+			  }); 
+
+		 });
 
 		//select2
 		$('select[data-sbprok="select2"]').select2();
