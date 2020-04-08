@@ -199,6 +199,7 @@ class Salonbookingprok {
 		
 		$this->loader->add_action( 'wp_ajax_get_bookings',$admin_ajax, 'get_bookings');
 		$this->loader->add_action( 'wp_ajax_get_availbility',$admin_ajax, 'get_availbility');
+		$this->loader->add_action( 'wp_ajax_get_service_employees',$admin_ajax, 'get_service_employees');
 		 
 		// employee address 
 		$this->loader->add_action('show_user_profile', $admin_pages, 'user_custom_fields' );
