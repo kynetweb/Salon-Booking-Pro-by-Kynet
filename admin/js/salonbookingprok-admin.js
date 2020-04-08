@@ -99,6 +99,9 @@
 		/**** */
 
 		});
+		$(document).ready( function () {
+			$('#table_id').DataTable();
+		} );
 		
 	/**** Calendar */
 	document.addEventListener('DOMContentLoaded', function() {

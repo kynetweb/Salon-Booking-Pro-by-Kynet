@@ -100,6 +100,7 @@ class Salonbookingprok_Admin {
 		
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/salonbookingprok-admin.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'css/select2.min.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-datatables', plugin_dir_url( __FILE__ ) . 'css/datatables.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-datepickr', plugin_dir_url( __FILE__ ) . 'css/datepic.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-timepickr', plugin_dir_url( __FILE__ ) . 'css/jquery.timepicker.min.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-css1', plugin_dir_url( __FILE__ ) . 'css/fullcalendar.min.css', array(), $this->version, 'all' );
@@ -130,8 +131,12 @@ class Salonbookingprok_Admin {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */ 
+		wp_enqueue_script('media-upload');
+		wp_enqueue_script('thickbox');
+		wp_enqueue_media();
 		wp_enqueue_script( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-timepickar', plugin_dir_url( __FILE__ ) . 'js/Timepicker.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-datatables', plugin_dir_url( __FILE__ ) . 'js/datatables.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc1', plugin_dir_url( __FILE__ ) . 'js/moment.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc2', plugin_dir_url( __FILE__ ) . 'js/fullcalendar.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc3', plugin_dir_url( __FILE__ ) . 'js/packages/core/main.js', array( 'jquery' ), $this->version, true );
@@ -147,4 +152,71 @@ class Salonbookingprok_Admin {
 		wp_localize_script( $this->plugin_name, 'sbprokAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ))); 
 	
 	}
+	function my_profile_upload_js() { 
+    	$my_saved_attachment_post_id = get_option( 'media_selector_attachment_id', 0 );
+		$my_saved_attachment_post_id_user = get_option( 'media_selector_attachment_id', 0 );
+		?>
+		<script type='text/javascript'>
+			jQuery( document ).ready( function( $ ) {
+				// Uploading files
+				var file_frame;
+				var wp_media_post_id = wp.media.model.settings.post.id; // Store the old id
+				var set_to_post_id = <?php echo $my_saved_attachment_post_id; ?>; // Set this
+				jQuery(document).find("input[id^='upload_image_button']").live('click', function(event){
+					event.preventDefault();
+					// If the media frame already exists, reopen it.
+					if ( file_frame ) {
+						// Set the post ID to what we want
+						file_frame.uploader.uploader.param( 'post_id', set_to_post_id );
+						// Open frame
+						file_frame.open();
+						return;
+					} else { 
+						// Set the wp.media post id so the uploader grabs the ID we want when initialised
+						wp.media.model.settings.post.id = set_to_post_id;
+					}
+					// Create the media frame.
+					file_frame = wp.media.frames.file_frame = wp.media({
+					title: 'Select a image to upload',
+					button: {
+						text: 'Use this image',
+					},
+					multiple: false	// Set to true to allow multiple files to be selected
+					});
+					// When an image is selected, run a callback.
+					file_frame.on( 'select', function() {
+						// We set multiple to false so only get one image from the uploader
+						attachment = file_frame.state().get('selection').first().toJSON();
+						// Do something with attachment.id and/or attachment.url here
+						$( '#image-preview' ).attr( 'src', attachment.url ).css( 'width', 'auto' );
+						$( '#image_attachment_id' ).val( attachment.id );
+						// Restore the main post ID
+						wp.media.model.settings.post.id = wp_media_post_id;
+					});
+				// Finally, open the modal
+				file_frame.open();
+				});
+				// Restore the main ID when the add media button is pressed
+				jQuery( 'a.add_media' ).on( 'click', function() {
+					wp.media.model.settings.post.id = wp_media_post_id;
+				});
+			});
+			
+			//user backend
+			jQuery(document).ready(function() {
+				var uploadID = ''; /*setup the var*/
+				jQuery(document).find("input[id^='uploadimage']").live('click', function(){
+					uploadID = jQuery(this).prev('input'); /*grab the specific input*/
+					formfield = jQuery('.profile_image').attr('name');
+					tb_show('', 'media-upload.php?type=image&amp;TB_iframe=true');
+					window.send_to_editor = function(html) {
+						console.log("hello");
+						imgurl = jQuery(html).attr('src');
+						uploadID.val(imgurl); /*assign the value to the input*/
+						tb_remove();
+					};
+				});
+			});
+		</script>
+	<?php }
 }

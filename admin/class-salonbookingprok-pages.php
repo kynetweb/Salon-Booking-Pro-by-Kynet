@@ -64,6 +64,7 @@ class Salonbookingprok_Pages {
 		add_submenu_page( 'salonbookingprok', __('Service Categories', 'salonbookingprok'), __('Service Categories', 'salonbookingprok'), 'manage_options', 'edit-tags.php?taxonomy=sbprok_category', NULL );
 		add_submenu_page( 'salonbookingprok', __('Bookings', 'salonbookingprok'), __('Bookings', 'salonbookingprok'), 'manage_options', 'edit.php?post_type=sbprok_appoints', NULL );
 		add_submenu_page('salonbookingprok', __('Employees', 'salonbookingprok'), __('Employees', 'salonbookingprok'), 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
+		add_submenu_page('salonbookingprok', __('Saloon Employee List', 'salonbookingprok'), 'Employees List', 'manage_options', 'sbprok_employee_list',  array($this, 'employeeslist_sub_menu')  );
 		add_submenu_page('salonbookingprok', __('Settings', 'salonbookingprok'), __('Settings', 'salonbookingprok'), 'manage_options', 'salonbookingprok',  array($this, 'saloon_main_menu')  );
 		remove_submenu_page('salonbookingprok','salonbookingprok');
 	}
@@ -143,6 +144,10 @@ class Salonbookingprok_Pages {
 					$employee_phone = $_POST['employee_phone'];
 					update_user_meta( $user_id, 'employee_phone', $employee_phone );
 				}
+				if(isset($_POST['image_attachment_id'])){
+					$profile_image = $_POST['image_attachment_id'];
+					update_user_meta( $user_id, 'image_attachment_id', $profile_image );
+			   }
 				if(isset($_POST['active_status'])){
 					$active_status = $_POST['active_status'];
 					update_user_meta( $user_id, 'active_status', $active_status );
@@ -159,10 +164,42 @@ class Salonbookingprok_Pages {
 		}
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/salonbookingprok-employees-form.php';
 	}
+	/**
+	 * callback employee list form sub menu functions.
+	 *
+	 * @since    1.0.0
+	 */
+
+	function employeeslist_sub_menu(){
+		$args = array(
+			'role'    => 'salonbookingprok_employee',
+			
+		);
+		$users = get_users( $args );
+		echo '<table id="table_id" class="display">
+				<thead>
+					<tr>
+						<th>Username</th>
+						<th>Email</th>
+						<th>Edit/Update</th>
+					</tr>
+				</thead>
+				<tbody>';
+				foreach ( $users as $user ) {
+					$user_link = get_edit_user_link($user->ID);
+					echo '<tr>';
+					echo '<td>' . $user->display_name . '</td>';
+					echo "<td>" . $user->user_email .'</a></td>';
+					echo "<td> <a href = $user_link>".'<input type="button" value="Edit Employee"</td> </tr>';
+					
+				}
+				echo '</tbody>
+			</table>';
+	}
 
 
 	/**
-	 * user meta fields.
+	 * admin user page additional meta fields.
 	 *
 	 * @since    1.0.0
 	 */
@@ -171,6 +208,7 @@ class Salonbookingprok_Pages {
 		$employee_address = esc_attr( get_the_author_meta( 'employee_address', $user->ID ) );
 		$employee_phone = esc_attr( get_the_author_meta( 'employee_phone', $user->ID ) );
 		$active_status = get_the_author_meta( 'active_status', $user->ID);
+		$profile_image = esc_attr( get_the_author_meta( 'image_attachment_id', $user->ID ) );
 		?>
 		<h3><?php _e('Additional Employee Information'); ?></h3>
 		<table class="form-table">
@@ -198,6 +236,16 @@ class Salonbookingprok_Pages {
 					<input type="checkbox" name="active_status" <?php if ($active_status == 'active' ) { ?>checked="checked"<?php } ?> value="active" /> 
 				</td>
 			</tr>
+			<tr>
+            	<th>
+					<?php _e('Profile Image'); ?>
+				</th>
+				<td>
+					<img id='image-preview' src='<?php echo wp_get_attachment_url($profile_image ); ?>' height='100'>
+					<input id="upload_image_button" type="button" class="button" value="<?php _e( 'Upload image' ); ?>" />
+					<input type='hidden' name='image_attachment_id' id='image_attachment_id' value='<?php echo $profile_image; ?>'>
+        		</td>
+       		</tr>
 			
 			
 		</table>
@@ -209,6 +257,7 @@ class Salonbookingprok_Pages {
 			update_usermeta( $user_id, 'employee_address', $_POST['employee_address'] );
 			update_usermeta( $user_id, 'employee_phone', $_POST['employee_phone'] );
 			update_usermeta( $user_id, 'active_status', $_POST['active_status'] );
+			update_usermeta( $user_id, 'image_attachment_id', $_POST['image_attachment_id'] );
 		
 	}
 }

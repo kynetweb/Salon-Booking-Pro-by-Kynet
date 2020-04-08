@@ -2,6 +2,24 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+ .sbprok-col-25 {
+    float: left;
+    width: 25%;
+    margin-top: 6px;
+  }
+  
+  .sbprok-col-75 {
+    float: left;
+    width: 75%;
+    margin-top: 6px;
+  }
+  
+  /* Clear floats after the columns */
+  .sbprok-employeeform_row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 .sbprok-row {
     display: flex;
 }

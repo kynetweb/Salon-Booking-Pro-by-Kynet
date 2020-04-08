@@ -185,6 +185,9 @@ class Salonbookingprok {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
+		// script in head
+		$this->loader->add_action( 'admin_head', $plugin_admin, 'my_profile_upload_js' );
+
 		// custom post types & meta
 		$this->loader->add_action( 'init', $admin_posttypes, 'register_services' );
 		$this->loader->add_action( 'init', $admin_posttypes, 'register_appointments' );
