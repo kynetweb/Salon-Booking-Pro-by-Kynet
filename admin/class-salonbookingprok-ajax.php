@@ -121,4 +121,32 @@ class Salonbookingprok_Ajax {
 			echo json_encode(array($date_time_array,$date_array));
 			exit; 
 		}
+
+	function get_service_employees(){
+		$all_users = get_users( array( 
+            'fields' => array( 'display_name','id' ),
+            'role__in'     => array('salonbookingprok_employee'),
+             )
+        );
+		$services   = array(
+							'post_type' => array('sbprok_services'),
+							'posts_per_page' => 40,
+							'nopaging' => true,
+							'order' => 'DESC',
+							'orderby' => 'date'
+						  );
+		$ajaxposts  = get_posts( $services );
+		foreach($ajaxposts as $ajaxpost){
+			$employees  = get_post_meta( $ajaxpost->ID, "_sbprok_employees", true );
+			foreach($employees as $employee){
+				//$user = get_userdata($employee );
+				$x[$ajaxpost->post_title] = $employee;
+				$a[] = $x;
+			    $x =  (array) null;
+			}
+			
+		 }
+		 echo json_encode(array($a,$all_users));
+			exit; 
+		}
 }

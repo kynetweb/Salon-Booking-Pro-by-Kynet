@@ -100,6 +100,9 @@ class Salonbookingprok_Metaboxes {
             case 'employee_selection':
             $this->employee_selection( $box, $post->ID );
             break;
+            case 'employees_selection':
+            $this->employees_selection( $box, $post->ID );
+            break;
         }
     }
     /**
@@ -283,6 +286,26 @@ class Salonbookingprok_Metaboxes {
         </div>
         <?php
     }
+
+    /**
+    * Service employees selection
+    * @since: 1.0
+    */  
+    private function employees_selection($box, $post_id){
+        $post_meta = $this->meta_value($box, $post_id);
+        //print_r($post_meta);
+        $employees = get_users( array( 
+            'fields' => array( 'display_name','id' ),
+            'role__in'     => array('salonbookingprok_employee'),
+             )
+        );
+        echo '<select data-sbprok="select2" name="'.$box['id'].'[]" id="'.$box['id'].'" multiple>';     
+        foreach ($employees as $service) {    
+            echo '<option value="'.$service->id.'" '.(in_array($service->id, $post_meta) ? "selected" : "").'>'.$service->display_name.'</option>';   
+        }  
+        echo '</select>';  
+    }
+
      /**
     * Service selection
     * @since: 1.0
@@ -291,10 +314,11 @@ class Salonbookingprok_Metaboxes {
         $post_meta = $this->meta_value($box, $post_id);
         //print_r($post_meta);
         $services = get_posts( array( 
-                        'numberposts' => -1,
-                        'post_type'   => 'sbprok_services'
-                     )
-                );
+            'numberposts' => -1,
+            'post_type'   => 'sbprok_services'
+         )
+        );
+
         echo '<select data-sbprok="select2" name="'.$box['id'].'[]" id="'.$box['id'].'" multiple>';     
         foreach ($services as $service) { 
             
@@ -308,17 +332,13 @@ class Salonbookingprok_Metaboxes {
     */  
     private function employee_selection($box, $post_id){
         $post_meta = $this->meta_value($box, $post_id);
-        //print_r($post_meta);
         $blogusers = get_users( array( 
             'fields' => array( 'display_name','id' ),
             'role__in'     => array('salonbookingprok_employee'),
              )
         );
-        echo '<select  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'">';  
+        echo '<select class="sbprok_employee"  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'">';  
         echo "<option value=''>Select Employee</option>";
-        foreach ($blogusers as $user) { 
-            echo '<option value="'.$user->id.'" '.($user->id == $post_meta ? "selected" : "").'>'.$user->display_name.'</option>';   
-        } 
         echo '</select>';  
     }
     /**

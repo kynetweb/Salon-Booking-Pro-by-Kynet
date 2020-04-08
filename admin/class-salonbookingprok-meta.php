@@ -115,7 +115,18 @@ class Salonbookingprok_Meta {
                                 'desc'	=>  'Yes',
                                 'type' 	=>	'checkbox'
                                )
-            ),    
+            ),
+            array(
+                'id' 	    =>  'sbprok_employees',
+                'title'     =>	'Assign Employee',
+                'post_type' =>  'sbprok_services',
+                'type'    	=>	'employees_selection',
+                'context'   =>  'normal',
+                'args'      => array(
+                                'field' => 'employees_selection',
+                                'type' 	=> 'employees_selection'
+                               )
+            ),      
         );
         $this->meta_helper->create_meta($args, '_sbprok_meta_box', '_sbprok_meta_box_nouce' );
     }
@@ -209,6 +220,10 @@ class Salonbookingprok_Meta {
             update_post_meta( $post_id, '_sbprok_payment_mode', true);
         } else {
             update_post_meta( $post_id, '_sbprok_payment_mode', false);
+        }
+
+        if ( isset( $_POST['_sbprok_employees']) ){
+            update_post_meta( $post_id, '_sbprok_employees', $_POST['_sbprok_employees'] );
         }
         
     }

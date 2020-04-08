@@ -28,6 +28,41 @@
 (function( $ ) {
 	'use strict';
 	$(document).ready(function(){
+		$( "#_sbprok_services" ).change(function() {
+			var service_sel = $("#_sbprok_services li").contents().filter(function() {
+				return this.nodeType == 3," ";
+			}).text();
+			var strArray = service_sel.split("×");
+			$.ajax({
+				url: sbprokAjax.ajaxurl,
+				type: 'POST',
+				dataType: "json",
+				data: { action : 'get_service_employees' },
+				success: function (res) {
+						$.each(res[0], function(index, value) {
+							$.each(value, function(key, values) {
+							if ($.inArray(key, strArray) !== -1) {	
+								$.each(res[1], function() {
+									if(this.id == values){
+										$('.sbprok_employee').append($('<option></option>').val(this.id).text(this.display_name));
+									}
+								});
+							}
+					    });  
+					});	
+					var emp_opn_val = {};
+					$("select[name='_sbprok_employee'] > option").each(function () {
+						if(emp_opn_val[this.text]) {
+							$(this).remove();
+						} else {
+							emp_opn_val[this.text] = this.value;
+						}
+					}); 
+				  }
+			  });
+		 });
+	   
+
 		/**** datepicker */
 		var date;
 		var exclude;
@@ -88,7 +123,7 @@
 			dropdown: true,
 			scrollbar: true
 		});
-	   
+
 		/**** select2 */
 		$('select[data-sbprok="select2"]').select2();
 
