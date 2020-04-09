@@ -227,9 +227,6 @@ class Salonbookingprok_Metaboxes {
                 );
                 echo '<select data-sbprok="select2" name="'.$box['id'].'[_customer]" id="'.$post_meta['_customer'].'">';  
                 echo '<option value="">Select Customer</option>';
-                foreach ($blogusers as $user) { 
-                    echo '<option value="'.$user->id.'" '.($user->id == $post_meta["_customer"] ? "selected" : "").'>'.$user->display_name.'</option>';   
-                }  
                 echo '</select>'; 
             ?>
             </div>
@@ -291,7 +288,7 @@ class Salonbookingprok_Metaboxes {
     * Service employees selection
     * @since: 1.0
     */  
-    private function employees_selection($box, $post_id){
+    private function employees_selection($box, $post_id){ 
         $post_meta = $this->meta_value($box, $post_id);
         //print_r($post_meta);
         $employees = get_users( array( 
@@ -320,8 +317,7 @@ class Salonbookingprok_Metaboxes {
         );
 
         echo '<select data-sbprok="select2" name="'.$box['id'].'[]" id="'.$box['id'].'" multiple>';     
-        foreach ($services as $service) { 
-            
+        foreach ($services as $service) {    
             echo '<option value="'.$service->ID.'" '.(in_array($service->ID, $post_meta) ? "selected" : "").'>'.$service->post_title.'</option>';   
         }  
         echo '</select>';  
@@ -337,8 +333,11 @@ class Salonbookingprok_Metaboxes {
             'role__in'     => array('salonbookingprok_employee'),
              )
         );
-        echo '<select class="sbprok_employee"  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'">';  
+        echo '<select class="sbprok_employee"  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'" multiple>';  
         echo "<option value=''>Select Employee</option>";
+        foreach ($blogusers as $user) { 
+            echo '<option value="'.$user->id.'" '.($user->id == $post_meta ? "selected" : "").'>'.$user->display_name.'</option>';   
+        } 
         echo '</select>';  
     }
     /**
