@@ -27,42 +27,62 @@
 	 */
 (function( $ ) {
 	'use strict';
-	$(document).ready(function(){
-		$( "#_sbprok_services" ).change(function() {
+    function service_emp(service_sel=null){
+		if(service_sel == null){
 			var service_sel = $("#_sbprok_services li").contents().filter(function() {
 				return this.nodeType == 3," ";
 			}).text();
-			var strArray = service_sel.split("×");
-			$.ajax({
-				url: sbprokAjax.ajaxurl,
-				type: 'POST',
-				dataType: "json",
-				data: { action : 'get_service_employees' },
-				success: function (res) {
-						$.each(res[0], function(index, value) {
-							$.each(value, function(key, values) {
-							if ($.inArray(key, strArray) !== -1) {	
-								$.each(res[1], function() {
-									if(this.id == values){
-										$('.sbprok_employee').append($('<option></option>').val(this.id).text(this.display_name));
+		}
+		var sbprok_employee = $("#_sbprok_employee li").contents().filter(function() {
+			return this.nodeType == 3," ";
+		}).text();
+		sbprok_employee = sbprok_employee.replace('×','');
+		var strArray    = service_sel.split("×");
+		$('.sbprok_employee').empty().append('<option>Select Employee</option>');
+		$.ajax({
+			url: sbprokAjax.ajaxurl,
+			type: 'POST',
+			dataType: "json",
+			data: { action : 'get_service_employees' },
+			success: function (res) {
+					$.each(res[0], function(index, value) {
+						$.each(value, function(key, values) {
+						if ($.inArray(key, strArray) !== -1) {	
+							$.each(res[1], function() {
+								if(this.id == values){ 
+									if(sbprok_employee == " "){
+								    $('.sbprok_employee').append($( '<option value="'+ this.id +'" >'+ this.display_name+'</option>'));
+									}else{
+									$('.sbprok_employee').append($( '<option value="'+ this.id +'"'+(this.display_name == sbprok_employee ? "selected" : "")+' >'+ this.display_name+'</option>'));
 									}
-								});
-							}
-					    });  
-					});	
-					var emp_opn_val = {};
-					$("select[name='_sbprok_employee'] > option").each(function () {
-						if(emp_opn_val[this.text]) {
-							$(this).remove();
-						} else {
-							emp_opn_val[this.text] = this.value;
+								}
+							});
 						}
-					}); 
-				  }
-			  });
+					});  
+				});	
+				var emp_opn_val = {};
+				$("select[name='_sbprok_employee'] > option").each(function () {
+					if(emp_opn_val[this.text]) {
+						$(this).remove();
+					} else {
+						emp_opn_val[this.text] = this.value;
+					}
+				}); 
+			  }
+		  });
+	}
+	$(window).load(function() {
+		var service_sel = $("#_sbprok_services li").contents().filter(function() {
+			return this.nodeType == 3," ";
+		}).text();
+		service_emp(service_sel);	
+	});
+	
+	$(document).ready(function(){	
+		$( "#_sbprok_services" ).change(function() {
+			service_emp();
 		 });
 	   
-
 		/**** datepicker */
 		var date;
 		var exclude;
