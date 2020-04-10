@@ -97,8 +97,7 @@ class Salonbookingprok {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function load_dependencies() {
-
+	public function load_dependencies() {
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.

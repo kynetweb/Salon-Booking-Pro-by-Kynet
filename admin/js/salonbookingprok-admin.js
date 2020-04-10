@@ -87,6 +87,7 @@
 		var date;
 		var exclude;
 		var date_time_array;
+		alert('test');
 		$.ajax({
 			url: sbprokAjax.ajaxurl,
 			type: 'POST',

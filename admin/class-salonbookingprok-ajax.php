@@ -49,8 +49,12 @@ class Salonbookingprok_Ajax {
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->version     = $version;
+		$this->load_dependencies();
 
+	}
+	private function load_dependencies() {
+	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/function.php';
 	}
     /**
 	 * get bookings
@@ -118,7 +122,9 @@ class Salonbookingprok_Ajax {
 				$time                = (array) null;
 			}
 			$date_array  = [3, 4];
-			echo json_encode(array($date_time_array,$date_array));
+		   
+		//    $ccc = calculatetime();
+		   echo json_encode(array($date_time_array,$date_array));
 			exit; 
 		}
 
