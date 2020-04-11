@@ -87,7 +87,6 @@
 		var date;
 		var exclude;
 		var date_time_array;
-		alert('test');
 		$.ajax({
 			url: sbprokAjax.ajaxurl,
 			type: 'POST',
@@ -171,7 +170,7 @@
 					right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
 				},
 				
-				defaultDate: '2020-03-12',
+				defaultDate: new Date(),
 				navLinks: true, // can click day/week names to navigate views
 				businessHours: true, // display business hours
 				selectable: true,
@@ -191,6 +190,7 @@
 								var name           = this.name;
 								var final_time     = this._time;
 								var duration       = this.duration;
+								var posts_id       = this.posts_id;
 								var duration_ar    = duration.split(',');
 								for (var a in duration_ar)
 								{
@@ -206,6 +206,7 @@
 								var dates    = new Date(this._date+' '+this._time).toISOString();
 								var end_date = new Date(this._date+' '+end_time).toISOString();
 												events.push({
+												id:	posts_id,
 												title: name,
 												start: dates,
 												end: end_date
@@ -213,13 +214,10 @@
 							}
 						
 							});
-							successCallback(events);
-													
+							successCallback(events);							
 						}
 					});
-				},
-				
-				
+				},	
 				eventDrop: function(info) {
 					var now = new Date();
 					if (info.event.start <= now){
@@ -230,11 +228,35 @@
 							info.revert();
 						  }else{
 							alert(info.event.title + " was dropped on " + info.event.start);
-							Update(id, start, end);
+							//Update(id, start, end);
+							$.ajax({
+								url: sbprokAjax.ajaxurl,
+								type: 'POST',
+								dataType: "json",
+								data: { action : 'get_bookings' },
+								success: function (response) {
+									  $.each(response[0], function(){
+									  if(this.posts_id != null){ 
+										  var posts_id = this.posts_id;
+										  var name     = this.name;
+										  var dates    = this._date;
+										  var time     = this._time;
+										  if(name == info.event.title && posts_id == info.event.id){
+											jQuery.ajax({
+												type: "POST",
+												url: sbprokAjax.ajaxurl,
+												data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time},
+												success: function(data) {
+												}
+											  });		
+										  }
+										 }
+									  });						
+								  }
+							  });	
 						  }
 					 }
-				  },
-				  
+				  },  
 				eventClick: function(info) {
 					var formDate   = moment(info.event.start).format('YYYY-MM-DD');
 					var start_time = moment(info.event.start).format('hh:mm a');
@@ -248,7 +270,6 @@
 						});
 					}
 			});
-	
 			calendar.render();
 		});
 

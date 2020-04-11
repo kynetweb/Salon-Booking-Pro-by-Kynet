@@ -171,11 +171,11 @@ class Salonbookingprok {
 	 */
 	private function define_admin_hooks() {
 		//init admin classes
-		$plugin_admin = new Salonbookingprok_Admin( $this->get_plugin_name(), $this->get_version() );
-		$admin_pages = new Salonbookingprok_Pages( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin    = new Salonbookingprok_Admin( $this->get_plugin_name(), $this->get_version() );
+		$admin_pages     = new Salonbookingprok_Pages( $this->get_plugin_name(), $this->get_version() );
 		$admin_posttypes = new Salonbookingprok_Posttypes( $this->get_plugin_name(), $this->get_version() );
-		$admin_meta = new Salonbookingprok_Meta( $this->get_plugin_name(), $this->get_version() );
-		$admin_ajax = new Salonbookingprok_Ajax( $this->get_plugin_name(), $this->get_version() );
+		$admin_meta      = new Salonbookingprok_Meta( $this->get_plugin_name(), $this->get_version() );
+		$admin_ajax      = new Salonbookingprok_Ajax( $this->get_plugin_name(), $this->get_version() );
 
 		// add admin pages
 		$this->loader->add_action( 'admin_menu', $admin_pages, 'menu_pages'); 
@@ -199,6 +199,7 @@ class Salonbookingprok {
 		$this->loader->add_action( 'wp_ajax_get_bookings',$admin_ajax, 'get_bookings');
 		$this->loader->add_action( 'wp_ajax_get_availbility',$admin_ajax, 'get_availbility');
 		$this->loader->add_action( 'wp_ajax_get_service_employees',$admin_ajax, 'get_service_employees');
+		$this->loader->add_action( 'wp_ajax_get_ajax_data_requests',$admin_ajax, 'get_ajax_data_requests');
 		 
 		// employee address 
 		$this->loader->add_action('show_user_profile', $admin_pages, 'user_custom_fields' );

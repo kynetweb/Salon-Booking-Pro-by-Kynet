@@ -92,6 +92,7 @@ class Salonbookingprok_Ajax {
 			$service_idds['name']       = implode(",",$titles);
 			$service_idds['id']         = implode(",",$service_id);
 			$service_idds['duration']   = implode(",",$final_durations);
+			$service_idds['posts_id']   = $ajaxpost->ID;
 			$date_time                  = get_post_meta( $ajaxpost->ID, "_sbprok_appt_schedule", true );
 			$schedule[]                 = array_merge($service_idds,$date_time);
 			$titles                     = (array) null;
@@ -154,5 +155,15 @@ class Salonbookingprok_Ajax {
 		 }
 		 echo json_encode(array($a,$all_users));
 			exit; 
+		}
+		function get_ajax_data_requests(){
+			    $posts_id   = $_POST['posts_id'];
+				$title      = $_POST['title'];
+				$details = array(
+					'_date' => !empty( $_POST['start_date'] ) ? $_POST['start_date'] : '',
+					'_time' => !empty( $_POST['start_time'] ) ? $_POST['start_time'] : '',
+				);
+				update_post_meta( $posts_id, '_sbprok_appt_schedule', $details );
+		
 		}
 }
