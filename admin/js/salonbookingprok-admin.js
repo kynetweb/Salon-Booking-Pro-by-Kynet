@@ -247,6 +247,7 @@
 												url: sbprokAjax.ajaxurl,
 												data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time},
 												success: function(data) {
+													console.log(data);
 												}
 											  });		
 										  }
