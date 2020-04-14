@@ -9,23 +9,23 @@
                 <input type="text" name="user_name" placeholder="User Name" required/>
             </div>
         </div>
-        <div class="sbprok-employeeform_row">
-            <div class="sbprok-col-25">
-                <label> Enter E-mail*</label>
+        <div class = "sbprok-employeeform_row">
+            <div class = "sbprok-col-25">
+                <label> Enter E-mail* </label>
             </div>
-            <div class="sbprok-col-75">
-                <input type="email" name="user_email" placeholder="User Email" required/>
+            <div class = "sbprok-col-75">
+                <input type = "email" name = "user_email" placeholder = "User Email" required/>
             </div>
         </div>
-        <div class="sbprok-employeeform_row">
-            <div class="sbprok-col-25">
-                <label> Enter Password*</label>
+        <div class = "sbprok-employeeform_row">
+            <div class = "sbprok-col-25">
+                <label> Enter Password* </label>
             </div>
-            <div class="sbprok-col-75">
+            <div class = "sbprok-col-75">
                 <input type="password" name="user_password" placeholder="Enter Your Password" required />
             </div>
         </div>
-        <div class="sbprok-employeeform_row">
+        <div class = "sbprok-employeeform_row">
             <div class="sbprok-col-25">
                 <label> Confirm Password*</label>
             </div>

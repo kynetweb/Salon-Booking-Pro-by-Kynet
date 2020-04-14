@@ -352,6 +352,20 @@ class Salonbookingprok_Metaboxes {
         }
         return $post_meta;
     }
-    
+    function wporg_settings_section_cb()
+{
+    echo '<p>WPOrg Section Introduction.</p>';
+}
+ 
+// field content cb
+function wporg_settings_field_cb()
+{
+    // get the value of the setting we've registered with register_setting()
+    $setting = get_option('wporg_setting_name');
+    // output the field
+    ?>
+    <input type="text" name="wporg_setting_name" value="<?php echo isset( $setting ) ? esc_attr( $setting ) : ''; ?>">
+    <?php
+}
 
 }

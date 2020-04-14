@@ -180,7 +180,9 @@ class Salonbookingprok {
 
 		// add admin pages
 		$this->loader->add_action( 'admin_menu', $admin_pages, 'menu_pages'); 
-
+		//setting tabs
+		$this->loader->add_action('admin_init', $admin_pages, 'saloon_setting_options');
+		
 		// admin script and styles
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
