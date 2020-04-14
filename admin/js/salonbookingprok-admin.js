@@ -228,33 +228,21 @@
 							info.revert();
 						  }else{
 							alert(info.event.title + " was dropped on " + info.event.start);
-							//Update(id, start, end);
-							$.ajax({
-								url: sbprokAjax.ajaxurl,
-								type: 'POST',
-								dataType: "json",
-								data: { action : 'get_bookings' },
-								success: function (response) {
-									  $.each(response[0], function(){
-									  if(this.posts_id != null){ 
-										  var posts_id = this.posts_id;
-										  var name     = this.name;
-										  var dates    = this._date;
-										  var time     = this._time;
-										  if(name == info.event.title && posts_id == info.event.id){
-											jQuery.ajax({
-												type: "POST",
-												url: sbprokAjax.ajaxurl,
-												data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time},
-												success: function(data) {
-													console.log(data);
+							var posts_id = info.oldEvent.id;
+							var name     = info.oldEvent.title;
+							var time     = moment(info.event.start).format('hh:mm a');
+
+							if(info.oldEvent.title == info.event.title && info.oldEvent.id == info.event.id){
+								var dates = info.event.start;
+								dates = dates.toDateString();
+								jQuery.ajax({
+									type: "POST",
+									url: sbprokAjax.ajaxurl,
+									data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time},
+									success: function(data) {
 												}
-											  });		
-										  }
-										 }
-									  });						
-								  }
-							  });	
+								});		
+						    }
 						  }
 					 }
 				  },  

@@ -159,11 +159,12 @@ class Salonbookingprok_Ajax {
 		function get_ajax_data_requests(){
 			    $posts_id   = $_POST['posts_id'];
 				$title      = $_POST['title'];
+				$start      = $_POST['start_date'];
+				$time       = $_POST['start_time'];
 				$details = array(
-					'_date' => !empty( $_POST['start_date'] ) ? $_POST['start_date'] : '',
-					'_time' => !empty( $_POST['start_time'] ) ? $_POST['start_time'] : '',
+					'_date' => !empty($start ) ? $start : '',
+					'_time' => !empty($time ) ? $time : '',
 				);
-				update_post_meta( $posts_id, '_sbprok_appt_schedule', $details );
-		
+				update_post_meta($posts_id, '_sbprok_appt_schedule', $details);
 		}
 }
