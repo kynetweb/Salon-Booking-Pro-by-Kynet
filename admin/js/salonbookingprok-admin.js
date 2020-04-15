@@ -161,9 +161,9 @@
 	/**** Calendar */
 	document.addEventListener('DOMContentLoaded', function() {
 		var calendarEl = document.getElementById('calendar');
-	
+
 			var calendar = new FullCalendar.Calendar(calendarEl, {
-				plugins: [ 'interaction', 'dayGrid', 'timeGrid', 'list' ],
+				plugins: [ 'dayGrid', 'timeGrid', 'list', 'interaction' ],
 				header: {
 					left: 'prev,next today',
 					center: 'title',
@@ -175,7 +175,6 @@
 				businessHours: true, // display business hours
 				selectable: true,
 				editable: true,
-				
 				events: function(info, successCallback, failureCallback) { //include the parameters fullCalendar supplies to you!
 
 					var events = [];
@@ -217,7 +216,18 @@
 							successCallback(events);							
 						}
 					});
-				},	
+				},
+				eventOverlap: function(stillEvent, movingEvent) {
+					var evts = $('#calendar').fullCalendar('clientEvents');
+					for (i in evts) {
+						if (evts[i].id != event.id){
+							if (event.start.isBefore(evts[i].end) && event.end.isAfter(evts[i].start)){
+								return true;
+							}
+						}
+					}
+    				return false;
+				  },
 				eventDrop: function(info) {
 					var now = new Date();
 					if (info.event.start <= now){
@@ -227,22 +237,28 @@
 						if (!confirm("Are you sure about this change?")) {
 							info.revert();
 						  }else{
-							alert(info.event.title + " was dropped on " + info.event.start);
-							var posts_id = info.oldEvent.id;
-							var name     = info.oldEvent.title;
-							var time     = moment(info.event.start).format('hh:mm a');
-
-							if(info.oldEvent.title == info.event.title && info.oldEvent.id == info.event.id){
-								var dates = info.event.start;
-								dates = dates.toDateString();
-								jQuery.ajax({
-									type: "POST",
-									url: sbprokAjax.ajaxurl,
-									data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time},
-									success: function(data) {
+							  console.log(info.view.type);
+							  if(info.view.type == "dayGridMonth"){
+								calendar.changeView('timeGridWeek');
+								alert("Make Changes Here !");
+							  }else{
+								var posts_id = info.oldEvent.id;
+								var name     = info.oldEvent.title;
+								var time     = moment(info.event.start).format('hh:mm a');
+	
+								if(info.oldEvent.title == info.event.title && info.oldEvent.id == info.event.id){
+									var dates = info.event.start;
+									dates = dates.toDateString();
+									jQuery.ajax({
+										type: "POST",
+										url: sbprokAjax.ajaxurl,
+										data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time},
+										success: function(data) {
+												 alert(info.event.title + " was dropped on " + info.event.start);
 												}
-								});		
-						    }
+									});		
+								}
+							  }
 						  }
 					 }
 				  },  

@@ -58,76 +58,26 @@ class Salonbookingprok_Pages {
 	 * @since    1.0.0
 	 */
 	function menu_pages(){
-		add_menu_page(__('Saloon Booking Pro', 'salonbookingprok'), __('Saloon Booking Pro', 'salonbookingprok'), 'manage_options', 'saloon-setting-options', array($this, 'saloon_main_menu') );
+		add_menu_page(__('Saloon Booking Pro', 'salonbookingprok'), __('Saloon Booking Pro', 'salonbookingprok'), 'manage_options', 'salonbookingprok', array($this, 'saloon_main_menu') );
 		add_submenu_page('salonbookingprok', __('Calendar', 'salonbookingprok'), __('Calendar', 'salonbookingprok'), 'manage_options', 'sbprok_calendar',  array($this, 'calendar_sub_menu')  );
 		add_submenu_page( 'salonbookingprok', __('Services', 'salonbookingprok'), __('Services', 'salonbookingprok'), 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
 		add_submenu_page( 'salonbookingprok', __('Service Categories', 'salonbookingprok'), __('Service Categories', 'salonbookingprok'), 'manage_options', 'edit-tags.php?taxonomy=sbprok_category', NULL );
 		add_submenu_page( 'salonbookingprok', __('Bookings', 'salonbookingprok'), __('Bookings', 'salonbookingprok'), 'manage_options', 'edit.php?post_type=sbprok_appoints', NULL );
 		add_submenu_page('salonbookingprok', __('Employees', 'salonbookingprok'), __('Employees', 'salonbookingprok'), 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
 		add_submenu_page('salonbookingprok', __('Saloon Employee List', 'salonbookingprok'), 'Employees List', 'manage_options', 'sbprok_employee_list',  array($this, 'employeeslist_sub_menu')  );
-		add_submenu_page('salonbookingprok', __('Settings', 'salonbookingprok'), __('Settings', 'salonbookingprok'), 'manage_options', 'saloon-setting-options',  array($this, 'saloon_main_menu')  );
+		add_submenu_page('salonbookingprok', __('Settings', 'salonbookingprok'), __('Settings', 'salonbookingprok'), 'manage_options', 'salonbookingprok',  array($this, 'saloon_main_menu')  );
 		remove_submenu_page('salonbookingprok','salonbookingprok');
 	}
-	/**
-	 * callback main menu functions.
+	
+    /**
+	 * callback main menu function.
 	 *
 	 * @since    1.0.0
 	 */
-	/* setting Page Options Section */
-	function saloon_setting_options() { 
-		//general tab register setting
-		register_setting('sbprok_general', 'sbprok_general');
-		//availabiltiy tab register setting
-		register_setting('sbprok_availbility','sbprok_availbility');
-		//general tab setion and fields
-		add_settings_section( 'general_tab_section_id', 'Company Information', 'general_tab_section_callback', 'sbprok_general' );
-		add_settings_field( 'company_name_id', 'Company Name', 'company_name_callback', 'sbprok_general', 'general_tab_section_id' );
-		add_settings_field( 'company_name_logo', 'Company logo', 'company_logo_callback', 'sbprok_general', 'general_tab_section_id' );
-		//availability tab section and fields
-		add_settings_section( 'availability_tab_section_id', 'Availability Information', 'availability_tab_section_callback', 'sbprok_availbility' );
-		add_settings_field( 'monday_id', 'Monday', 'monday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
-		add_settings_field( 'tuesday_id', 'Tuesday', 'tuesday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
-		add_settings_field( 'wednesday_id', 'Wednesday', 'wednesday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
-		add_settings_field( 'thursday_id', 'Thursday', 'thursday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
-		add_settings_field( 'friday_id', 'Friday', 'friday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
-		add_settings_field( 'saturday_id', 'Saturday', 'saturday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
-		add_settings_field( 'sunday_id', 'Sunday', 'sunday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
+	function saloon_main_menu(){
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/salonbookingprok-main-menu.php';
 	}
-	function ch_essentials_header_callback() { 
-		echo '<p>Header Display Options:</p>'; 
-	}
-	function saloon_main_menu(){?>
-		<div class="wrap">  
-        <div id="icon-themes" class="icon32"></div>  
-        <h2>Settings</h2>  
-        <?php settings_errors(); ?>  
-		<?php  
-            $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'general';  
-        ?>  
-		<h2 class="nav-tab-wrapper">  
-            <a href="?page=saloon-setting-options&tab=general" class="nav-tab <?php echo $active_tab == 'general' ? 'nav-tab-active' : ''; ?>">General</a>  
-            <a href="?page=saloon-setting-options&tab=display" class="nav-tab <?php echo $active_tab == 'display' ? 'nav-tab-active' : ''; ?>">Display</a>  
-			<a href="?page=saloon-setting-options&tab=availability" class="nav-tab <?php echo $active_tab == 'availability' ? 'nav-tab-active' : ''; ?>">Availability</a>
-		</h2>  
-		<form method="post" action="options.php">  
-			<?php 
-            if( $active_tab == 'general' ) {  // general tab function.
-                settings_fields( 'sbprok_general' );
-           		do_settings_sections( 'sbprok_general' );
-            } else if( $active_tab == 'display' ) { // display tab function.
-                settings_fields( 'sbprok_display' );
-                do_settings_sections( 'sbprok_display' ); 
-			}
-			else if( $active_tab == 'availability' ) { //availability
-				settings_fields( 'sbprok_availbility' );
-				do_settings_sections( 'sbprok_availbility' ); 
-			}
-            ?>             
-            <?php submit_button(); ?>  
-        </form> 
-		</div> 
-	<?php
-	}
+
 	/**
 	 * callback calendar form sub menu functions.
 	 *
@@ -219,6 +169,7 @@ class Salonbookingprok_Pages {
 	 *
 	 * @since    1.0.0
 	 */
+
 	function employeeslist_sub_menu(){
 		$args = array(
 			'role'    => 'salonbookingprok_employee',
@@ -244,10 +195,13 @@ class Salonbookingprok_Pages {
 					echo '<td>' . $user->display_name . '</td>';
 					echo "<td>" . $user->user_email .'</a></td>';
 					echo "<td> <a href = $user_link>".'<input class = "sbprok-employee-form-button" type="button" value="Edit Employee"></td> </tr>';
+					
 				}
 				echo '</tbody>
 			</table>';
 	}
+
+
 	/**
 	 * admin user page additional meta fields.
 	 *
@@ -296,6 +250,8 @@ class Salonbookingprok_Pages {
 					<input type='hidden' name='image_attachment_id' id='image_attachment_id' value='<?php echo $profile_image; ?>'>
         		</td>
        		</tr>
+			
+			
 		</table>
 	<?php 
 	}
@@ -306,78 +262,6 @@ class Salonbookingprok_Pages {
 			update_usermeta( $user_id, 'employee_phone', $_POST['employee_phone'] );
 			update_usermeta( $user_id, 'active_status', $_POST['active_status'] );
 			update_usermeta( $user_id, 'image_attachment_id', $_POST['image_attachment_id'] );
+		
 	}
-}
-/** General tab section callback function */
-function general_tab_section_callback() {
-   
-}
-/** General tab fields callback function */
-function company_name_callback() {
-    $option = get_option( 'sbprok_general' );
-	$company_name   = esc_attr( $option['company_name_id'] );
-	echo "<input type='text' name='sbprok_general[company_name_id]' value='$company_name' />";
-
-}
-function company_logo_callback(){
-	$option = get_option( 'sbprok_general' );
-	$company_logo   = esc_attr( $option['company_logo_id'] );
-	?>
-	<img id='image-preview' src='<?php echo wp_get_attachment_url($company_logo); ?>' height='100'>
-    <input id="upload_image_button" class ="sbprok-employee-form-button" type="button" class="button" value = "<?php _e( 'Upload image' ); ?>" />
-    <input type='hidden' name='sbprok_general[company_logo_id]' id='image_attachment_id' value ='<?php echo get_option( 'media_selector_attachment_id' ); ?>'><br></br><?php
-}
-/** availability tab section callback function */
-function availability_tab_section_callback(){
-	
-}
-/** availability tab fields callback function */
-function monday_callback(){
-	$option = get_option( 'sbprok_availbility' );
-	if($option['monday']){
-		$checked = 'checked';
-	}
-	echo "<input $checked type='checkbox' name='sbprok_availbility[monday]' />";
-}
-function tuesday_callback(){
-	$option = get_option( 'sbprok_availbility' );
-	if($option['tuesday']){
-		$checked = 'checked';
-	}
-	echo "<input $checked type='checkbox' name='sbprok_availbility[tuesday]'  />";
-}
-function wednesday_callback(){
-	$option = get_option( 'sbprok_availbility' );
-	if($option['wednesday']){
-		$checked = 'checked';
-	}
-	echo "<input $checked type='checkbox' name='sbprok_availbility[wednesday]'/>";
-}
-function thursday_callback(){
-	$option = get_option( 'sbprok_availbility' );
-	if($option['thursday']){
-		$checked = 'checked';
-	}
-	echo "<input $checked type='checkbox' name='sbprok_availbility[thursday]'  />";
-}
-function friday_callback(){
-	$option = get_option( 'sbprok_availbility' );
-	if($option['friday']){
-		$checked = 'checked';
-	}
-	echo "<input $checked type='checkbox' name='sbprok_availbility[friday]' />";
-}
-function saturday_callback(){
-	$option = get_option( 'sbprok_availbility' );
-	if($option['saturday']){
-		$checked = 'checked';
-	}
-	echo "<input $checked type='checkbox' name='sbprok_availbility[saturday]'  />";
-}
-function sunday_callback(){
-	$option = get_option( 'sbprok_availbility' );
-	if($option['sunday']){
-		 $checked = 'checked';
-	}
-	echo "<input $checked type='checkbox' name='sbprok_availbility[sunday]'  />";
 }
