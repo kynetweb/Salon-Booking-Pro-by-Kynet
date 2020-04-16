@@ -222,11 +222,14 @@ class Salonbookingprok_Metaboxes {
             <?php
                 $blogusers = get_users( array( 
                     'fields' => array( 'display_name','id' ),
-                    'role__in'     => array('Salon customer'),
+                    'role__in'     => array('sln_customer'),
                      )
                 );
                 echo '<select data-sbprok="select2" name="'.$box['id'].'[_customer]" id="'.$post_meta['_customer'].'">';  
                 echo '<option value="">Select Customer</option>';
+                foreach ($blogusers as $user) { 
+                    echo '<option value="'.$user->id.'">'.$user->display_name.'</option>';   
+                }  
                 echo '</select>'; 
             ?>
             </div>
