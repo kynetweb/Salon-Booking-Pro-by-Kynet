@@ -240,7 +240,7 @@
 							  console.log(info.view.type);
 							  if(info.view.type == "dayGridMonth"){
 								calendar.changeView('timeGridWeek');
-								alert("Make Changes Here !");
+								alert("Please update booking in Week or Day mode.");
 							  }else{
 								var posts_id = info.oldEvent.id;
 								var name     = info.oldEvent.title;
