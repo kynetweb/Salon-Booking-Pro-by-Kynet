@@ -356,7 +356,7 @@ function company_address_callback(){
 	}else{$company_address = "";}
 	
 	echo "<textarea name='sbprok_general[company_address]' />" .$company_address. "</textarea>";
-	print_r($option);
+	
 }
 /** availability tab section callback function */
 function availability_tab_section_callback(){
