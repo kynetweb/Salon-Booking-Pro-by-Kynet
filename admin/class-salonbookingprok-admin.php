@@ -159,7 +159,6 @@ class Salonbookingprok_Admin {
 		$new_title     = get_post_meta( $post_id, '_sbprok_services', true);
 		$customer      = get_post_meta( $post_id, "_sbprok_appt_schedule", true );
 		$array         = array(
-			'ID'=>$name[0],
 			'post_type'=>'sbprok_services'
 			);
 		$service_names = get_posts($array);
