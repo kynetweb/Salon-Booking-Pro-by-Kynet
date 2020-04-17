@@ -152,6 +152,32 @@ class Salonbookingprok_Admin {
 		wp_localize_script( $this->plugin_name, 'sbprokAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ))); 
 	
 	}
+	function wpse33385_filter_title( $title, $post_id )
+{
+	if(get_post_type( $post_id ) == 'sbprok_appoints')
+    {
+		$new_title     = get_post_meta( $post_id, '_sbprok_services', true);
+		$customer      = get_post_meta( $post_id, "_sbprok_appt_schedule", true );
+		$array         = array(
+			'ID'=>$name[0],
+			'post_type'=>'sbprok_services'
+			);
+		$service_names = get_posts($array);
+		foreach($service_names as $service_name){	
+				if($service_name->ID == $new_title){
+					foreach($customer as $customers){
+						$customer_id = $customer["_customer"];
+						$user_info = get_userdata($customer_id);
+						return $service_name->post_title."-".$user_info->display_name;
+					}
+				}			
+			
+        }
+   
+	}
+	return $title;
+}
+
 	function my_profile_upload_js() { 
     	$my_saved_attachment_post_id = get_option( 'media_selector_attachment_id', 0 );
 		$my_saved_attachment_post_id_user = get_option( 'media_selector_attachment_id', 0 );

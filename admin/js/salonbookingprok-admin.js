@@ -29,10 +29,14 @@
 	'use strict';
     function service_emp(service_sel=null){
 		if(service_sel == null){
-			var service_sel = $("#_sbprok_services li").contents().filter(function() {
-				return this.nodeType == 3," ";
-			}).text();
+		var service_selected = $("#_sbprok_services").select2('data');
+		var service_sel;
+		$.each(service_selected, function() {
+			service_sel = this.text;
+		});
+
 		}
+		
 		var sbprok_employee = $("#_sbprok_employee li").contents().filter(function() {
 			return this.nodeType == 3," ";
 		}).text();
@@ -72,9 +76,11 @@
 		  });
 	}
 	$(window).load(function() {
-		var service_sel = $("#_sbprok_services li").contents().filter(function() {
-			return this.nodeType == 3," ";
-		}).text();
+		var service_selected = $("#_sbprok_services").select2('data');
+		var service_sel;
+		$.each(service_selected, function() {
+			service_sel = this.text;
+		});
 		service_emp(service_sel);	
 	});
 	
@@ -175,6 +181,7 @@
 				businessHours: true, // display business hours
 				selectable: true,
 				editable: true,
+				disableResizing: true,
 				events: function(info, successCallback, failureCallback) { //include the parameters fullCalendar supplies to you!
 
 					var events = [];
@@ -213,10 +220,11 @@
 							}
 						
 							});
-							successCallback(events);							
+							successCallback(events);					
 						}
 					});
 				},
+				
 				eventOverlap: function(stillEvent, movingEvent) {
 					var evts = $('#calendar').fullCalendar('clientEvents');
 					for (i in evts) {

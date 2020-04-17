@@ -190,6 +190,7 @@ class Salonbookingprok {
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'my_profile_upload_js' );
 
 		// custom post types & meta
+		$this->loader->add_filter( 'the_title',$plugin_admin, 'wpse33385_filter_title', 10, 2 );
 		$this->loader->add_action( 'init', $admin_posttypes, 'register_services' );
 		$this->loader->add_action( 'init', $admin_posttypes, 'register_appointments' );
 		$this->loader->add_action( 'add_meta_boxes', $admin_meta,'service_meta_boxes');

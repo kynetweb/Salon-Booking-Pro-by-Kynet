@@ -222,7 +222,7 @@ class Salonbookingprok_Metaboxes {
             <?php
                 $blogusers = get_users( array( 
                     'fields' => array( 'display_name','id' ),
-                    'role__in'     => array('sln_customer'),
+                    'role__in'     => array('salonbookingprok_customer'),
                      )
                 );
                 echo '<select data-sbprok="select2" name="'.$box['id'].'[_customer]" id="'.$post_meta['_customer'].'">';  
@@ -319,7 +319,8 @@ class Salonbookingprok_Metaboxes {
          )
         );
 
-        echo '<select data-sbprok="select2" name="'.$box['id'].'[]" id="'.$box['id'].'" multiple>';     
+        echo '<select data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'" >';
+        echo '<option value="">Select Service</option>';     
         foreach ($services as $service) {    
             echo '<option value="'.$service->ID.'" '.(in_array($service->ID, $post_meta) ? "selected" : "").'>'.$service->post_title.'</option>';   
         }  
