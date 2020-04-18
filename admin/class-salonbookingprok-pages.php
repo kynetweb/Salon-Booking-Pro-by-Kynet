@@ -58,7 +58,7 @@ class Salonbookingprok_Pages {
 	 * @since    1.0.0
 	 */
 	function menu_pages(){
-		add_menu_page(__('Saloon Booking Pro', 'salonbookingprok'), __('Saloon Booking Pro', 'salonbookingprok'), 'manage_options', 'salonbookingprok', array($this, 'saloon_main_menu') );
+		add_menu_page(__('Salon Booking Pro', 'salonbookingprok'), __('Salon Booking Pro', 'salonbookingprok'), 'manage_options', 'salonbookingprok', array($this, 'saloon_main_menu') );
 		add_submenu_page('salonbookingprok', __('Employees', 'salonbookingprok'), __('Employees', 'salonbookingprok'), 'manage_options', 'sbprok_employee',  array($this, 'employees_sub_menu')  );
 		add_submenu_page('salonbookingprok', __('Saloon Employee List', 'salonbookingprok'), 'Employees List', 'manage_options', 'sbprok_employee_list',  array($this, 'employeeslist_sub_menu')  );
 		add_submenu_page( 'salonbookingprok', __('Services', 'salonbookingprok'), __('Services', 'salonbookingprok'), 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
