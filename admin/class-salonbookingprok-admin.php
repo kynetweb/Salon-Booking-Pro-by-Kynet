@@ -148,6 +148,7 @@ class Salonbookingprok_Admin {
 		wp_enqueue_script( $this->plugin_name.'-sc9', plugin_dir_url( __FILE__ ) . 'js/packages/interaction/main.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc10', plugin_dir_url( __FILE__ ) . 'js/packages/bootstrap/main.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-sc11', plugin_dir_url( __FILE__ ) . 'js/packages/sweetalert/sweetalert.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc12', plugin_dir_url( __FILE__ ) . 'js/packages/google-calendar/main.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) .'js/salonbookingprok-admin.js', array( 'jquery-ui-datepicker','jquery' ), $this->version, true );
 		wp_localize_script( $this->plugin_name, 'sbprokAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ))); 
 	
