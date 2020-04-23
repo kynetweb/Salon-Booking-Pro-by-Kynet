@@ -200,7 +200,7 @@ class Salonbookingprok_Metaboxes {
                 '_customer' => ''
             );
         }
-        //print_r($post_meta);
+        //print_r($post_meta); 
         ?>
         <div class="sbprok-row">
             <div class="sbprok-col-4">
@@ -336,13 +336,16 @@ class Salonbookingprok_Metaboxes {
             'fields' => array( 'display_name','id' ),
             'role__in'     => array('salonbookingprok_employee'),
              )
-        );
-        echo '<select class="sbprok_employee"  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'" multiple>';  
-        echo "<option value=''>Select Employee</option>";
-        foreach ($blogusers as $user) { 
-            echo '<option value="'.$user->id.'" '.($user->id == $post_meta ? "selected" : "").'>'.$user->display_name.'</option>';   
-        } 
-        echo '</select>';  
+        ); ?>
+        <div class ="sbprok_employee">
+    </div>
+            <?php 
+        // echo '<select class="sbprok_employee"  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'" multiple>';  
+        // echo "<option value=''>Select Employee</option>";
+        // foreach ($blogusers as $user) { 
+        //     echo '<option value="'.$user->id.'" '.($user->id == $post_meta ? "selected" : "").'>'.$user->display_name.'</option>';   
+        // } 
+        // echo '</select>';  
     }
     /**
     * get meta value 

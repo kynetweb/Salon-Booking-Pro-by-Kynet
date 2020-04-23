@@ -201,6 +201,7 @@ class Salonbookingprok {
 		
 		$this->loader->add_action( 'wp_ajax_get_bookings',$admin_ajax, 'get_bookings');
 		$this->loader->add_action( 'wp_ajax_get_availbility',$admin_ajax, 'get_availbility');
+		$this->loader->add_action( 'wp_ajax_add_google_calendar_events',$admin_ajax, 'add_google_calendar_events');
 		$this->loader->add_action( 'wp_ajax_get_service_employees',$admin_ajax, 'get_service_employees');
 		$this->loader->add_action( 'wp_ajax_get_ajax_data_requests',$admin_ajax, 'get_ajax_data_requests');
 		 

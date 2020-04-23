@@ -42,7 +42,7 @@
 			}).text();
 			sbprok_employee = sbprok_employee.replace('×','');
 			var strArray    = service_sel.split("×");
-			$('.sbprok_employee').empty().append('<option>Select Employee</option>');
+			//$('.sbprok_employee').empty().append('<option>Select Employee</option>');
 			$.ajax({
 				url: sbprokAjax.ajaxurl,
 				type: 'POST',
@@ -55,26 +55,43 @@
 								$.each(res[1], function() {
 									if(this.id == values){ 
 										if(sbprok_employee == " "){
-										$('.sbprok_employee').append($( '<option value="'+ this.id +'" >'+ this.display_name+'</option>'));
+										$('.sbprok_employee').append($( '<button type="button" class="empls">'+ this.display_name+'</button>'));
 										}else{
-										$('.sbprok_employee').append($( '<option value="'+ this.id +'"'+(this.display_name == sbprok_employee ? "selected" : "")+' >'+ this.display_name+'</option>'));
+										$('.sbprok_employee').append($( '<button type="button" class="empls">'+ this.display_name+'</button>'));
 										}
 									}
 								});
 							}
 						});  
 					});	
-					var emp_opn_val = {};
-					$("select[name='_sbprok_employee'] > option").each(function () {
-						if(emp_opn_val[this.text]) {
-							$(this).remove();
-						} else {
-							emp_opn_val[this.text] = this.value;
-						}
-					}); 
+					// var emp_opn_val = {};
+					// $("select[name='_sbprok_employee'] > option").each(function () {
+					// 	if(emp_opn_val[this.text]) {
+					// 		$(this).remove();
+					// 	} else {
+					// 		emp_opn_val[this.text] = this.value;
+					// 	}
+					// }); 
+					$( ".empls" ).click(function() {
+						$('.sbprok_employee').append($('<iframe src="https://calendar.google.com/calendar/embed?src=testdemo256%40gmail.com&ctz=Asia%2FKolkata" style="border: 0" width="300" height="300" frameborder="0" scrolling="no"></iframe>'));
+					  });
 				  }
 			  });
 		}
+		
+        window.onLoadCallback = function(){
+			var url = 'https://www.googleapis.com/calendar/v3/calendars/[testdemo256@gmail.com]/events?sendNotifications=false&access_token=[GOOGLE_API_TOKEN]';
+            var data = { end: { dateTime: "2012-07-22T11:30:00-07:00" }
+                            , start: { dateTime: "2012-07-22T11:00:00-07:00" }
+                            , summary: "New Calendar Event from API"
+                        };
+						var ajax = $.ajax({
+							url: url,
+							contentType: "application/json",
+							data: JSON.stringify(data),
+							method : 'POST',
+							});
+		  }
 		$(window).load(function() {
 			var service_selected = $("#_sbprok_services").select2('data');
 			var service_sel;
@@ -85,6 +102,16 @@
 		});
 		
 		$(document).ready(function(){	
+			$.ajax({
+				url: sbprokAjax.ajaxurl,
+				type: 'POST',
+				dataType: "json",
+				data: { action : 'add_google_calendar_events' },
+				success: function (res) {
+					alert('test');
+					console.log(res);
+				  }
+			  });
 			$( "#_sbprok_services" ).change(function() {
 				service_emp();
 			 });
@@ -183,15 +210,17 @@
 			  defaultView: 'dayGridMonth',
 	
 			  googleCalendarApiKey: 'AIzaSyDSyoCqNhneUNTyz_ccmFe3Tht-RWCgohk',
-		
+		      
 			  eventSources: [
 				{
-				  googleCalendarId: 'testdemo256@gmail.com'
+				  googleCalendarId: 'testdemo256@gmail.com',
+				  className: 'gcal-event' // an option!
 				},
 				{
 				  googleCalendarId: 'smartwork1242@gmail.com'
 				}
 			  ],
+			  
 			  eventDrop: function(info) {
 									var now = new Date();
 									if (info.event.start <= now){

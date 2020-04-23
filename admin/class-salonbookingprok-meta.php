@@ -133,16 +133,6 @@ class Salonbookingprok_Meta {
     /*** apointment meta boxes ***/
     public function appointment_meta_boxes(){
         $args = array(
-            array(
-                'id'        => 'sbprok_appt_schedule',
-                'title'     => 'Booking Schedule',
-                'post_type' => 'sbprok_appoints',
-                'context'   => 'normal',
-                'args'      => array(
-                        'desc'	=>  'Show',
-                        'field' =>  'appointment_schedule'
-                )             
-            ),
           /*  array(
                 'id' 	    =>  'sbprok_customer',
                 'title'     =>	'Customer',
@@ -174,6 +164,16 @@ class Salonbookingprok_Meta {
                                 'field' => 'employee_selection',
                                 'type' 	=> 'employee_selection'
                                )
+            ),
+            array(
+                'id'        => 'sbprok_appt_schedule',
+                'title'     => 'Booking Schedule',
+                'post_type' => 'sbprok_appoints',
+                'context'   => 'normal',
+                'args'      => array(
+                        'desc'	=>  'Show',
+                        'field' =>  'appointment_schedule'
+                )             
             ),
         );   
        $this->meta_helper->create_meta($args,'_sbprok_meta_box', '_sbprok_meta_box_nouce' );
