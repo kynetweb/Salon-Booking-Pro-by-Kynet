@@ -20,6 +20,7 @@
  * @subpackage Salonbookingprok/admin
  * @author     kynet Web <contact@kynetweb.com>
  */
+
 class Salonbookingprok_Ajax {
     /**
 	 * The ID of this plugin.
@@ -29,7 +30,7 @@ class Salonbookingprok_Ajax {
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
 	private $plugin_name;
-
+	
 	/**
 	 * The version of this plugin.
 	 *
@@ -55,7 +56,7 @@ class Salonbookingprok_Ajax {
 	}
 	private function load_dependencies() {
 	require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/function.php';
-	require_once plugin_dir_path( dirname( __FILE__ ) ) . '/vendor/autoload.php';
+	//require_once plugin_dir_path( dirname( __FILE__ ) ) . '/google_calendar_event.php';
 	}
     /**
 	 * get bookings
@@ -168,50 +169,50 @@ class Salonbookingprok_Ajax {
 				);
 				update_post_meta($posts_id, '_sbprok_appt_schedule', $details);
 		}
-		function add_google_calendar_events(){
-			$client = getClient();
-			// $service = new Google_Service_Calendar($client);
-			// $event = new Google_Service_Calendar_Event(array(
-			// 	'summary' => 'Google I/O 2020',
-			// 	'location' => '800 Howard St., San Francisco, C 94103',
-			// 	'description' => 'A chance to hear more about Google\'s developer products.',
-			// 	'start' => array(
-			// 		'dateTime' => '2020-04-28T09:00:00-07:00',
-			// 		'timeZone' => 'America/Los_Angeles'
-			// 	),
-			// 	'end' => array(
-			// 		'dateTime' => '2020-04-28T17:00:00-07:00',
-			// 		'timeZone' => 'America/Los_Angeles'
-			// 	),
-			// 	'recurrence' => array(
-			// 		'RRULE:FREQ=DAILY;COUNT=2'
-			// 	),
-			// 	'attendees' => array(
-			// 		array(
-			// 			'email' => 'lpage@example.com'
-			// 		),
-			// 		array(
-			// 			'email' => 'sbrin@example.com'
-			// 		)
-			// 	),
-			// 	'reminders' => array(
-			// 		'useDefault' => FALSE,
-			// 		'overrides' => array(
-			// 			array(
-			// 				'method' => 'email',
-			// 				'minutes' => 24 * 60
-			// 			),
-			// 			array(
-			// 				'method' => 'popup',
-			// 				'minutes' => 10
-			// 			)
-			// 		)
-			// 	)
-			// ));
+		// function add_google_calendar_events(){
+		// 	$client = getClient();
+		// 	$service = new Google_Service_Calendar($client);
+		// 	$event = new Google_Service_Calendar_Event(array(
+		// 		'summary' => 'Google I/O 2020',
+		// 		'location' => '800 Howard St., San Francisco, C 94103',
+		// 		'description' => 'A chance to hear more about Google\'s developer products.',
+		// 		'start' => array(
+		// 			'dateTime' => '2020-04-28T09:00:00-07:00',
+		// 			'timeZone' => 'America/Los_Angeles'
+		// 		),
+		// 		'end' => array(
+		// 			'dateTime' => '2020-04-28T17:00:00-07:00',
+		// 			'timeZone' => 'America/Los_Angeles'
+		// 		),
+		// 		'recurrence' => array(
+		// 			'RRULE:FREQ=DAILY;COUNT=2'
+		// 		),
+		// 		'attendees' => array(
+		// 			array(
+		// 				'email' => 'lpage@example.com'
+		// 			),
+		// 			array(
+		// 				'email' => 'sbrin@example.com'
+		// 			)
+		// 		),
+		// 		'reminders' => array(
+		// 			'useDefault' => FALSE,
+		// 			'overrides' => array(
+		// 				array(
+		// 					'method' => 'email',
+		// 					'minutes' => 24 * 60
+		// 				),
+		// 				array(
+		// 					'method' => 'popup',
+		// 					'minutes' => 10
+		// 				)
+		// 			)
+		// 		)
+		// 	));
 			
-			// $calendarId = 'primary';
-			// $event      = $service->events->update($calendarId, $event);
-			echo json_encode($client);
-			exit;
-		}
+		// 	$calendarId = 'primary';
+		// 	$event      = $service->events->update($calendarId, $event);
+		// 	echo json_encode($client);
+		// 	exit;
+		// }
 }

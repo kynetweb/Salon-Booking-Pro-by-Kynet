@@ -25,6 +25,7 @@
 	 * Although scripts in the WordPress core, Plugins and Themes may be
 	 * practising this, we should strive to set a better example in our own work.
 	 */
+	
 	(function( $ ) {
 		'use strict';
 		function service_emp(service_sel=null){
@@ -79,19 +80,6 @@
 			  });
 		}
 		
-        window.onLoadCallback = function(){
-			var url = 'https://www.googleapis.com/calendar/v3/calendars/[testdemo256@gmail.com]/events?sendNotifications=false&access_token=[GOOGLE_API_TOKEN]';
-            var data = { end: { dateTime: "2012-07-22T11:30:00-07:00" }
-                            , start: { dateTime: "2012-07-22T11:00:00-07:00" }
-                            , summary: "New Calendar Event from API"
-                        };
-						var ajax = $.ajax({
-							url: url,
-							contentType: "application/json",
-							data: JSON.stringify(data),
-							method : 'POST',
-							});
-		  }
 		$(window).load(function() {
 			var service_selected = $("#_sbprok_services").select2('data');
 			var service_sel;
@@ -101,17 +89,101 @@
 			service_emp(service_sel);	
 		});
 		
+			  
+		 
 		$(document).ready(function(){	
-			$.ajax({
-				url: sbprokAjax.ajaxurl,
-				type: 'POST',
-				dataType: "json",
-				data: { action : 'add_google_calendar_events' },
-				success: function (res) {
-					alert('test');
-					console.log(res);
-				  }
-			  });
+			 // Your Client ID can be retrieved from your project in the Google
+      // Developer Console, https://console.developers.google.com
+      var CLIENT_ID = '769528724818-n3vnf5u2tsoaueia22903vfcg805q9ij.apps.googleusercontent.com';
+ 
+      var SCOPES = ["https://www.googleapis.com/auth/calendar"];
+ 
+      /**
+       * Check if current user has authorized this application.
+       */
+      function checkAuth() {
+        gapi.auth.authorize(
+          {
+            'client_id': CLIENT_ID,
+            'scope': SCOPES.join(' '),
+            'immediate': true
+          }, handleAuthResult);
+      }
+ 
+      /**
+       * Handle response from authorization server.
+       *
+       * @param {Object} authResult Authorization result.
+       */
+      function handleAuthResult(authResult) {
+		  console.log(authResult);
+        if (authResult && !authResult.error) {
+          // Hide auth UI, then load client library.
+          loadCalendarApi();
+        } 
+      }
+ 
+      /**
+       * Initiate auth flow in response to user clicking authorize button.
+       *
+       * @param {Event} event Button click event.
+       */
+      ///function handleAuthClick(event) {
+        gapi.auth.authorize(
+          {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+          handleAuthResult);
+       // return false;
+      //}
+ 
+      /**
+       * Load Google Calendar client library. List upcoming events
+       * once client library is loaded.
+       */
+      function loadCalendarApi() {
+        gapi.client.load('calendar', 'v3', insertEvent);
+      }
+   
+function insertEvent() {
+ 
+      var event = {
+  'summary': 'Google I/O 2017',
+  'location': '800 Howard St., San Francisco, CA 94103',
+  'description': 'A chance to hear more about Google\'s developer products.',
+  'start': {
+    'dateTime': '2020-04-28T09:00:00-07:00',
+    'timeZone': 'America/Los_Angeles'
+  },
+  'end': {
+    'dateTime': '2020-04-29T17:00:00-07:00',
+    'timeZone': 'America/Los_Angeles'
+  },
+  'recurrence': [
+    'RRULE:FREQ=DAILY;COUNT=2'
+  ],
+  'attendees': [
+    {'email': 'abc@gmail.com'},
+    {'email': 'def@gmail.com'}
+  ],
+  'reminders': {
+    'useDefault': false,
+    'overrides': [
+      {'method': 'email', 'minutes': 24 * 60},
+      {'method': 'popup', 'minutes': 10}
+    ]
+  }
+};
+ 
+var request = gapi.client.calendar.events.insert({
+  'calendarId': 'testdemo256@gmail.com',
+  'resource': event
+});
+ 
+request.execute(function(event) {
+  console.log("Event added to Calendar");
+});
+ 
+}
+	
 			$( "#_sbprok_services" ).change(function() {
 				service_emp();
 			 });

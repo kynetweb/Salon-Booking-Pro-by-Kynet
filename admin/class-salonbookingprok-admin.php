@@ -134,6 +134,8 @@ class Salonbookingprok_Admin {
 		wp_enqueue_script('media-upload');
 		wp_enqueue_script('thickbox');
 		wp_enqueue_media();
+		wp_enqueue_script( $this->plugin_name.'-sc13', 'https://apis.google.com/js/platform.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-sc14', 'https://apis.google.com/js/client.js?onload=checkAuth', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-timepickar', plugin_dir_url( __FILE__ ) . 'js/Timepicker.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-datatables', plugin_dir_url( __FILE__ ) . 'js/datatables.js', array( 'jquery' ), $this->version, true );

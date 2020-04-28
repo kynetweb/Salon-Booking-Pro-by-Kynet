@@ -1,4 +1,32 @@
 <?php
+/**
+ * The file that defines the core plugin class
+ *
+ * A class definition that includes attributes and functions used across both the
+ * public-facing side of the site and the admin area.
+ *
+ * @link       #
+ * @since      1.0.0
+ *
+ * @package    Salonbookingprok
+ * @subpackage Salonbookingprok/includes
+ */
+
+/**
+ * The core plugin class.
+ *
+ * This is used to define internationalization, admin-specific hooks, and
+ * public-facing site hooks.
+ *
+ * Also maintains the unique identifier of this plugin as well as the current
+ * version of the plugin.
+ *
+ * @since      1.0.0
+ * @package    Salonbookingprok
+ * @subpackage Salonbookingprok/includes
+ * @author     kynet Web <contact@kynetweb.com>
+ */
+
 require __DIR__ . '/vendor/autoload.php';
 
 if (php_sapi_name() != 'cli') {
@@ -9,7 +37,9 @@ if (php_sapi_name() != 'cli') {
  * Returns an authorized API client.
  * @return Google_Client the authorized client object
  */
-function getClient()
+
+
+ function getClient()
 {
     $client = new Google_Client();
     $client->setApplicationName('Google Calendar API PHP Quickstart');
