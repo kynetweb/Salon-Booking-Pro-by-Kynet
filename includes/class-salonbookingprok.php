@@ -188,6 +188,8 @@ class Salonbookingprok {
 
 		// script in head
 		$this->loader->add_action( 'admin_head', $plugin_admin, 'my_profile_upload_js' );
+        //$this->loader->add_action( 'admin_footer-post-new.php', $plugin_admin, 'wpse_80215_script' );
+        //$this->loader->add_action( 'admin_footer-post.php', $plugin_admin, 'wpse_80215_script' );
 
 		// custom post types & meta
 		$this->loader->add_filter( 'the_title',$plugin_admin, 'wpse33385_filter_title', 10, 2 );
@@ -203,6 +205,8 @@ class Salonbookingprok {
 		$this->loader->add_action( 'wp_ajax_get_availbility',$admin_ajax, 'get_availbility');
 		$this->loader->add_action( 'wp_ajax_add_google_calendar_events',$admin_ajax, 'add_google_calendar_events');
 		$this->loader->add_action( 'wp_ajax_get_service_employees',$admin_ajax, 'get_service_employees');
+		$this->loader->add_action( 'wp_ajax_get_cat_service',$admin_ajax, 'get_cat_service');
+		
 		$this->loader->add_action( 'wp_ajax_get_ajax_data_requests',$admin_ajax, 'get_ajax_data_requests');
 		 
 		// employee address 

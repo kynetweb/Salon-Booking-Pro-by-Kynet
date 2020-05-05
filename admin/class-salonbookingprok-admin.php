@@ -180,6 +180,7 @@ class Salonbookingprok_Admin {
 	return $title;
 }
 
+
 	function my_profile_upload_js() { 
     	$my_saved_attachment_post_id = get_option( 'media_selector_attachment_id', 0 );
 		$my_saved_attachment_post_id_user = get_option( 'media_selector_attachment_id', 0 );
@@ -247,5 +248,7 @@ class Salonbookingprok_Admin {
 			});
 		</script>
 	<?php }
+
+
 	
 }

@@ -125,15 +125,14 @@ class Salonbookingprok_Ajax {
 				$time                = (array) null;
 			}
 			$date_array  = [3, 4];
-		   
-		//    $ccc = calculatetime();
+			
 		   echo json_encode(array($date_time_array,$date_array));
 			exit; 
 		}
 
 	function get_service_employees(){
 		$all_users = get_users( array( 
-            'fields' => array( 'display_name','id' ),
+            'fields' => array( 'display_name','id','user_email' ),
             'role__in'     => array('salonbookingprok_employee'),
              )
         );
@@ -148,16 +147,42 @@ class Salonbookingprok_Ajax {
 		foreach($ajaxposts as $ajaxpost){
 			$employees  = get_post_meta( $ajaxpost->ID, "_sbprok_employees", true );
 			foreach($employees as $employee){
-				//$user = get_userdata($employee );
 				$x[$ajaxpost->post_title] = $employee;
 				$a[] = $x;
-			    $x =  (array) null;
+			    $x   =  (array) null;
 			}
 			
 		 }
 		 echo json_encode(array($a,$all_users));
 			exit; 
 		}
+ 
+		function get_cat_service(){
+			if($_POST['cat_id'] != ''){
+
+			
+			$args = [
+				'post_type' => 'sbprok_services',
+				'tax_query' => [
+					[
+						'taxonomy' => 'sbprok_category',
+						'terms' => $_POST['cat_id'],
+						'include_children' => false // Remove if you need posts from term 7 child terms
+					],
+				],
+				// Rest of your arguments
+			];
+			$services = get_posts($args);
+			foreach($services as $services_names){
+			 $ser['name'] = $services_names->post_name;
+			 $ser['id']   = $services_names->ID;
+			 $sr[]        = $ser;
+			}
+			echo json_encode($sr);
+			exit;
+		 } 
+		}
+
 		function get_ajax_data_requests(){
 			    $posts_id   = $_POST['posts_id'];
 				$title      = $_POST['title'];
@@ -169,50 +194,5 @@ class Salonbookingprok_Ajax {
 				);
 				update_post_meta($posts_id, '_sbprok_appt_schedule', $details);
 		}
-		// function add_google_calendar_events(){
-		// 	$client = getClient();
-		// 	$service = new Google_Service_Calendar($client);
-		// 	$event = new Google_Service_Calendar_Event(array(
-		// 		'summary' => 'Google I/O 2020',
-		// 		'location' => '800 Howard St., San Francisco, C 94103',
-		// 		'description' => 'A chance to hear more about Google\'s developer products.',
-		// 		'start' => array(
-		// 			'dateTime' => '2020-04-28T09:00:00-07:00',
-		// 			'timeZone' => 'America/Los_Angeles'
-		// 		),
-		// 		'end' => array(
-		// 			'dateTime' => '2020-04-28T17:00:00-07:00',
-		// 			'timeZone' => 'America/Los_Angeles'
-		// 		),
-		// 		'recurrence' => array(
-		// 			'RRULE:FREQ=DAILY;COUNT=2'
-		// 		),
-		// 		'attendees' => array(
-		// 			array(
-		// 				'email' => 'lpage@example.com'
-		// 			),
-		// 			array(
-		// 				'email' => 'sbrin@example.com'
-		// 			)
-		// 		),
-		// 		'reminders' => array(
-		// 			'useDefault' => FALSE,
-		// 			'overrides' => array(
-		// 				array(
-		// 					'method' => 'email',
-		// 					'minutes' => 24 * 60
-		// 				),
-		// 				array(
-		// 					'method' => 'popup',
-		// 					'minutes' => 10
-		// 				)
-		// 			)
-		// 		)
-		// 	));
-			
-		// 	$calendarId = 'primary';
-		// 	$event      = $service->events->update($calendarId, $event);
-		// 	echo json_encode($client);
-		// 	exit;
-		// }
+	
 }

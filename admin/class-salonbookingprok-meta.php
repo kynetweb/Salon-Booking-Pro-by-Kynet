@@ -144,6 +144,17 @@ class Salonbookingprok_Meta {
                 )
             ),  */
             array(
+                'id' 	    =>  'sbprok_service_cat',
+                'title'     =>	'Select Service Category',
+                'post_type' =>  'sbprok_appoints',
+                'type'    	=>	'service_cat_selection',
+                'context'   =>  'normal',
+                'args'      => array(
+                                'field' => 'service_cat_selection',
+                                'type' 	=> 'service_cat_selection'
+                               )
+            ),  
+            array(
                 'id' 	    =>  'sbprok_services',
                 'title'     =>	'Select Service',
                 'post_type' =>  'sbprok_appoints',
@@ -175,6 +186,7 @@ class Salonbookingprok_Meta {
                         'field' =>  'appointment_schedule'
                 )             
             ),
+            
         );   
        $this->meta_helper->create_meta($args,'_sbprok_meta_box', '_sbprok_meta_box_nouce' );
     }
@@ -267,6 +279,9 @@ class Salonbookingprok_Meta {
     
     if ( isset( $_POST['_sbprok_services']) ){
         update_post_meta( $post_id, '_sbprok_services', $_POST['_sbprok_services'] );
+    }
+    if(isset($_POST['_sbprok_service_cat'])){
+        update_post_meta( $post_id, '_sbprok_service_cat', $_POST['_sbprok_service_cat'] );
     }
   
     if (isset( $_POST['_sbprok_employee'])){

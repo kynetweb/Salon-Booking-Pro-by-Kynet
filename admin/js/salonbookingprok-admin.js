@@ -28,22 +28,49 @@
 	
 	(function( $ ) {
 		'use strict';
-		function service_emp(service_sel=null){
-			if(service_sel == null){
-			var service_selected = $("#_sbprok_services").select2('data');
-			var service_sel;
-			$.each(service_selected, function() {
-				service_sel = this.text;
-			});
-	
+
+		function service_cat(service_cat_sel=null){
+			if(service_cat_sel == null){
+				var service_cat_sel = $("#_sbprok_service_cat option:selected").text();
+				var service_cat_id  = $("#_sbprok_service_cat option:selected").val();
+				$('.sbprok_srvice').empty().append('<option>Select Service</option>');
+			}
+			if(service_cat_sel == ''){
+				$('.sbprok_srvice').empty().append('<option>Select Service</option>');
 			}
 			
-			var sbprok_employee = $("#_sbprok_employee li").contents().filter(function() {
-				return this.nodeType == 3," ";
-			}).text();
-			sbprok_employee = sbprok_employee.replace('×','');
-			var strArray    = service_sel.split("×");
-			//$('.sbprok_employee').empty().append('<option>Select Employee</option>');
+			$.ajax({
+				url: sbprokAjax.ajaxurl,
+				type: 'POST',
+				dataType: "json",
+				data: { action : 'get_cat_service',cat_id:service_cat_id },
+				success: function (res) {
+						$.each(res, function(index, value) {
+										if(service_cat_sel != ' '){
+										$('.sbprok_srvice').append($( '<option value="'+ value.id +'" >'+ value.name+'</option>'));
+										}
+					});	
+					var emp_opn_val = {};
+					$("select[name='_sbprok_services'] > option").each(function () {
+						if(emp_opn_val[this.text]) {
+							$(this).remove();
+						} else {
+							emp_opn_val[this.text] = this.value;
+						}
+					}); 
+				  }
+			  });
+		}
+
+		function service_emp(service_sel=null){
+			if(service_sel == null){
+			var service_selected = $(".sbprok_srvice option:selected").text();
+			$('.sbprok_employees').empty().append('<option>Select Employee</option>');
+			}
+			if(service_sel == ''){
+			  $('.sbprok_employees').empty().append('<option>Select Employee</option>');
+			}
+			var sbprok_employee = $('.sbprok_employees').val();
 			$.ajax({
 				url: sbprokAjax.ajaxurl,
 				type: 'POST',
@@ -52,30 +79,21 @@
 				success: function (res) {
 						$.each(res[0], function(index, value) {
 							$.each(value, function(key, values) {
-							if ($.inArray(key, strArray) !== -1) {	
 								$.each(res[1], function() {
-									if(this.id == values){ 
-										if(sbprok_employee == " "){
-										$('.sbprok_employee').append($( '<button type="button" class="empls">'+ this.display_name+'</button>'));
-										}else{
-										$('.sbprok_employee').append($( '<button type="button" class="empls">'+ this.display_name+'</button>'));
+									if(key == service_selected && this.id == values){ 
+										$('.sbprok_employees').append($( '<option value="'+ this.id +'" >'+ this.display_name+'</option>'));
 										}
-									}
 								});
-							}
 						});  
 					});	
-					// var emp_opn_val = {};
-					// $("select[name='_sbprok_employee'] > option").each(function () {
-					// 	if(emp_opn_val[this.text]) {
-					// 		$(this).remove();
-					// 	} else {
-					// 		emp_opn_val[this.text] = this.value;
-					// 	}
-					// }); 
-					$( ".empls" ).click(function() {
-						$('.sbprok_employee').append($('<iframe src="https://calendar.google.com/calendar/embed?src=testdemo256%40gmail.com&ctz=Asia%2FKolkata" style="border: 0" width="300" height="300" frameborder="0" scrolling="no"></iframe>'));
-					  });
+					var emp_opn_val = {};
+					$("select[name='_sbprok_employee'] > option").each(function () {
+						if(emp_opn_val[this.text]) {
+							$(this).remove();
+						} else {
+							emp_opn_val[this.text] = this.value;
+						}
+					}); 
 				  }
 			  });
 		}
@@ -87,16 +105,33 @@
 				service_sel = this.text;
 			});
 			service_emp(service_sel);	
+				var service_cat_sel = $("#_sbprok_services option:selected").val();
+			service_cat(service_cat_sel);	
 		});
 		
 			  
 		 
-		$(document).ready(function(){	
-			 // Your Client ID can be retrieved from your project in the Google
+		$(document).ready(function(){
+		 
+			$(".sync").click(function() {	
+				var date           = $('.datepic').val();
+				var time           = $('.time_pic').val();	
+				var service        = $("#_sbprok_services option:selected").text();
+				var employee_id    = $("#_sbprok_employee option:selected").val();
+				var employee_name  = $("#_sbprok_employee option:selected").text();
+				var customer       = $(".cst option:selected").text();
+				var start_date     = new Date(date+' '+time).toISOString();
+				var variable = "01:00";
+				var time_arr = variable.split(':');
+				var end_time = moment(time, "hh:mm A")
+								.add(time_arr[0], 'hour')
+								.add(time_arr[1], 'minutes')
+								.format('LT');
+				var end_date = new Date(date+' '+end_time).toISOString();
+				
       // Developer Console, https://console.developers.google.com
       var CLIENT_ID = '769528724818-n3vnf5u2tsoaueia22903vfcg805q9ij.apps.googleusercontent.com';
- 
-      var SCOPES = ["https://www.googleapis.com/auth/calendar"];
+      var SCOPES    = ["https://www.googleapis.com/auth/calendar"];
  
       /**
        * Check if current user has authorized this application.
@@ -107,7 +142,7 @@
             'client_id': CLIENT_ID,
             'scope': SCOPES.join(' '),
             'immediate': true
-          }, handleAuthResult);
+					}, handleAuthResult);
       }
  
       /**
@@ -116,9 +151,7 @@
        * @param {Object} authResult Authorization result.
        */
       function handleAuthResult(authResult) {
-		  console.log(authResult);
         if (authResult && !authResult.error) {
-          // Hide auth UI, then load client library.
           loadCalendarApi();
         } 
       }
@@ -128,12 +161,7 @@
        *
        * @param {Event} event Button click event.
        */
-      ///function handleAuthClick(event) {
-        gapi.auth.authorize(
-          {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
-          handleAuthResult);
-       // return false;
-      //}
+	  	   checkAuth();
  
       /**
        * Load Google Calendar client library. List upcoming events
@@ -143,50 +171,72 @@
         gapi.client.load('calendar', 'v3', insertEvent);
       }
    
-function insertEvent() {
- 
-      var event = {
-  'summary': 'Google I/O 2017',
-  'location': '800 Howard St., San Francisco, CA 94103',
-  'description': 'A chance to hear more about Google\'s developer products.',
-  'start': {
-    'dateTime': '2020-04-28T09:00:00-07:00',
-    'timeZone': 'America/Los_Angeles'
-  },
-  'end': {
-    'dateTime': '2020-04-29T17:00:00-07:00',
-    'timeZone': 'America/Los_Angeles'
-  },
-  'recurrence': [
-    'RRULE:FREQ=DAILY;COUNT=2'
-  ],
-  'attendees': [
-    {'email': 'abc@gmail.com'},
-    {'email': 'def@gmail.com'}
-  ],
-  'reminders': {
-    'useDefault': false,
-    'overrides': [
-      {'method': 'email', 'minutes': 24 * 60},
-      {'method': 'popup', 'minutes': 10}
-    ]
-  }
-};
- 
-var request = gapi.client.calendar.events.insert({
-  'calendarId': 'testdemo256@gmail.com',
-  'resource': event
-});
- 
-request.execute(function(event) {
-  console.log("Event added to Calendar");
-});
- 
-}
+      function insertEvent() {
+				var event = {
+										'summary': 'Customer: '+customer,
+										'description': 'A chance to hear more about Google\'s developer products.',
+										'start': {
+											'dateTime': start_date,
+											'timeZone': 'America/Los_Angeles'
+										},
+										'end': {
+											'dateTime': end_date,
+											'timeZone': 'America/Los_Angeles'
+										},
+										'recurrence': [
+											'RRULE:FREQ=DAILY;COUNT=1'
+										],
+										'attendees': [
+											{'email': 'abc@gmail.com'},
+											{'email': 'def@gmail.com'}
+										],
+										'reminders': {
+											'useDefault': false,
+											'overrides': [
+												{'method': 'email', 'minutes': 24 * 60},
+												{'method': 'popup', 'minutes': 10}
+											]
+										}
+									};
 	
+				var request = gapi.client.calendar.events.insert({
+					'calendarId': 'smartwork1242@gmail.com',
+					'resource': event
+				});
+				
+				request.execute(function(event) {
+					$( "<strong>Success! Booking Added To Google Calendar.</strong>" ).insertAfter( ".sync" );
+				});
+			
+			}
+		});	
+
+			$( "#_sbprok_service_cat" ).change(function() {
+				service_cat();
+			 });
+
 			$( "#_sbprok_services" ).change(function() {
 				service_emp();
 			 });
+			 $( ".sbprok_employees" ).change(function() {
+				var emp_selected = $("#_sbprok_employee option:selected").val();
+				$.ajax({
+					url: sbprokAjax.ajaxurl,
+					type: 'POST',
+					dataType: "json",
+					data: { action : 'get_service_employees' },
+					success: function (res) {
+						$.each(res[1], function() {
+							if(this.id == emp_selected){ 
+								var email = this.user_email.substr(0, this.user_email.indexOf('@'));
+								$('.show_calendar').append($('<iframe id="iFrameID" src="https://calendar.google.com/calendar/embed?src='+email+'%40gmail.com&ctz=Asia%2FKolkata" style="border: 0" width="700" height="400" frameborder="0" scrolling="no"></iframe>'));
+								$("#iFrameID").contents().find("head")[0].appendChild($('#cssID')[0]);
+							}
+							});	
+						}
+				});		
+			});
+			
 		   
 			/**** datepicker */
 			var date;
@@ -198,6 +248,7 @@ request.execute(function(event) {
 				dataType: "json",
 				data: { action : 'get_availbility' },
 				success: function (res) {
+					console.log(res);
 					date_time_array = res[0];
 					exclude         = res[1];
 				  }
@@ -327,12 +378,23 @@ request.execute(function(event) {
 										  }
 									 }
 								  },
-			  eventClick: function(arg) {
-				// opens events in a popup window
-				window.open(arg.event.url, 'gcalevent', 'width=700,height=600');
+			  eventClick: function(info) {
+				var formDate   = moment(info.event.start).format('YYYY-MM-DD');
+									var start_time = moment(info.event.start).format('hh:mm a');
+									var end_time   = moment(info.event.end).format('hh:mm a');
+									/*Open Sweet Alert*/
+										swal({
+										  title: info.event.title,
+										  text: "Date : "+formDate+" \n"+
+										        "Start From : "+start_time+" To "+end_time,
+										  icon: "success",
+										});
+										info.jsEvent.preventDefault();
+				// // opens events in a popup window
+				// window.open(arg.event.url, 'gcalevent', 'width=700,height=600');
 		
-				// prevent browser from visiting event's URL in the current tab
-				arg.jsEvent.preventDefault();
+				// // prevent browser from visiting event's URL in the current tab
+				
 			  }
 			});
 		
