@@ -30,6 +30,7 @@
 		'use strict';
 
 		function service_cat(service_cat_sel=null){
+			
 			if(service_cat_sel == null){
 				var service_cat_sel = $("#_sbprok_service_cat option:selected").text();
 				var service_cat_id  = $("#_sbprok_service_cat option:selected").val();
@@ -46,7 +47,7 @@
 				data: { action : 'get_cat_service',cat_id:service_cat_id },
 				success: function (res) {
 						$.each(res, function(index, value) {
-										if(service_cat_sel != ' '){
+										if(service_cat_sel != ''){
 										$('.sbprok_srvice').append($( '<option value="'+ value.id +'" >'+ value.name+'</option>'));
 										}
 					});	
@@ -99,11 +100,7 @@
 		}
 		
 		$(window).load(function() {
-			var service_selected = $("#_sbprok_services").select2('data');
-			var service_sel;
-			$.each(service_selected, function() {
-				service_sel = this.text;
-			});
+			var service_sel = $("#_sbprok_services option:selected").val();
 			service_emp(service_sel);	
 				var service_cat_sel = $("#_sbprok_services option:selected").val();
 			service_cat(service_cat_sel);	
@@ -112,104 +109,292 @@
 			  
 		 
 		$(document).ready(function(){
-		 
-			$(".sync").click(function() {	
-				var date           = $('.datepic').val();
-				var time           = $('.time_pic').val();	
-				var service        = $("#_sbprok_services option:selected").text();
-				var employee_id    = $("#_sbprok_employee option:selected").val();
-				var employee_name  = $("#_sbprok_employee option:selected").text();
-				var customer       = $(".cst option:selected").text();
-				var start_date     = new Date(date+' '+time).toISOString();
-				var variable = "01:00";
-				var time_arr = variable.split(':');
-				var end_time = moment(time, "hh:mm A")
-								.add(time_arr[0], 'hour')
-								.add(time_arr[1], 'minutes')
-								.format('LT');
-				var end_date = new Date(date+' '+end_time).toISOString();
-				
-      // Developer Console, https://console.developers.google.com
-      var CLIENT_ID = '769528724818-n3vnf5u2tsoaueia22903vfcg805q9ij.apps.googleusercontent.com';
-      var SCOPES    = ["https://www.googleapis.com/auth/calendar"];
- 
-      /**
-       * Check if current user has authorized this application.
-       */
-      function checkAuth() {
-        gapi.auth.authorize(
-          {
-            'client_id': CLIENT_ID,
-            'scope': SCOPES.join(' '),
-            'immediate': true
-					}, handleAuthResult);
-      }
- 
-      /**
-       * Handle response from authorization server.
-       *
-       * @param {Object} authResult Authorization result.
-       */
-      function handleAuthResult(authResult) {
-        if (authResult && !authResult.error) {
-          loadCalendarApi();
-        } 
-      }
- 
-      /**
-       * Initiate auth flow in response to user clicking authorize button.
-       *
-       * @param {Event} event Button click event.
-       */
-	  	   checkAuth();
- 
-      /**
+		 var customer_to_insert;
+		 var start_date_to_insert;
+		 var end_date_to_insert;
+		 var service_to_insert;
+		 var date_to_insert;
+		 var z = [];
+		 var employee_calendar_date;
+		 // Developer Console, https://console.developers.google.com
+		 var CLIENT_ID = '769528724818-n3vnf5u2tsoaueia22903vfcg805q9ij.apps.googleusercontent.com';
+		 var SCOPES    = ["https://www.googleapis.com/auth/calendar"];
+	
+		 /**
+		  * Check if current user has authorized this application.
+		  */
+		 function checkAuth() {
+		   gapi.auth.authorize(
+			 {
+			   'client_id': CLIENT_ID,
+			   'scope': SCOPES.join(' '),
+			   'immediate': true
+					   }, handleAuthResult);
+		 }
+	
+		 /**
+		  * Handle response from authorization server.
+		  *
+		  * @param {Object} authResult Authorization result.
+		  */
+		 function handleAuthResult(authResult) {
+		   if (authResult && !authResult.error) {
+			   console.log(date_to_insert);
+			   if(date_to_insert == null){
+				console.log('test2');
+				makeApiCall();
+			   }else{
+				console.log('test1');
+				loadCalendarApi();
+			   }
+		   } 
+		 }
+
+		 		    
+		//--------------------- Add a 0 to numbers
+		function padNum(num) {
+			if (num <= 9) {
+				return "0" + num;
+			}
+			return num;
+		}
+		//--------------------- end    
+			
+		//--------------------- From 24h to Am/Pm
+		function AmPm(num) {
+			if (num <= 12) { return  "AM " + num; }
+			return  "PM " + padNum(num - 12);
+		}
+		//--------------------- end    
+
+		//--------------------- num Month to String
+		function monthString(num) {
+				if (num === "01") { return "Jan"; } 
+			else if (num === "02") { return "Feb"; } 
+			else if (num === "03") { return "Mar"; } 
+			else if (num === "04") { return "Apr"; } 
+			else if (num === "05") { return "May"; } 
+			else if (num === "06") { return "Jun"; } 
+			else if (num === "07") { return "Jul"; } 
+			else if (num === "08") { return "Aug"; } 
+			else if (num === "09") { return "Sep"; } 
+			else if (num === "10") { return "Oct"; } 
+			else if (num === "11") { return "Nov"; } 
+			else if (num === "12") { return "Dec"; }
+		}
+		//--------------------- end
+
+		//--------------------- from num to day of week
+		function dayString(num){
+				if (num == "1") { return "mon" }
+			else if (num == "2") { return "tue" }
+			else if (num == "3") { return "wed" }
+			else if (num == "4") { return "thu" }
+			else if (num == "5") { return "fri" }
+			else if (num == "6") { return "sat" }
+			else if (num == "0") { return "sun" }
+		}
+
+
+	  /**
        * Load Google Calendar client library. List upcoming events
        * once client library is loaded.
        */
       function loadCalendarApi() {
         gapi.client.load('calendar', 'v3', insertEvent);
-      }
-   
-      function insertEvent() {
-				var event = {
-										'summary': 'Customer: '+customer,
-										'description': 'A chance to hear more about Google\'s developer products.',
-										'start': {
-											'dateTime': start_date,
-											'timeZone': 'America/Los_Angeles'
-										},
-										'end': {
-											'dateTime': end_date,
-											'timeZone': 'America/Los_Angeles'
-										},
-										'recurrence': [
-											'RRULE:FREQ=DAILY;COUNT=1'
-										],
-										'attendees': [
-											{'email': 'abc@gmail.com'},
-											{'email': 'def@gmail.com'}
-										],
-										'reminders': {
-											'useDefault': false,
-											'overrides': [
-												{'method': 'email', 'minutes': 24 * 60},
-												{'method': 'popup', 'minutes': 10}
-											]
-										}
-									};
-	
-				var request = gapi.client.calendar.events.insert({
-					'calendarId': 'smartwork1242@gmail.com',
-					'resource': event
-				});
-				
-				request.execute(function(event) {
-					$( "<strong>Success! Booking Added To Google Calendar.</strong>" ).insertAfter( ".sync" );
-				});
-			
-			}
+	  }
+	  
+	  function makeApiCall() {
+		var today = new Date(); //today date
+		var emp_selected     = $("#_sbprok_employee option:selected").val();
+		var service_selected = $(".sbprok_srvice option:selected").text();
+		$.ajax({
+			url: sbprokAjax.ajaxurl,
+			type: 'POST',
+			dataType: "json",
+			data: { action : 'get_service_employees' },
+			success: function (res) {
+				$.each(res[1], function() {
+					if(this.id == emp_selected){ 
+						var emp_email = this.user_email;
+		                gapi.client.load('calendar', 'v3', function () {
+							var request = gapi.client.calendar.events.list({
+								'calendarId' : emp_email,
+								'timeZone' : '	IST', 
+								'singleEvents': true, 
+								'timeMin': today.toISOString(), //gathers only events not happened yet
+								'orderBy': 'startTime'});
+						request.execute(function (resp) {
+								for (var i = 0; i < resp.items.length; i++) {
+									var li = document.createElement('li');
+									var item = resp.items[i];
+									var classes = [];
+									var allDay = item.start.date? true : false;
+									var startDT = allDay ? item.start.date : item.start.dateTime;
+									var dateTime = startDT.split("T"); //split date from time
+									var date = dateTime[0].split("-"); //split yyyy mm dd
+									var startYear = date[0];
+									var startMonth = monthString(date[1]);
+									var startDay = date[2];
+									var startDateISO = new Date(startMonth + " " + startDay + ", " + startYear + " 00:00:00");
+									var startDayWeek = dayString(startDateISO.getDay());
+									if( allDay == true){ //change this to match your needs
+										var str = [
+										'<font size="4" face="courier">',
+										startDayWeek, ' ',
+										startMonth, ' ',
+										startDay, ' ',
+										startYear, '</font><font size="5" face="courier"> @ ', item.summary , '</font><br><br>'
+										];
+									}
+									else{
+										var time = dateTime[1].split(":"); //split hh ss etc...
+										var startHour = AmPm(time[0]);
+										var AmPms     = startHour.substring(0, 2);
+										var startMin  = time[1]+' '+AmPms;
+										startHour     = startHour.replace(/[^0-9.]/g, "");
+										var str = [ //change this to match your needs
+											'<font size="4" face="courier">',
+											startDayWeek, ' ',
+											startMonth, ' ',
+											startDay, ' ',
+											startYear, ' - ',
+											startHour, ':', startMin, '</font><font size="5" face="courier"> @ ', item.summary , '</font><br><br>'
+											];
+									}
+									li.innerHTML = str.join('');
+									li.setAttribute('class', classes.join(' '));
+									 var x = [];
+									 x['date']     = startMonth+' '+startDay+', '+startYear;
+									 x['time']     = startHour+':'+startMin;
+									 x['service'] = item.summary;
+									 z.push(x);
+									var x = [];
+								}
+								$('input[data-sbprok="datepicker"]').datepicker({
+									onSelect: function(dateText, inst) {
+									employee_calendar_date = dateText;
+									// $.each(z, function() {
+									//   if(this.date == dateText){ 	 
+									// 	  $('.errorMsg').html('<span>We are unavailable at: '+ this.date+ '</span>');
+									// 	  $('.errorMsg').css({"color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "250px", "height": "35px", "text-align": "center"});
+									// 	  return false;
+									//   }else{
+									// 	  $('.errorMsg').html("");
+									// 	  $('.errorMsg').css({"color":" ","background-color": " ", "border-color": " "});
+									//   }
+									// });
+								  },
+								  changeMonth: true,
+								  changeYear: true,
+								  minDate:new Date()
+							  });
+
+							/**** timepicker */
+			$('input[data-sbprok="timepicker"]').timepicker({	
+				change: function(dateText, inst){
+					var time = $(this).val();
+					$.each(z, function() {
+						if (this.date == employee_calendar_date && time == this.time && this.service == service_selected) {
+							$('.errorMsg').html('<span>This time for '+this.date+' is already booked.Please choose different time slot. </span>');
+							$('.errorMsg').css({"color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "300px", "height": "35px", "text-align": "center"});
+							$('input[data-sbprok="timepicker"]').val('');
+							exit();
+						}else{
+							$('.errorMsg').css("display","none");
+						}
+					});
+							
+							// if(date == undefined){
+							//    date = $(".datepic").val();
+							//  }		
+							// $('.errorMsgtime').css("display","none");
+							// $.each(date_time_array, function(index, value) {
+							// 	if (time == value[date]) {
+							// 		$('.errorMsgtime').html('<span>This time is already booked.Please choose another time slot. </span>');
+							// 		$('.errorMsgtime').css({"display":"block","color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "250px", "height": "35px", "text-align": "center"});
+							// 		$('input[data-sbprok="timepicker"]').val('');
+							// 	}
+							// }); 
+						},
+				timeFormat: 'h:mm p',
+				interval: 30,
+				minTime: '09',
+				maxTime: '6:00pm',
+				startTime: '09:00',
+				dynamic: false,
+				dropdown: true,
+				scrollbar: true
+			});
+							});
+						 });
+					}
+					});	
+				}
+		});		
+		
+		};
+		
+		function insert_google_events(customer,start_date,end_date,service){
+			checkAuth();
+		}
+			$(".sync").click(function() {	
+			    date_to_insert       = $('.datepic').val();
+				var time                 = $('.time_pic').val();	
+				service_to_insert        = $("#_sbprok_services option:selected").text();
+				var employee_id          = $("#_sbprok_employee option:selected").val();
+				var employee_name        = $("#_sbprok_employee option:selected").text();
+				customer_to_insert       = $(".cst option:selected").text();
+				start_date_to_insert     = new Date(date_to_insert+' '+time).toISOString();
+				var variable             = "01:00";
+				var time_arr             = variable.split(':');
+				var end_time = moment(time, "hh:mm A")
+								.add(time_arr[0], 'hour')
+								.add(time_arr[1], 'minutes')
+								.format('LT');
+				end_date_to_insert = new Date(date_to_insert+' '+end_time).toISOString();
+ 
+				insert_google_events(customer_to_insert,start_date_to_insert,end_date_to_insert,service_to_insert);
 		});	
+
+		function insertEvent() {
+			var event = {
+									'summary': service_to_insert,
+									'description': service_to_insert+' Service is booked for '+customer_to_insert,
+									'start': {
+										'dateTime': start_date_to_insert,
+										'timeZone': 'America/Los_Angeles'
+									},
+									'end': {
+										'dateTime': end_date_to_insert,
+										'timeZone': 'America/Los_Angeles'
+									},
+									'recurrence': [
+										'RRULE:FREQ=DAILY;COUNT=1'
+									],
+									'attendees': [
+										{'email': 'abc@gmail.com'},
+										{'email': 'def@gmail.com'}
+									],
+									'reminders': {
+										'useDefault': false,
+										'overrides': [
+											{'method': 'email', 'minutes': 24 * 60},
+											{'method': 'popup', 'minutes': 10}
+										]
+									}
+								};
+	
+			var request = gapi.client.calendar.events.insert({
+				'calendarId': 'smartwork1242@gmail.com',
+				'resource': event
+			});
+			
+			request.execute(function(event) {
+				$( "<strong>Success! Booking Added To Google Calendar.</strong>" ).insertAfter( ".sync" );
+			});
+		
+		}
 
 			$( "#_sbprok_service_cat" ).change(function() {
 				service_cat();
@@ -219,22 +404,7 @@
 				service_emp();
 			 });
 			 $( ".sbprok_employees" ).change(function() {
-				var emp_selected = $("#_sbprok_employee option:selected").val();
-				$.ajax({
-					url: sbprokAjax.ajaxurl,
-					type: 'POST',
-					dataType: "json",
-					data: { action : 'get_service_employees' },
-					success: function (res) {
-						$.each(res[1], function() {
-							if(this.id == emp_selected){ 
-								var email = this.user_email.substr(0, this.user_email.indexOf('@'));
-								$('.show_calendar').append($('<iframe id="iFrameID" src="https://calendar.google.com/calendar/embed?src='+email+'%40gmail.com&ctz=Asia%2FKolkata" style="border: 0" width="700" height="400" frameborder="0" scrolling="no"></iframe>'));
-								$("#iFrameID").contents().find("head")[0].appendChild($('#cssID')[0]);
-							}
-							});	
-						}
-				});		
+				checkAuth();
 			});
 			
 		   
@@ -248,57 +418,11 @@
 				dataType: "json",
 				data: { action : 'get_availbility' },
 				success: function (res) {
-					console.log(res);
 					date_time_array = res[0];
 					exclude         = res[1];
 				  }
 			  });
 	
-			$('input[data-sbprok="datepicker"]').datepicker({
-				  onSelect: function(dateText, inst) {
-						date       = $(this).val();
-					var startDate  = new Date(dateText);
-					var selDay     = startDate.getDay();
-					
-					if($.inArray(selDay, exclude) > -1){ 	 
-						$('.errorMsg').html('<span>We are unavailable at: '+ date+ '</span>');
-						$('.errorMsg').css({"color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "250px", "height": "35px", "text-align": "center"});
-						return false;
-					}else{
-						$('.errorMsg').html("");
-						$('.errorMsg').css({"color":" ","background-color": " ", "border-color": " "});
-					}
-				},
-				changeMonth: true,
-				changeYear: true,
-				minDate:new Date()
-			});
-	
-			/**** timepicker */
-			$('input[data-sbprok="timepicker"]').timepicker({	
-				change: function(dateText, inst){
-							var time = $(this).val();
-							if(date == undefined){
-							   date = $(".datepic").val();
-							 }		
-							$('.errorMsgtime').css("display","none");
-							$.each(date_time_array, function(index, value) {
-								if (time == value[date]) {
-									$('.errorMsgtime').html('<span>This time is already booked.Please choose another time slot. </span>');
-									$('.errorMsgtime').css({"display":"block","color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "250px", "height": "35px", "text-align": "center"});
-									$('input[data-sbprok="timepicker"]').val('');
-								}
-							}); 
-						},
-				timeFormat: 'h:mm p',
-				interval: 30,
-				minTime: '09',
-				maxTime: '6:00pm',
-				startTime: '09:00',
-				dynamic: false,
-				dropdown: true,
-				scrollbar: true
-			});
 	
 			/**** select2 */
 			$('select[data-sbprok="select2"]').select2();
@@ -353,7 +477,6 @@
 										if (!confirm("Are you sure about this change?")) {
 											info.revert();
 										  }else{
-											  console.log(info.view.type);
 											  if(info.view.type == "dayGridMonth"){
 												calendar.changeView('timeGridWeek');
 												alert("Please update booking in Week or Day mode.");
