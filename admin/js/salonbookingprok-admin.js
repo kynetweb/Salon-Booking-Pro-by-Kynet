@@ -396,11 +396,11 @@
 		
 		}
 
-			$( "#_sbprok_service_cat" ).change(function() {
+			$( ".sbprok_service_cat" ).change(function() {
 				service_cat();
 			 });
 
-			$( "#_sbprok_services" ).change(function() {
+			$( ".sbprok_srvice " ).change(function() {
 				service_emp();
 			 });
 			 $( ".sbprok_employees" ).change(function() {

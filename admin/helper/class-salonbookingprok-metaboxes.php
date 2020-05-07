@@ -328,7 +328,7 @@ class Salonbookingprok_Metaboxes {
             )
         );
         if ( ! empty( $terms ) && is_array( $terms ) ) {
-            echo '<select data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'" >';
+            echo '<select data-sbprok="select2" class="sbprok_service_cat" name="'.$box['id'].'" id="'.$box['id'].'" >';
             echo '<option value="">Select Category</option>';  
             foreach ( $terms as $term ) { 
                 echo '<option value="'.$term->term_id.'" '.($term->term_id == $post_meta ? "selected" : "").'>'.$term->name.'</option>'; 
