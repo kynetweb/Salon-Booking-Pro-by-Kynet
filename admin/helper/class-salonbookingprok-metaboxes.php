@@ -243,7 +243,11 @@ class Salonbookingprok_Metaboxes {
         <div class="sbprok-col-4 sucess_msg">
         <input type="button" class="button button-primary button-large sync" style="margin-top:20px;"  value="Synchronize Booking With Google Calender" required>
             </div>  
-     <?php  }     
+     <?php  }else{ ?>
+         <div class="sbprok-col-4 update_sucess_msg">
+         <input type="button" class="button button-primary button-large update_sync" style="margin-top:20px;"  value="Update Booking With Google Calender" required>
+             </div> 
+    <?php }     
        
     }
      /**

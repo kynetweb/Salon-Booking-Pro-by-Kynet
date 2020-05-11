@@ -106,6 +106,8 @@
 			service_cat(service_cat_sel);	
 		});
 		
+		$('input[data-sbprok="datepicker"]').datepicker();
+		$('input[data-sbprok="timepicker"]').timepicker();
 			  
 		 
 		$(document).ready(function(){
@@ -114,8 +116,19 @@
 		 var end_date_to_insert;
 		 var service_to_insert;
 		 var date_to_insert;
+		 var emp_email_to_insert;
 		 var z = [];
 		 var employee_calendar_date;
+		 var key_for_update;
+		 var date_to_update           = $('.datepic').val();
+		 var time_to_update           = $('.time_pic').val();
+		 var service_to_update        = $(".sbprok_srvice option:selected").text();
+		 var customer_to_update       = $(".cst option:selected").text();
+		 var end_time_to_update;
+		 var emp_email_to_update;
+		 var google_event_id;
+		 var start_date_to_update;
+		
 		 // Developer Console, https://console.developers.google.com
 		 var CLIENT_ID = '769528724818-n3vnf5u2tsoaueia22903vfcg805q9ij.apps.googleusercontent.com';
 		 var SCOPES    = ["https://www.googleapis.com/auth/calendar"];
@@ -139,12 +152,11 @@
 		  */
 		 function handleAuthResult(authResult) {
 		   if (authResult && !authResult.error) {
-			   console.log(date_to_insert);
-			   if(date_to_insert == null){
-				console.log('test2');
+			   if(key_for_update == 'enable'){
+					update_google_events();
+			   }else if(date_to_insert == null){
 				makeApiCall();
 			   }else{
-				console.log('test1');
 				loadCalendarApi();
 			   }
 		   } 
@@ -203,7 +215,132 @@
       function loadCalendarApi() {
         gapi.client.load('calendar', 'v3', insertEvent);
 	  }
-	  
+	  function update_google_events(){
+		var today          = new Date(); //today date
+		var emp_selected   = $("#_sbprok_employee option:selected").val();
+		$.ajax({
+			url: sbprokAjax.ajaxurl,
+			type: 'POST',
+			dataType: "json",
+			data: { action : 'get_service_employees' },
+			success: function (res) {
+				$.each(res[1], function() {
+					if(this.id == emp_selected){ 
+					    emp_email_to_update = this.user_email;
+		                gapi.client.load('calendar', 'v3', function () {
+							var request = gapi.client.calendar.events.list({
+								'calendarId' : emp_email_to_update,
+								'timeZone' : 'IST', 
+								'singleEvents': true, 
+								'timeMin': today.toISOString(), //gathers only events not happened yet
+								'orderBy': 'startTime'});
+						request.execute(function (resp) {
+							
+								for (var i = 0; i < resp.items.length; i++) {
+									var li              = document.createElement('li');
+									var item            = resp.items[i];
+									google_event_id          = item.htmlLink;
+									google_event_id          = google_event_id.substr(google_event_id.indexOf("=") + 1);
+									var classes         = [];
+									var allDay          = item.start.date? true : false;
+									var startDT         = allDay ? item.start.date : item.start.dateTime;
+									var dateTime        = startDT.split("T"); //split date from time
+									var date            = dateTime[0].split("-"); //split yyyy mm dd
+									var startYear       = date[0];
+									var startMonth      = monthString(date[1]);
+									var startDay        = date[2];
+									var startDateISO    = new Date(startMonth + " " + startDay + ", " + startYear + " 00:00:00");
+									var startDayWeek    = dayString(startDateISO.getDay());
+									if( allDay == true){ //change this to match your needs
+										var str = [
+										'<font size="4" face="courier">',
+										startDayWeek, ' ',
+										startMonth, ' ',
+										startDay, ' ',
+										startYear, '</font><font size="5" face="courier"> @ ', item.summary , '</font><br><br>'
+										];
+									}
+									else{
+										var time      = dateTime[1].split(":"); //split hh ss etc...
+										var startHour = AmPm(time[0]);
+										var AmPms     = startHour.substring(0, 2);
+										var startMin  = time[1]+' '+AmPms;
+										startHour     = startHour.replace(/[^0-9.]/g, "");
+										var str = [ //change this to match your needs
+											'<font size="4" face="courier">',
+											startDayWeek, ' ',
+											startMonth, ' ',
+											startDay, ' ',
+											startYear, ' - ',
+											startHour, ':', startMin, '</font><font size="5" face="courier"> @ ', item.summary , '</font><br><br>'
+											];
+									}
+									
+									li.innerHTML = str.join('');
+									li.setAttribute('class', classes.join(' '));
+									 var e_date      = startMonth+' '+startDay+', '+startYear;
+									 var e_time      = startHour+':'+startMin;
+									 var e_service   = item.summary;
+									 console.log(e_time);
+									 if(e_date == date_to_update && e_time == time_to_update && e_service == service_to_update){
+										 console.log(google_event_id);
+										 var date_to_updates           = $('.datepic').val();
+										 var time_to_updates           = $('.time_pic').val();
+										 var service_to_updates        = $(".sbprok_srvice option:selected").text();
+										 customer_to_update       = $(".cst option:selected").text();
+										 start_date_to_update     = new Date(date_to_updates+' '+time_to_updates).toISOString();
+										 var duration_time        = "01:00";
+										 var duration_time_arr    = duration_time.split(':');
+										     end_time_to_update   = moment(time_to_updates, "hh:mm A")
+																	.add(duration_time_arr[0], 'hour')
+																	.add(duration_time_arr[1], 'minutes')
+																	.format('LT');
+										 end_time_to_update       = new Date(date_to_updates+' '+end_time_to_update).toISOString();
+										 if (google_event_id) {
+											console.log(google_event_id);  
+											var event = {
+												'summary': service_to_updates,
+												'location': ' ',
+												'description': service_to_updates+' Service is booked for '+customer_to_update,
+												'start': {
+													'dateTime': start_date_to_update, 
+													'timeZone': 'America/Los_Angeles'
+												},
+												'end': {
+													'dateTime': end_time_to_update,
+													'timeZone': 'America/Los_Angeles'
+												},
+											  
+											  
+												'reminders': {
+												  'useDefault': false,
+												  'overrides': [
+													{'method': 'email', 'minutes': 24 * 60},
+													{'method': 'popup', 'minutes': 10}
+												  ]
+												}
+											  };  
+								
+											var request = gapi.client.calendar.events.update({
+												'calendarId': emp_email_to_update,
+												'eventId': google_event_id,
+												'resource': event
+											});
+											console.log(request);
+											request.execute(function(event) {
+												console.log(event);
+											});
+										}
+									 }
+								}
+								
+							});
+						  });
+					   }
+					});	
+			}
+		});
+	  }
 	  function makeApiCall() {
 		var today = new Date(); //today date
 		var emp_selected     = $("#_sbprok_employee option:selected").val();
@@ -220,22 +357,22 @@
 		                gapi.client.load('calendar', 'v3', function () {
 							var request = gapi.client.calendar.events.list({
 								'calendarId' : emp_email,
-								'timeZone' : '	IST', 
+								'timeZone' : 'IST', 
 								'singleEvents': true, 
 								'timeMin': today.toISOString(), //gathers only events not happened yet
 								'orderBy': 'startTime'});
 						request.execute(function (resp) {
 								for (var i = 0; i < resp.items.length; i++) {
-									var li = document.createElement('li');
-									var item = resp.items[i];
-									var classes = [];
-									var allDay = item.start.date? true : false;
-									var startDT = allDay ? item.start.date : item.start.dateTime;
-									var dateTime = startDT.split("T"); //split date from time
-									var date = dateTime[0].split("-"); //split yyyy mm dd
-									var startYear = date[0];
-									var startMonth = monthString(date[1]);
-									var startDay = date[2];
+									var li           = document.createElement('li');
+									var item         = resp.items[i];
+									var classes      = [];
+									var allDay       = item.start.date? true : false;
+									var startDT      = allDay ? item.start.date : item.start.dateTime;
+									var dateTime     = startDT.split("T"); //split date from time
+									var date         = dateTime[0].split("-"); //split yyyy mm dd
+									var startYear    = date[0];
+									var startMonth   = monthString(date[1]);
+									var startDay     = date[2];
 									var startDateISO = new Date(startMonth + " " + startDay + ", " + startYear + " 00:00:00");
 									var startDayWeek = dayString(startDateISO.getDay());
 									if( allDay == true){ //change this to match your needs
@@ -248,7 +385,7 @@
 										];
 									}
 									else{
-										var time = dateTime[1].split(":"); //split hh ss etc...
+										var time      = dateTime[1].split(":"); //split hh ss etc...
 										var startHour = AmPm(time[0]);
 										var AmPms     = startHour.substring(0, 2);
 										var startMin  = time[1]+' '+AmPms;
@@ -262,13 +399,14 @@
 											startHour, ':', startMin, '</font><font size="5" face="courier"> @ ', item.summary , '</font><br><br>'
 											];
 									}
+									
 									li.innerHTML = str.join('');
 									li.setAttribute('class', classes.join(' '));
-									 var x = [];
-									 x['date']     = startMonth+' '+startDay+', '+startYear;
-									 x['time']     = startHour+':'+startMin;
-									 x['service'] = item.summary;
-									 z.push(x);
+									var x = [];
+									x['date']     = startMonth+' '+startDay+', '+startYear;
+									x['time']     = startHour+':'+startMin;
+									x['service']  = item.summary;
+									z.push(x);
 									var x = [];
 								}
 								$('input[data-sbprok="datepicker"]').datepicker({
@@ -327,19 +465,16 @@
 				scrollbar: true
 			});
 							});
-						 });
-					}
+						  });
+					   }
 					});	
-				}
+			}
 		});		
 		
-		};
+		};	
 		
-		function insert_google_events(customer,start_date,end_date,service){
-			checkAuth();
-		}
 			$(".sync").click(function() {	
-			    date_to_insert       = $('.datepic').val();
+			    date_to_insert           = $('.datepic').val();
 				var time                 = $('.time_pic').val();	
 				service_to_insert        = $("#_sbprok_services option:selected").text();
 				var employee_id          = $("#_sbprok_employee option:selected").val();
@@ -353,9 +488,26 @@
 								.add(time_arr[1], 'minutes')
 								.format('LT');
 				end_date_to_insert = new Date(date_to_insert+' '+end_time).toISOString();
- 
-				insert_google_events(customer_to_insert,start_date_to_insert,end_date_to_insert,service_to_insert);
-		});	
+				$.ajax({
+					url: sbprokAjax.ajaxurl,
+					type: 'POST',
+					dataType: "json",
+					data: { action : 'get_service_employees' },
+					success: function (res) {
+						$.each(res[1], function() {
+							if(this.id == employee_id){ 
+							 emp_email_to_insert = this.user_email;
+							}
+						})
+					}
+				});
+				checkAuth();
+		});
+		
+		$(".update_sync").click(function() {
+			key_for_update = "enable";
+			checkAuth();	
+	});	
 
 		function insertEvent() {
 			var event = {
@@ -386,7 +538,7 @@
 								};
 	
 			var request = gapi.client.calendar.events.insert({
-				'calendarId': 'smartwork1242@gmail.com',
+				'calendarId': emp_email_to_insert,
 				'resource': event
 			});
 			
@@ -465,7 +617,10 @@
 				},
 				{
 				  googleCalendarId: 'smartwork1242@gmail.com'
-				}
+				},
+				{
+					googleCalendarId: 'testlast17316@gmail.com'
+				  }
 			  ],
 			  
 			  eventDrop: function(info) {
