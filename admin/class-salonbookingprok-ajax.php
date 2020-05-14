@@ -159,8 +159,6 @@ class Salonbookingprok_Ajax {
  
 		function get_cat_service(){
 			if($_POST['cat_id'] != ''){
-
-			
 			$args = [
 				'post_type' => 'sbprok_services',
 				'tax_query' => [
