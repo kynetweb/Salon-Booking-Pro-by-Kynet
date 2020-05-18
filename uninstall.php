@@ -22,7 +22,7 @@
  * @link       #
  * @since      1.0.0
  *
- * @package    Salonbookingprok
+ * @package    Sbprok
  */
 
 // If uninstall not called from WordPress, then exit.
