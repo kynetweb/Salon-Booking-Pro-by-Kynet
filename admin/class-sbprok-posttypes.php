@@ -121,7 +121,7 @@ class Sbprok_Posttypes {
 										'end_date' => $end_time
 										);
             if(!empty($event_id)){
-			    $this->google_calendar->update_event($update_data);
+			    $this->google_calendar->update_event($update_data); 
 			}else{
 			    $this->google_calendar->create_event($post_id,$emp_calendar_id,$event);
 			}

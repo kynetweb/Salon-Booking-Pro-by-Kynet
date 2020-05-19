@@ -97,7 +97,7 @@ class Sbprok_Google_Calendar {
             // global $error;
             // $error = new WP_Error();
             // $error->add($e->getErrors()[0]['message']);        
-            //print_r($e->getErrors()[0]['message']);   
+            print_r($e->getErrors()[0]['message']);   
         }
 
     }
@@ -115,12 +115,12 @@ class Sbprok_Google_Calendar {
         try{
             $updatedEvent = $this->calendarService->events->update($update_data['calendar_id'], $event->getId(), $event);
         } catch (Google_Service_Exception $e) {
-           // $e->getMessage();
-        //    global $error;
-        //    $error = new WP_Error();
-        //    $error->add($e->getErrors()[0]['message']);
-        //    return;        
-        print_r($e->getErrors()[0]['message']);    
+           $e->getMessage();
+           global $error;
+           $error = new WP_Error();
+           $error->add($e->getErrors()[0]['message']);
+           return;        
+       // print_r($e->getErrors()[0]['message']);    
         }
         
 
