@@ -70,7 +70,7 @@ class Sbprok_Ajax {
 	 */
     function get_bookings() {
 		$services      = array(
-							'post_type' => array('sbprok_appoints'),
+							'post_type' => array('sbprok_bookings'),
 							'posts_per_page' => 40,
 							'nopaging' => true,
 							'order' => 'DESC',
@@ -82,7 +82,7 @@ class Sbprok_Ajax {
 							'post_type'=>'sbprok_services'
 							);
 		$service_names = get_posts($array);
-
+      
 		foreach($ajaxposts as $ajaxpost){
 		 $service_id  = get_post_meta( $ajaxpost->ID, "_sbprok_services", true );
 				foreach($service_names as $service_name){
@@ -90,23 +90,20 @@ class Sbprok_Ajax {
 					  $titles[]          = $service_name->post_title;
 					  $durations         = get_post_meta( $service_name->ID, "_sbprok_service_details", true );
 					  $final_durations[] = $durations["_duration"];
-					  
 					}
 				}
-		
-			
+
 			$service_idds['name']       = implode(",",$titles);
-			$service_idds['id']         = implode(",",$service_id);
+			$service_idds['id']         = $service_id;
 			$service_idds['duration']   = implode(",",$final_durations);
 			$service_idds['posts_id']   = $ajaxpost->ID;
-			$date_time                  = get_post_meta( $ajaxpost->ID, "_sbprok_appt_schedule", true );
-			$schedule[]                 = array_merge($service_idds,$date_time);
+			$date_time                  = get_post_meta( $ajaxpost->ID, "_sbprok_booking_schedule", true );
+			$schedule[]                   = array_merge($service_idds,$date_time);
 			$titles                     = (array) null;
 			$durations                  = (array) null;
 			$final_durations            = (array) null;
-			$service_idds               = (array) null;
 		}
-	
+
 			echo json_encode( array($schedule,$service_id) );
 			exit; 
 		}

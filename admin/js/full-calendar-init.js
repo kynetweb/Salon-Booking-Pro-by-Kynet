@@ -56,6 +56,7 @@
 						  dataType: "json",
 						  data: { action : 'get_bookings' },
 						  success: function (response) {
+                            console.log(response);
 								$.each(response[0], function(){
 								if(this._date != null){
 									var name           = this.name;
@@ -85,7 +86,7 @@
 								}
 							
                                 });
-                                console.log(events);
+                                
 								successCallback(events);					
 							}
 						});
