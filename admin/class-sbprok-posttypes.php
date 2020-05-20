@@ -63,6 +63,7 @@ class Sbprok_Posttypes {
 		$this->load_Helper();
 		$loader->add_action( 'init', $this, 'register_posttypes' );
 		$loader->add_action( 'save_post', $this,'save_booking_to_google');
+		$loader->add_filter( 'the_title', $this, 'name_post_title', 10, 2 );
 		?>
 		
 		<?php
@@ -137,6 +138,30 @@ class Sbprok_Posttypes {
 		}
 		
 	}
+
+	public function name_post_title($title, $post_id) {
+
+	if(get_post_type( $post_id ) == 'sbprok_bookings')
+    {
+		$new_title     = get_post_meta( $post_id, '_sbprok_services', true);
+		$customer      = get_post_meta( $post_id, "_sbprok_booking_schedule", true );
+		$array         = array(
+			'post_type'=>'sbprok_services'
+			);
+		$service_names = get_posts($array);
+		foreach($service_names as $service_name){	
+				if($service_name->ID == $new_title){
+					foreach($customer as $customers){
+						$customer_id = $customer["_customer"];
+						$user_info = get_userdata($customer_id);
+						return $service_name->post_title."-".$user_info->display_name;
+					}
+				}			
+        }
+   
+	}
+	return $title;
+    }
 
 	/**
 	 * Register post type for Services.

@@ -58,6 +58,7 @@ class Sbprok_Ajax {
 		$loader->add_action( 'wp_ajax_get_service_employees',$this, 'get_service_employees');
 		$loader->add_action( 'wp_ajax_get_cat_service',$this, 'get_cat_service');
 		$loader->add_action( 'wp_ajax_get_posts_metadata',$this, 'get_posts_metadata');
+		$loader->add_action( 'wp_ajax_get_ajax_data_requests',$this, 'get_ajax_data_requests');
 
 	}
 	private function load_dependencies() {
@@ -123,7 +124,7 @@ class Sbprok_Ajax {
 		$ajaxposts = get_posts($services);
 
 		foreach($ajaxposts as $ajaxpost){
-			$date_time      = get_post_meta( $ajaxpost->ID, "_sbprok_appt_schedule", true );
+			$date_time      = get_post_meta( $ajaxpost->ID, "_sbprok_booking_schedule", true );
 				foreach($date_time as $date_times){
 					$date         = $date_time["_date"];
 					$time[$date]  = $date_time["_time"];
@@ -210,7 +211,7 @@ class Sbprok_Ajax {
 					'_date' => !empty($start ) ? $start : '',
 					'_time' => !empty($time ) ? $time : '',
 				);
-				update_post_meta($posts_id, '_sbprok_appt_schedule', $details);
+		    update_post_meta($posts_id, '_sbprok_booking_schedule', $details);
 		}
 	
 }

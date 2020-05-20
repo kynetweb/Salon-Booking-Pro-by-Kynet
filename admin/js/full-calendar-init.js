@@ -29,6 +29,7 @@
 	 * pr
 	 * actising this, we should strive to set a better example in our own work.
 	 */
+
 		/**** Calendar */
 			document.addEventListener('DOMContentLoaded', function() {
 			var calendarEl = document.getElementById('calendar');
@@ -56,7 +57,6 @@
 						  dataType: "json",
 						  data: { action : 'get_bookings' },
 						  success: function (response) {
-                            console.log(response);
 								$.each(response[0], function(){
 								if(this._date != null){
 									var name           = this.name;
@@ -90,7 +90,62 @@
 								successCallback(events);					
 							}
 						});
-					}
+                    },
+                    eventOverlap: function(stillEvent, movingEvent) {
+                        					var evts = $('#calendar').fullCalendar('clientEvents');
+                        					for (i in evts) {
+                        						if (evts[i].id != event.id){
+                        							if (event.start.isBefore(evts[i].end) && event.end.isAfter(evts[i].start)){
+                        								return true;
+                        							}
+                        						}
+                        					}
+                            				return false;
+                        				  },
+                    eventDrop: function(info) {
+                        					var now = new Date();
+                        					if (info.event.start <= now){
+                        						alert("Cannot Drag to past date.");
+                        						info.revert();
+                        					}else{
+                        						if (!confirm("Are you sure about this change?")) {
+                        							info.revert();
+                        						  }else{
+                        							  console.log(info.view.type);
+                        							  if(info.view.type == "dayGridMonth"){
+                        								calendar.changeView('timeGridWeek');
+                        								alert("Please update booking in Week or Day mode.");
+                        							  }else{
+                        								var posts_id = info.oldEvent.id;
+                        								var name     = info.oldEvent.title;
+                        								var time     = moment(info.event.start).format('hh:mm a');
+                        								if(info.oldEvent.title == info.event.title && info.oldEvent.id == info.event.id){
+                                                            var dates = info.event.start;
+                        									dates = dates.toDateString();
+                        									jQuery.ajax({
+                        										type: "POST",
+                        										url: sbprokAjax.ajaxurl,
+                        										data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time},
+                        										success: function(data) {
+                        											alert(info.event.title + " was dropped on " + info.event.start);
+                        										}
+                        									});		
+                        								}
+                        							  }
+                        						  }
+                        					 }
+                        				  },  
+                    eventClick: function(info) {
+                        					var formDate   = moment(info.event.start).format('YYYY-MM-DD');
+                        					var start_time = moment(info.event.start).format('hh:mm a');
+                        					var end_time   = moment(info.event.end).format('hh:mm a');
+                        						swal({
+                        						  title: info.event.title,
+                        						  text: "Date : "+formDate+" \n"+
+                        						        "Start From : "+start_time+" To "+end_time,
+                        						  icon: "success",
+                        						});
+                        					}
 				});
 				calendar.render();
 			});
