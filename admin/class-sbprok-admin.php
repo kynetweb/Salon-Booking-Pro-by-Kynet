@@ -76,6 +76,14 @@ class Sbprok_Admin {
 		wp_enqueue_style( $this->plugin_name.'-datatables', plugin_dir_url( __FILE__ ) . 'css/datatables.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-datepickr', plugin_dir_url( __FILE__ ) . 'css/datepic.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-timepickr', plugin_dir_url( __FILE__ ) . 'css/jquery.timepicker.min.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css1', plugin_dir_url( __FILE__ ) . 'css/fullcalendar.min.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css2', plugin_dir_url( __FILE__ ) . 'css/calendr_css/core/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css3', plugin_dir_url( __FILE__ ) . 'css/calendr_css/daygrid/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css4', plugin_dir_url( __FILE__ ) . 'css/calendr_css/timegrid/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css5', plugin_dir_url( __FILE__ ) . 'css/calendr_css/list/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css6', plugin_dir_url( __FILE__ ) . 'css/calendr_css/bootstrap/main.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name.'-css6', plugin_dir_url( __FILE__ ) . 'css/calendr_css/bootstrap/main.min.css', array(), $this->version, 'all' );
+		
 	
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sbprok-admin.css', array(), $this->version, 'all' );
 
@@ -105,6 +113,21 @@ class Sbprok_Admin {
 		wp_enqueue_script( $this->plugin_name.'-select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-timepickar', plugin_dir_url( __FILE__ ) . 'js/Timepicker.min.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name.'-datatables', plugin_dir_url( __FILE__ ) . 'js/datatables.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-calendar1', plugin_dir_url( __FILE__ ) . 'js/fullcalendar.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-moment', plugin_dir_url( __FILE__ ) . 'js/moment.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-platform', plugin_dir_url( __FILE__ ) . 'js/platform.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-client', plugin_dir_url( __FILE__ ) . 'js/client.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-js1', plugin_dir_url( __FILE__ ) . 'js/packages/core/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-js2', plugin_dir_url( __FILE__ ) . 'js/packages/interaction/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-js3', plugin_dir_url( __FILE__ ) . 'js/packages/daygrid/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-js4', plugin_dir_url( __FILE__ ) . 'js/packages/timegrid/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-js5', plugin_dir_url( __FILE__ ) . 'js/packages/list/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-js6', plugin_dir_url( __FILE__ ) . 'js/packages/interaction/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-js7', plugin_dir_url( __FILE__ ) . 'js/packages/bootstrap/main.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-js8', plugin_dir_url( __FILE__ ) . 'js/packages/sweetalert/sweetalert.min.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_name.'-js9', plugin_dir_url( __FILE__ ) . 'js/packages/google-calendar/main.js', array( 'jquery' ), $this->version, true );
+
+		wp_enqueue_script( $this->plugin_name.'-calendarmain', plugin_dir_url( __FILE__ ) . 'js/full-calendar-init.js', array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sbprok-admin.js', array( 'jquery-ui-datepicker','jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'sbprokAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ))); 
 		

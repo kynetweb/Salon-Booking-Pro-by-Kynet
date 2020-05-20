@@ -79,23 +79,22 @@ class Sbprok_Ajax {
 		
 		$ajaxposts     = get_posts( $services );
 		$array         = array(
-							'ID'=>$name[0],
 							'post_type'=>'sbprok_services'
 							);
 		$service_names = get_posts($array);
 
 		foreach($ajaxposts as $ajaxpost){
-			$service_id  = get_post_meta( $ajaxpost->ID, "_sbprok_services", true );
-			foreach($service_id as $service_ids){
+		 $service_id  = get_post_meta( $ajaxpost->ID, "_sbprok_services", true );
 				foreach($service_names as $service_name){
-					if($service_ids == $service_name->ID){
+					if($service_id == $service_name->ID){
 					  $titles[]          = $service_name->post_title;
 					  $durations         = get_post_meta( $service_name->ID, "_sbprok_service_details", true );
 					  $final_durations[] = $durations["_duration"];
 					  
 					}
 				}
-			}
+		
+			
 			$service_idds['name']       = implode(",",$titles);
 			$service_idds['id']         = implode(",",$service_id);
 			$service_idds['duration']   = implode(",",$final_durations);
@@ -105,7 +104,9 @@ class Sbprok_Ajax {
 			$titles                     = (array) null;
 			$durations                  = (array) null;
 			$final_durations            = (array) null;
+			$service_idds               = (array) null;
 		}
+	
 			echo json_encode( array($schedule,$service_id) );
 			exit; 
 		}
@@ -171,14 +172,10 @@ class Sbprok_Ajax {
 			'post_type' => 'sbprok_bookings',
 			'post_status' => 'publish',
 			'numberposts' => -1
-			// 'order'    => 'ASC'
 		  ]);
 		  foreach($posts as $p){
-			//get the meta you need form each post
 			$service                      = get_post_meta($p->ID,"_sbprok_services",true);
 			$long[$p->ID.'_'.$service]    = get_post_meta($p->ID,"_sbprok_booking_schedule",true);
-			
-			//do whatever you want with it
 		}
 		echo json_encode($long);
 			exit;

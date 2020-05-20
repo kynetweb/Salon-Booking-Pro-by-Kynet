@@ -43,7 +43,7 @@
 			change: function(dateText, inst){
 				var time             = $(this).val();
 				var service_selected = $(".sbprok_srvice option:selected").val();
-				console.log(service_selected);
+				
 				$.ajax({
 					url: sbprokAjax.ajaxurl,
 					type: 'POST',
@@ -83,8 +83,8 @@
 
 		$( ".sbprok_service_cat" ).change(function() {
 				var service_cat_id  = $(this).children("option:selected").val();
-				$('.sbprok_srvice').empty().append('<option>Select Service</option>');
-				$('.sbprok_employees').empty().append('<option>Select Employee</option>');	
+				$('.sbprok_srvice').empty().append('<option value="">Select Service</option>');
+				$('.sbprok_employees').empty().append('<option value="">Select Employee</option>');	
 			$.ajax({
 				url: sbprokAjax.ajaxurl,
 				type: 'POST',
@@ -102,21 +102,21 @@
 			  });
 		});
 		// Get Employees
-		$( ".sbprok_srvice " ).change(function() {
+		$(".sbprok_srvice").change(function() {
 				var service_selected = $(".sbprok_srvice option:selected").val();
-				$('.sbprok_employees').empty().append('<option>Select Employee</option>');
+				$('.sbprok_employees').empty().append('<option value="">Select Employee</option>');
 				$.ajax({
 					url: sbprokAjax.ajaxurl,
 					type: 'POST',
 					dataType: "json",
 					data: { action : 'get_service_employees', service_id: service_selected },
 					beforeSend : function ( xhr ) {
-						$('.prop_loadmore').text( 'Loading...' ); 
+						$('.loadmore').text( 'Loading...' ); 
 					},
 					success: function (res) {
 							$.each(res, function(index, values) {
 								$('.sbprok_employees').append($( '<option value="'+ values.id +'" >'+ values.display_name+'</option>'));
-								$('.prop_loadmore').text(' '); 	
+								$('.loadmore').text(' '); 	
 							});
 					  }
 				  });
@@ -124,5 +124,7 @@
 
 		
 	});
+
+	
 	
 })( jQuery );

@@ -69,6 +69,36 @@ class Sbprok_Pages {
 		add_submenu_page('sbprok', __('Settings', 'sbprok'), __('Settings', 'sbprok'), 'manage_options', 'saloon-setting-options',  array($this, 'saloon_main_menu')  );
 		remove_submenu_page('sbprok','sbprok');
 	}
+
+   /**
+	 * callback calendar form sub menu functions.
+	 *
+	 * @since    1.0.0
+	 */
+
+	function calendar_sub_menu() { ?>
+		<style>
+	
+	 body {
+		margin: 40px 10px;
+		padding: 0;
+		font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+		font-size: 14px;
+	  }
+	
+	  #calendar {
+		max-width: 900px;
+		margin: 0 auto;
+	  }
+	
+	</style>
+	
+	  <div id='loading'></div>
+	
+	  <div id='calendar'></div>
+	  
+		<?php }
+
 	/**
 	 * callback employee form sub menu functions.
 	 *

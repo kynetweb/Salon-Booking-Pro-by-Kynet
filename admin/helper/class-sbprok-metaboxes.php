@@ -313,17 +313,13 @@ class Sbprok_Metaboxes {
             )
         );
         if ( ! empty( $terms ) && is_array( $terms ) ) {
-            echo '<select data-sbprok="select2" class="sbprok_service_cat" name="'.$box['id'].'" id="'.$box['id'].'" >';
+            echo '<select data-sbprok="select2" class="sbprok_service_cat" name="'.$box['id'].'" id="'.$box['id'].'" required="required">';
             echo '<option value="">Select Category</option>';  
             foreach ( $terms as $term ) { 
                 echo '<option value="'.$term->term_id.'" '.($term->term_id == $post_meta ? "selected" : "").'>'.$term->name.'</option>'; 
             }
             echo '</select>';  
         }  
-       ?> 
-       <div class="prop_loadmore">
-       </div>
-       <?php
     }
 
      /**
@@ -332,14 +328,13 @@ class Sbprok_Metaboxes {
     */  
     private function service_selection($box, $post_id){
         $post_meta = $this->meta_value($box, $post_id);
-        //print_r($post_meta);
         $services = get_posts( array( 
             'numberposts' => -1,
             'post_type'   => 'sbprok_services'
          )
         );
 
-        echo '<select  class="sbprok_srvice" data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'" >';
+        echo '<select  class="sbprok_srvice" data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'" required="required">';
         echo '<option value="">Select Service</option>';     
         foreach ($services as $service) {    
             echo '<option value="'.$service->ID.'" '.($service->ID == $post_meta ? "selected" : "").'>'.$service->post_title.'</option>';   
@@ -356,7 +351,6 @@ class Sbprok_Metaboxes {
     */  
     private function employee_selection($box, $post_id){
         $post_meta = $this->meta_value($box, $post_id);
-        //print_r($post_meta);
         $blogusers = get_users( array( 
             'fields' => array( 'display_name','id' ),
             'role__in'     => array('sbprok_employee'),
@@ -365,14 +359,16 @@ class Sbprok_Metaboxes {
         <div class ="sbprok_employee">
     </div>
             <?php 
-        echo '<select class="sbprok_employees"  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'">';  
+        echo '<select class="sbprok_employees"  data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'" required="required">';  
         echo "<option value=''>Select Employee</option>";
         foreach ($blogusers as $user) { 
             echo '<option value="'.$user->id.'" '.($user->id == $post_meta ? "selected" : "").'>'.$user->display_name.'</option>';   
         } 
         echo '</select>';
-        
-        
+        ?>
+       <div class="loadmore">
+       </div>
+        <?php  
     }
     /**
     * get meta value 
