@@ -63,6 +63,9 @@ class Sbprok_Posttypes {
 		$this->load_Helper();
 		$loader->add_action( 'init', $this, 'register_posttypes' );
 		$loader->add_action( 'save_post', $this,'save_booking_to_google');
+		?>
+		
+		<?php
 	}
 
 	 /**
@@ -114,7 +117,7 @@ class Sbprok_Posttypes {
 									),
 								 ));
 				$update_data    = array(
-										'calendar_id' => 'thjfgh',
+										'calendar_id' => $emp_calendar_id,
 										'event_id' => $event_id,
 										'summary' => $service.': '.$customer_name,
 										'start_date' => $start_date,  
@@ -123,12 +126,16 @@ class Sbprok_Posttypes {
             if(!empty($event_id)){
 			    $this->google_calendar->update_event($update_data); 
 			}else{
-			    $this->google_calendar->create_event($post_id,$emp_calendar_id,$event);
+				$return = $this->google_calendar->create_event($post_id,$emp_calendar_id,$event);
+				if( is_wp_error( $return ) ) {
+					echo $return->get_error_message();
+					exit();
+				}
 			}
 
 			}
 		}
-
+		
 	}
 
 	/**

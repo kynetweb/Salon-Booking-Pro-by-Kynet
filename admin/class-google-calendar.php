@@ -88,16 +88,16 @@ class Sbprok_Google_Calendar {
     }
     
     public function create_event($post_id,$emp_calendar_id,$event) {
+        $emp_calendar_id = 'sjfhksh';
         try {
             $event = $this->calendarService->events->insert($emp_calendar_id, $event);
             if(!empty($post_id)){
                 update_post_meta( $post_id, '_sbprok_booking_event_id', $event->id );
             }
         } catch (Google_Service_Exception $e) {
-            // global $error;
-            // $error = new WP_Error();
-            // $error->add($e->getErrors()[0]['message']);        
-            print_r($e->getErrors()[0]['message']);   
+            return new WP_Error( 'broke', __( $e->getErrors()[0]['message']) );
+            // print_r($e->getErrors()[0]['message']); 
+             //return $error;  
         }
 
     }

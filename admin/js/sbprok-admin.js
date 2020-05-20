@@ -30,8 +30,52 @@
 	 * actising this, we should strive to set a better example in our own work.
 	 */
 	$(document).ready(function(){
-		$('input[data-sbprok="datepicker"]').datepicker();
-		$('input[data-sbprok="timepicker"]').timepicker();
+		var employee_calendar_date;
+		$('input[data-sbprok="datepicker"]').datepicker({
+            onSelect: function(dateText, inst) {
+				employee_calendar_date = dateText;
+			  },
+			  changeMonth: true,
+			  changeYear: true,
+			  minDate:new Date()
+        });
+		$('input[data-sbprok="timepicker"]').timepicker({
+			change: function(dateText, inst){
+				var time             = $(this).val();
+				var service_selected = $(".sbprok_srvice option:selected").val();
+				console.log(service_selected);
+				$.ajax({
+					url: sbprokAjax.ajaxurl,
+					type: 'POST',
+					dataType: "json",
+					data: { action : 'get_posts_metadata'},
+					success: function (res) {
+						$.each(res, function(index, value) {
+							var service_id = index.substr(index.indexOf("_") + 1);
+							if(employee_calendar_date == value._date && time == value._time && service_id == service_selected) {
+								$('.errorMsg').html('<span>This time for '+employee_calendar_date+' is already booked.Please choose different time slot. </span>');
+								$('.errorMsg').css({"color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "300px", "height": "35px", "text-align": "center"});
+								$('input[data-sbprok="timepicker"]').val('');
+								return false;
+							}else{
+								$('.errorMsg').html(' ');
+								$('.errorMsg').css({"color":"#ffffff","background-color": "#ffffff", "border-color": "#ffffff"});
+							}
+						});
+						
+					  }
+				  });
+		
+					},
+			timeFormat: 'hh:mm p',
+			interval: 30,
+			minTime: '09',
+			maxTime: '06:00pm',
+			startTime: '09:00',
+			dynamic: false,
+			dropdown: true,
+			scrollbar: true
+		});
 		/**** select2 */
 		$('select[data-sbprok="select2"]').select2();
 
@@ -46,10 +90,14 @@
 				type: 'POST',
 				dataType: "json",
 				data: { action : 'get_cat_service',cat_id:service_cat_id },
+				beforeSend : function ( xhr ) {
+					$('.prop_loadmore').text( 'Loading...' ); 
+				},
 				success: function (res) {
 					$.each(res, function(index, value) {
 							$('.sbprok_srvice').append($( '<option value="'+ value.ID +'" >'+ value.post_title+'</option>'));
-					});	 
+					        $('.prop_loadmore').text(' '); 
+						});	 
 				  }
 			  });
 		});
@@ -62,15 +110,19 @@
 					type: 'POST',
 					dataType: "json",
 					data: { action : 'get_service_employees', service_id: service_selected },
+					beforeSend : function ( xhr ) {
+						$('.prop_loadmore').text( 'Loading...' ); 
+					},
 					success: function (res) {
-						//console.log(res);
 							$.each(res, function(index, values) {
 								$('.sbprok_employees').append($( '<option value="'+ values.id +'" >'+ values.display_name+'</option>'));
-											
+								$('.prop_loadmore').text(' '); 	
 							});
 					  }
 				  });
 		});
+
+		
 	});
 	
 })( jQuery );

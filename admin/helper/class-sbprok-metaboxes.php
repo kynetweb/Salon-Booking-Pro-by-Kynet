@@ -320,7 +320,10 @@ class Sbprok_Metaboxes {
             }
             echo '</select>';  
         }  
-       
+       ?> 
+       <div class="prop_loadmore">
+       </div>
+       <?php
     }
 
      /**
@@ -342,6 +345,10 @@ class Sbprok_Metaboxes {
             echo '<option value="'.$service->ID.'" '.($service->ID == $post_meta ? "selected" : "").'>'.$service->post_title.'</option>';   
         }  
         echo '</select>';  
+        ?> 
+       <div class="prop_loadmore">
+       </div>
+       <?php
     }
     /**
     * Employee selection for booking
@@ -364,22 +371,8 @@ class Sbprok_Metaboxes {
             echo '<option value="'.$user->id.'" '.($user->id == $post_meta ? "selected" : "").'>'.$user->display_name.'</option>';   
         } 
         echo '</select>';
-        ?>
-        <style type="test/css" id="cssID">
-        .calendar-container #footer1 {
-            display: none !important;
-        }
-        #td-print-image-id{
-            display: none;
-        }
-        #td-print-text-id{
-            display: none;
-        }
-
-        </style>
-        <?php
-        echo '<div class="show_calendar">';
-        echo '</div>';  
+        
+        
     }
     /**
     * get meta value 

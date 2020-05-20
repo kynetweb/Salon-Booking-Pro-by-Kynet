@@ -57,6 +57,7 @@ class Sbprok_Ajax {
 		$loader->add_action( 'wp_ajax_add_google_calendar_events',$this, 'add_google_calendar_events');
 		$loader->add_action( 'wp_ajax_get_service_employees',$this, 'get_service_employees');
 		$loader->add_action( 'wp_ajax_get_cat_service',$this, 'get_cat_service');
+		$loader->add_action( 'wp_ajax_get_posts_metadata',$this, 'get_posts_metadata');
 
 	}
 	private function load_dependencies() {
@@ -143,6 +144,7 @@ class Sbprok_Ajax {
 	 * @since    1.0.0
 	 */
 	function get_service_employees(){
+		
         if(!empty($_POST['service_id'])) {
             $employees  = get_post_meta( $_POST['service_id'], "_sbprok_employees", true );
             if(count($employees) > 0) {
@@ -158,6 +160,30 @@ class Sbprok_Ajax {
 		 
         }
 	}
+
+	/**
+	* get services from category
+	*
+	* @since    1.0.0
+	*/
+	function get_posts_metadata(){
+		$posts = get_posts([
+			'post_type' => 'sbprok_bookings',
+			'post_status' => 'publish',
+			'numberposts' => -1
+			// 'order'    => 'ASC'
+		  ]);
+		  foreach($posts as $p){
+			//get the meta you need form each post
+			$service                      = get_post_meta($p->ID,"_sbprok_services",true);
+			$long[$p->ID.'_'.$service]    = get_post_meta($p->ID,"_sbprok_booking_schedule",true);
+			
+			//do whatever you want with it
+		}
+		echo json_encode($long,);
+			exit;
+	}
+
     /**
 	 * get services from category
 	 *
