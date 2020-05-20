@@ -180,7 +180,7 @@ class Sbprok_Ajax {
 			
 			//do whatever you want with it
 		}
-		echo json_encode($long,);
+		echo json_encode($long);
 			exit;
 	}
 

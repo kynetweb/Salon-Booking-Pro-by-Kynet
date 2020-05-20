@@ -88,7 +88,6 @@ class Sbprok_Google_Calendar {
     }
     
     public function create_event($post_id,$emp_calendar_id,$event) {
-        $emp_calendar_id = 'sjfhksh';
         try {
             $event = $this->calendarService->events->insert($emp_calendar_id, $event);
             if(!empty($post_id)){
