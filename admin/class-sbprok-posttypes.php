@@ -63,16 +63,16 @@ class Sbprok_Posttypes {
 		$this->load_Helper();
 		$loader->add_action( 'init', $this, 'register_posttypes' );
 		$loader->add_action( 'save_post', $this,'save_booking_to_google');
-		$loader->add_filter( 'the_title', $this, 'name_post_title', 10, 2 );
-		?>
-		
-		<?php
-	}
+		$loader->add_filter( 'the_title', $this, 'booking_title', 10, 2 );
+		$loader->add_filter( 'manage_sbprok_bookings_posts_columns', $this, 'filter_bookings_columns' );
+		$loader->add_action( 'manage_sbprok_bookings_posts_custom_column', $this, 'bookings_column', 10, 2);
+		$loader->add_filter( 'manage_sbprok_services_posts_columns', $this, 'filter_services_columns' );
+        $loader->add_action( 'manage_sbprok_services_posts_custom_column', $this, 'services_column', 10, 2);
 
+
+	}
 	 /**
 	 * Load the required Helper's for this plugin.
-	 *
-	 *
 	 * @since    1.0.0
 	 */
 	private function load_Helper() {
@@ -82,7 +82,12 @@ class Sbprok_Posttypes {
 		$this->google_calendar = new Sbprok_Google_Calendar($this->plugin_name, $this->version);
 
 	}
-	
+	 /**
+	 * Save Booking to google calendar
+	 *
+	 *
+	 * @since    1.0.0
+	 */
 	public function save_booking_to_google($post_id) {
 		
 		if ( 'sbprok_bookings' == get_post_type() ) 
@@ -138,30 +143,83 @@ class Sbprok_Posttypes {
 		}
 		
 	}
-
-	public function name_post_title($title, $post_id) {
-
-	if(get_post_type( $post_id ) == 'sbprok_bookings')
-    {
-		$new_title     = get_post_meta( $post_id, '_sbprok_services', true);
-		$customer      = get_post_meta( $post_id, "_sbprok_booking_schedule", true );
-		$array         = array(
-			'post_type'=>'sbprok_services'
+	/**
+	 * booking_title.
+	 *
+	 * @since    1.0.0
+	*/
+	public function booking_title($title, $post_id) {
+		if(get_post_type( $post_id ) == 'sbprok_bookings')
+		{
+			$new_title     = get_post_meta( $post_id, '_sbprok_services', true);
+			$customer      = get_post_meta( $post_id, "_sbprok_booking_schedule", true );
+			$array         = array(
+				'post_type'=>'sbprok_services'
 			);
-		$service_names = get_posts($array);
-		foreach($service_names as $service_name){	
-				if($service_name->ID == $new_title){
-					foreach($customer as $customers){
-						$customer_id = $customer["_customer"];
-						$user_info = get_userdata($customer_id);
-						return $service_name->post_title."-".$user_info->display_name;
-					}
-				}			
-        }
-   
+			$service_names = get_posts($array);
+			foreach($service_names as $service_name){	
+					if($service_name->ID == $new_title){
+						foreach($customer as $customers){
+							$customer_id = $customer["_customer"];
+							$user_info = get_userdata($customer_id);
+							return $service_name->post_title."-".$user_info->display_name;
+						}
+					}			
+			}
+	
+		}
+		return $title;
 	}
-	return $title;
+	/**
+    * Booking Post columns
+    * @since: 1.0
+    */
+    function filter_bookings_columns( $columns ) {  
+        $columns = array(
+            'cb' => $columns['cb'],
+			'title' => $columns['title'],
+			'employee' => __( 'Assigned to' ),
+            'bookingdate' => __( 'Date' ),
+			'time' => __( 'Time' ),
+			'date' => __( 'Created On' )    
+        );
+        return $columns;
     }
+    function bookings_column(  $column, $post_id ) {  
+		$schedule = get_post_meta($post_id, "_sbprok_booking_schedule", true );
+        if($column == "employee") {	
+			$empid  = get_post_meta($post_id, "_sbprok_employee", true );
+			$emp 	= 	get_user_by( 'id', $empid );
+			echo $emp->display_name ;
+        } elseif($column == "bookingdate"){
+            echo $schedule['_date'];
+		} elseif($column == "time"){
+			echo $schedule['_time'];	
+		}
+	}
+	/**
+    * Services Post columns
+    * @since: 1.0
+    */
+    function filter_services_columns( $columns ) {  
+        $columns = array(
+            'cb' => $columns['cb'],
+			'title' => $columns['title'],
+			'price' => __( 'Price' ),
+            'duration' => __( 'Duration' ),
+			'date' => $columns['date']  
+        );
+        return $columns;
+    }
+    function services_column(  $column, $post_id ) {  
+		$service  = get_post_meta($post_id, "_sbprok_service_details", true );
+        if($column == "price") {	
+			echo $service['_price'];
+        } elseif($column == "duration"){
+            echo $service['_duration'];
+		} 
+	}
+	
 
 	/**
 	 * Register post type for Services.

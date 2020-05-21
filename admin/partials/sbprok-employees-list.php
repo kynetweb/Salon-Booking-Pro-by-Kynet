@@ -1,6 +1,6 @@
 <?php
 echo '<h2> Employees <span> <a href = "admin.php?page=sbprok_add_employee"><button class="sbprok-employee-form-button">Add New</button></a></span></h2>';
-echo '<table id="table_id" class="display sbprok-employeelist">
+echo '<table id="sbprok_emp_table" class="display sbprok-employeelist">
         <thead>
             <tr>
             <th> Sr. No. </th>

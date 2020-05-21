@@ -95,7 +95,7 @@ class Sbprok_Google_Calendar {
             }
         } catch (Google_Service_Exception $e) {
             return new WP_Error( 'broke', __( $e->getErrors()[0]['message']) );
-            // print_r($e->getErrors()[0]['message']); 
+            //print_r($e->getErrors()[0]['message']); 
              //return $error;  
         }
 

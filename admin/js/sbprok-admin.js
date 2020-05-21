@@ -80,7 +80,6 @@
 		$('select[data-sbprok="select2"]').select2();
 
 		// Booking meta ajax actions - Get Services
-
 		$( ".sbprok_service_cat" ).change(function() {
 				var service_cat_id  = $(this).children("option:selected").val();
 				$('.sbprok_srvice').empty().append('<option value="">Select Service</option>');
@@ -121,7 +120,8 @@
 					  }
 				  });
 		});
-
+		//DataTables
+		$('#sbprok_emp_table').DataTable();
 		
 	});
 

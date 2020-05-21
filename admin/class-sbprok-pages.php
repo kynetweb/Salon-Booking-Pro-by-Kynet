@@ -51,6 +51,7 @@ class Sbprok_Pages {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$loader->add_action( 'admin_menu', $this, 'menu_pages'); 
+		$loader->add_action('admin_init', $this, 'saloon_setting_options');
 
 	}
     /**
@@ -60,13 +61,12 @@ class Sbprok_Pages {
 	 */
 	function menu_pages(){
 		add_menu_page(__('Salon Booking Pro', 'sbprok'), __('Salon Booking Pro', 'sbprok'), 'manage_options', 'sbprok', array($this, 'saloon_main_menu') );
-    	add_submenu_page('sbprok', __('Employees', 'sbprok'), 'Employees', 'manage_options', 'sbprok_employee_list',  array($this, 'employees_list')  );
-		add_submenu_page('sbprok', __('Add New Employee', 'sbprok'), __('Add New Employee', 'sbprok'), 'manage_options', 'sbprok_add_employee',  array($this, 'add_employee')  );
+  	add_submenu_page('sbprok', __('Employees', 'sbprok'), 'Employees', 'manage_options', 'sbprok_employee_list',  array($this, 'employees_list')  );
 		add_submenu_page( 'sbprok', __('Services', 'sbprok'), __('Services', 'sbprok'), 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
 		add_submenu_page( 'sbprok', __('Service Categories', 'sbprok'), __('Service Categories', 'sbprok'), 'manage_options', 'edit-tags.php?taxonomy=sbprok_category', NULL );
 		add_submenu_page( 'sbprok', __('Bookings', 'sbprok'), __('Bookings', 'sbprok'), 'manage_options', 'edit.php?post_type=sbprok_bookings', NULL );
 		add_submenu_page('sbprok', __('Calendar', 'sbprok'), __('Calendar', 'sbprok'), 'manage_options', 'sbprok_calendar',  array($this, 'calendar_sub_menu')  );
-		add_submenu_page('sbprok', __('Settings', 'sbprok'), __('Settings', 'sbprok'), 'manage_options', 'saloon-setting-options',  array($this, 'saloon_main_menu')  );
+		add_submenu_page('sbprok', __('Settings', 'sbprok'), __('Settings', 'sbprok'), 'manage_options', 'saloon-setting-options',  array($this, 'saloon_setting_page')  );
 		remove_submenu_page('sbprok','sbprok');
 	}
 
@@ -78,27 +78,49 @@ class Sbprok_Pages {
 
 	function calendar_sub_menu() { ?>
 		<style>
-	
-	 body {
-		margin: 40px 10px;
-		padding: 0;
-		font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-		font-size: 14px;
+	 	body {
+			margin: 40px 10px;
+			padding: 0;
+			font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+			font-size: 14px;
 	  }
-	
 	  #calendar {
 		max-width: 900px;
 		margin: 0 auto;
 	  }
-	
-	</style>
-	
+	  </style>
 	  <div id='loading'></div>
-	
 	  <div id='calendar'></div>
-	  
-		<?php }
+		<?php 
+		}
 
+	/**
+	 * callback main menu settings functions.
+	 *
+	 * @since    1.0.0
+	 */
+	function saloon_setting_options() { 
+		//general tab register setting
+		register_setting('sbprok_general', 'sbprok_general');
+
+		//availabiltiy tab register setting
+		register_setting('sbprok_availbility','sbprok_availbility');
+
+		//general tab setion and fields
+		add_settings_section( 'general_tab_section_id', 'Company Information', array($this, 'general_tab_section_callback'), 'sbprok_general' );
+
+		//availability tab section and fields
+		add_settings_section( 'availability_tab_section_id', 'Availability Information', array($this, 'availability_tab_section_callback'), 'sbprok_availbility' );
+	}
+
+	function saloon_setting_page() {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sbprok-setting-page.php';
+	}
+
+	/** General tab section callback function */
+	function general_tab_section_callback() {
+		
+	}
 	/**
 	 * callback employee form sub menu functions.
 	 *
