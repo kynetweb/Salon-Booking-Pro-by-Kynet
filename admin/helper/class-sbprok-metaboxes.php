@@ -243,7 +243,7 @@ class Sbprok_Metaboxes {
                     'role__in'     => array('sbprok_customer'),
                      )
                 );
-        echo '<select data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'">';  
+        echo '<select data-sbprok="select2" name="'.$box['id'].'" id="'.$box['id'].'" required="required">';  
         foreach ($blogusers as $user) { 
             echo '<option value="'.$user->id.'">'.$user->display_name.'</option>';   
         }  

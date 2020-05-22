@@ -63,6 +63,7 @@ class Sbprok_Posttypes {
 		$this->load_Helper();
 		$loader->add_action( 'init', $this, 'register_posttypes' );
 		$loader->add_action( 'save_post', $this,'save_booking_to_google');
+		$loader->add_action('before_delete_post', $this,'delete_calendar_events');
 		$loader->add_filter( 'the_title', $this, 'booking_title', 10, 2 );
 		$loader->add_filter( 'manage_sbprok_bookings_posts_columns', $this, 'filter_bookings_columns' );
 		$loader->add_action( 'manage_sbprok_bookings_posts_custom_column', $this, 'bookings_column', 10, 2);
@@ -142,6 +143,15 @@ class Sbprok_Posttypes {
 			}
 		}
 		
+	}
+
+
+	public function delete_calendar_events($post_id){
+		$post_meta       = get_post_meta( $post_id);
+		$employee_meta   = get_user_meta($post_meta['_sbprok_employee'][0]);
+		$emp_calendar_id = $employee_meta['calendar_id'][0];
+		$event_id        = get_post_meta($post_id, '_sbprok_booking_event_id', true);
+		$this->google_calendar->delete_event($emp_calendar_id,$event_id);
 	}
 	/**
 	 * booking_title.

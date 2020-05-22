@@ -51,7 +51,8 @@ class Sbprok_Ajax {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-        $this->load_dependencies();
+		$this->load_dependencies();
+		$this->load_Helper();
         $loader->add_action( 'wp_ajax_get_bookings',$this, 'get_bookings');
 		$loader->add_action( 'wp_ajax_get_availbility',$this, 'get_availbility');
 		$loader->add_action( 'wp_ajax_add_google_calendar_events',$this, 'add_google_calendar_events');
@@ -64,6 +65,19 @@ class Sbprok_Ajax {
 	private function load_dependencies() {
 	    require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/functions.php';
 	}
+
+	/**
+	 * Load the required Helper's for this plugin.
+	 * @since    1.0.0
+	 */
+	private function load_Helper() {
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-google-calendar.php';
+
+		$this->google_calendar = new Sbprok_Google_Calendar($this->plugin_name, $this->version);
+
+	}
+
     /**
 	 * get bookings
 	 *
@@ -99,12 +113,13 @@ class Sbprok_Ajax {
 			$service_idds['duration']   = implode(",",$final_durations);
 			$service_idds['posts_id']   = $ajaxpost->ID;
 			$date_time                  = get_post_meta( $ajaxpost->ID, "_sbprok_booking_schedule", true );
-			$schedule[]                   = array_merge($service_idds,$date_time);
+			$customer_name              = get_userdata($date_time['_customer']);
+			$date_time['_customer']     = $customer_name->display_name;
+			$schedule[]                 = array_merge($service_idds,$date_time);
 			$titles                     = (array) null;
 			$durations                  = (array) null;
 			$final_durations            = (array) null;
 		}
-
 			echo json_encode( array($schedule,$service_id) );
 			exit; 
 		}
@@ -211,6 +226,21 @@ class Sbprok_Ajax {
 					'_date' => !empty($start ) ? $start : '',
 					'_time' => !empty($time ) ? $time : '',
 				);
+				$start_date      = datetime_conversion($start.$time);
+				$end_time        = calculate_end_time($start.$time);
+				$post_meta       = get_post_meta( $posts_id);
+				$employee_meta   = get_user_meta($post_meta['_sbprok_employee'][0]);
+				$emp_calendar_id = $employee_meta['calendar_id'][0];
+			    $event_id        = get_post_meta($posts_id, '_sbprok_booking_event_id', true);
+				$update_data     = array(
+									'calendar_id' => $emp_calendar_id,
+									'event_id' => $event_id,
+									'summary' => $title,
+									'start_date' => $start_date,  
+									'end_date' => $end_time
+									);
+
+			$this->google_calendar->update_event($update_data);		
 		    update_post_meta($posts_id, '_sbprok_booking_schedule', $details);
 		}
 	

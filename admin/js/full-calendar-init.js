@@ -57,12 +57,14 @@
 						  dataType: "json",
 						  data: { action : 'get_bookings' },
 						  success: function (response) {
+							  console.log(response);
 								$.each(response[0], function(){
 								if(this._date != null){
 									var name           = this.name;
 									var final_time     = this._time;
 									var duration       = this.duration;
 									var posts_id       = this.posts_id;
+									var customer       = this._customer;
 									var duration_ar    = duration.split(',');
 									for (var a in duration_ar)
 									{
@@ -79,7 +81,7 @@
 									var end_date = new Date(this._date+' '+end_time).toISOString();
 													events.push({
 													id:	posts_id,
-													title: name,
+													title: name+': '+customer,
 													start: dates,
 													end: end_date
 													});
@@ -103,7 +105,7 @@
                             				return false;
                         				  },
                     eventDrop: function(info) {
-                        					var now = new Date();
+											var now = new Date();
                         					if (info.event.start <= now){
                         						alert("Cannot Drag to past date.");
                         						info.revert();
@@ -111,7 +113,6 @@
                         						if (!confirm("Are you sure about this change?")) {
                         							info.revert();
                         						  }else{
-                        							  console.log(info.view.type);
                         							  if(info.view.type == "dayGridMonth"){
                         								calendar.changeView('timeGridWeek');
                         								alert("Please update booking in Week or Day mode.");
@@ -127,6 +128,7 @@
                         										url: sbprokAjax.ajaxurl,
                         										data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time},
                         										success: function(data) {
+																	console.log(data);
                         											alert(info.event.title + " was dropped on " + info.event.start);
                         										}
                         									});		

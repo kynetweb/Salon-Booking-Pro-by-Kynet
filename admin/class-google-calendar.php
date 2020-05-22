@@ -124,6 +124,19 @@ class Sbprok_Google_Calendar {
         
 
     }
+
+    public function delete_event($emp_calendar_id,$event_id) {
+        try {
+            $event = $this->calendarService->events->delete($emp_calendar_id, $event_id);
+        } catch (Google_Service_Exception $e) {
+            print_r($e->getErrors()[0]['message']); 
+            exit();
+             //return $error;  
+        }
+
+        
+
+    }
 	
 
 }
