@@ -61,7 +61,7 @@ class Sbprok_Pages {
 	 */
 	function menu_pages(){
 		add_menu_page(__('Salon Booking Pro', 'sbprok'), __('Salon Booking Pro', 'sbprok'), 'manage_options', 'sbprok', array($this, 'saloon_main_menu') );
-  	add_submenu_page('sbprok', __('Employees', 'sbprok'), 'Employees', 'manage_options', 'sbprok_employee_list',  array($this, 'employees_list')  );
+  	    add_submenu_page('sbprok', __('Employees', 'sbprok'), 'Employees', 'manage_options', 'sbprok_employee_list',  array($this, 'employees_list')  );
 		add_submenu_page( 'sbprok', __('Services', 'sbprok'), __('Services', 'sbprok'), 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
 		add_submenu_page( 'sbprok', __('Service Categories', 'sbprok'), __('Service Categories', 'sbprok'), 'manage_options', 'edit-tags.php?taxonomy=sbprok_category', NULL );
 		add_submenu_page( 'sbprok', __('Bookings', 'sbprok'), __('Bookings', 'sbprok'), 'manage_options', 'edit.php?post_type=sbprok_bookings', NULL );
@@ -103,24 +103,48 @@ class Sbprok_Pages {
 		//general tab register setting
 		register_setting('sbprok_general', 'sbprok_general');
 
+		//Display tab register setting
+		register_setting('sbprok_display', 'sbprok_display');
+
 		//availabiltiy tab register setting
 		register_setting('sbprok_availbility','sbprok_availbility');
 
 		//general tab setion and fields
 		add_settings_section( 'general_tab_section_id', 'Company Information', array($this, 'general_tab_section_callback'), 'sbprok_general' );
+        add_settings_field( 'company_name_id', 'Company Name', 'company_name_callback', 'sbprok_general', 'general_tab_section_id' );
+		add_settings_field( 'company_logo', 'Company Logo', 'company_logo_callback', 'sbprok_general', 'general_tab_section_id' );
+		add_settings_field( 'company_email', 'Company Email', 'company_email_callback', 'sbprok_general', 'general_tab_section_id' );
+		add_settings_field( 'company_phn', 'Company Phone No.', 'company_phn_callback', 'sbprok_general', 'general_tab_section_id' );
+		add_settings_field( 'company_address', 'Company Address', 'company_address_callback', 'sbprok_general', 'general_tab_section_id' );
 
 		//availability tab section and fields
 		add_settings_section( 'availability_tab_section_id', 'Availability Information', array($this, 'availability_tab_section_callback'), 'sbprok_availbility' );
+		add_settings_field( 'monday_id', 'Monday', 'monday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
+		add_settings_field( 'tuesday_id', 'Tuesday', 'tuesday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
+		add_settings_field( 'wednesday_id', 'Wednesday', 'wednesday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
+		add_settings_field( 'thursday_id', 'Thursday', 'thursday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
+		add_settings_field( 'friday_id', 'Friday', 'friday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
+		add_settings_field( 'saturday_id', 'Saturday', 'saturday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
+		add_settings_field( 'sunday_id', 'Sunday', 'sunday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
+	}
+    function ch_essentials_header_callback() { 
+		echo '<p>Header Display Options:</p>'; 
+	}
+
+	/** General tab section callback function */
+	function general_tab_section_callback() {
+			
+	}
+
+	/** availability tab section callback function */
+	function availability_tab_section_callback(){
+		
 	}
 
 	function saloon_setting_page() {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sbprok-setting-page.php';
 	}
 
-	/** General tab section callback function */
-	function general_tab_section_callback() {
-		
-	}
 	/**
 	 * callback employee form sub menu functions.
 	 *
@@ -195,4 +219,6 @@ class Sbprok_Pages {
 		$users = get_users( $args );
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sbprok-employees-list.php';
 	}
+
+	 
 }
