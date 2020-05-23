@@ -263,13 +263,21 @@ class Sbprok_Ajax {
 		$exclude       = array_diff($week_array,$availble_days);
 		$days = [];
 		foreach($exclude as $val){
-			if ($val != 'sunday') $days[] = 0;
-			if ($val != 'monday') $days[] = 1;
-			if ($val != 'tuesday') $days[] = 2;
-			if ($val != 'wednesday') $days[] = 3;
-			if ($val != 'thursday') $days[] = 4;
-			if ($val != 'friday') $days[] = 5;
-			if ($val != 'saturday') $days[] = 6;
+			if ($val == 'sunday'){
+			 $days[] = 0;
+			}elseif ($val == 'monday'){
+			 $days[] = 1;
+			}elseif ($val == 'tuesday'){
+		     $days[] = 2;
+			}elseif ($val == 'wednesday'){
+		     $days[] = 3;
+			}elseif ($val == 'thursday'){
+			 $days[] = 4;
+			}elseif ($val == 'friday'){
+			 $days[] = 5;
+			}elseif ($val == 'saturday'){
+			 $days[] = 6;
+			} 
 		  }
 		echo json_encode($days);
 		exit;

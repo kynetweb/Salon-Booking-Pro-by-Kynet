@@ -48,7 +48,7 @@
 				employee_calendar_date = dateText;
 			  },
 			  beforeShowDay:function (date) {
-				return [exclude_days.indexOf(date.getDay()) > -1];
+				return [exclude_days.indexOf(date.getDay()) == -1];
 			  },
 			  changeMonth: true,
 			  changeYear: true,
