@@ -62,6 +62,7 @@ class Sbprok_Pages {
 	function menu_pages(){
 		add_menu_page(__('Salon Booking Pro', 'sbprok'), __('Salon Booking Pro', 'sbprok'), 'manage_options', 'sbprok', array($this, 'saloon_main_menu') );
   	    add_submenu_page('sbprok', __('Employees', 'sbprok'), 'Employees', 'manage_options', 'sbprok_employee_list',  array($this, 'employees_list')  );
+		add_submenu_page('sbprok', _('Add Employee', 'sbprok'), _('Add Employee', 'sbprok'), 'manage_options', 'sbprok_add_employee',  array($this, 'add_employee')  );
 		add_submenu_page( 'sbprok', __('Services', 'sbprok'), __('Services', 'sbprok'), 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
 		add_submenu_page( 'sbprok', __('Service Categories', 'sbprok'), __('Service Categories', 'sbprok'), 'manage_options', 'edit-tags.php?taxonomy=sbprok_category', NULL );
 		add_submenu_page( 'sbprok', __('Bookings', 'sbprok'), __('Bookings', 'sbprok'), 'manage_options', 'edit.php?post_type=sbprok_bookings', NULL );
