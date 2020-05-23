@@ -60,7 +60,8 @@ class Sbprok_Ajax {
 		$loader->add_action( 'wp_ajax_get_cat_service',$this, 'get_cat_service');
 		$loader->add_action( 'wp_ajax_get_posts_metadata',$this, 'get_posts_metadata');
 		$loader->add_action( 'wp_ajax_get_ajax_data_requests',$this, 'get_ajax_data_requests');
-
+		$loader->add_action( 'wp_ajax_get_disabled_days',$this, 'get_disabled_days');
+		
 	}
 	private function load_dependencies() {
 	    require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/functions.php';
@@ -199,7 +200,7 @@ class Sbprok_Ajax {
 	 *
 	 * @since    1.0.0
 	 */
-	 function get_cat_service() {
+	function get_cat_service() {
 		if($_POST['cat_id'] != ''){
 			$args = [
 				'post_type' => 'sbprok_services',
@@ -217,22 +218,27 @@ class Sbprok_Ajax {
 		 } 
 	}
 
-		function get_ajax_data_requests(){
-			    $posts_id   = $_POST['posts_id'];
-				$title      = $_POST['title'];
-				$start      = $_POST['start_date'];
-				$time       = $_POST['start_time'];
-				$details = array(
-					'_date' => !empty($start ) ? $start : '',
-					'_time' => !empty($time ) ? $time : '',
-				);
-				$start_date      = datetime_conversion($start.$time);
-				$end_time        = calculate_end_time($start.$time);
-				$post_meta       = get_post_meta( $posts_id);
-				$employee_meta   = get_user_meta($post_meta['_sbprok_employee'][0]);
-				$emp_calendar_id = $employee_meta['calendar_id'][0];
-			    $event_id        = get_post_meta($posts_id, '_sbprok_booking_event_id', true);
-				$update_data     = array(
+	/**
+	 * get_ajax_data_requests
+	 *
+	 * @since    1.0.0
+	 */
+    function get_ajax_data_requests(){
+			$posts_id        = $_POST['posts_id'];
+			$title           = $_POST['title'];
+			$start           = $_POST['start_date'];
+			$time            = $_POST['start_time'];
+		    $details         = array(
+									'_date' => !empty($start ) ? $start : '',
+									'_time' => !empty($time ) ? $time : '',
+								);
+			$start_date      = datetime_conversion($start.$time);
+			$end_time        = calculate_end_time($start.$time);
+			$post_meta       = get_post_meta( $posts_id);
+			$employee_meta   = get_user_meta($post_meta['_sbprok_employee'][0]);
+			$emp_calendar_id = $employee_meta['calendar_id'][0];
+			$event_id        = get_post_meta($posts_id, '_sbprok_booking_event_id', true);
+			$update_data     = array(
 									'calendar_id' => $emp_calendar_id,
 									'event_id' => $event_id,
 									'summary' => $title,
@@ -242,6 +248,31 @@ class Sbprok_Ajax {
 
 			$this->google_calendar->update_event($update_data);		
 		    update_post_meta($posts_id, '_sbprok_booking_schedule', $details);
+		}
+
+	/**
+	 * get_disabled_days
+	 *
+	 * @since    1.0.0
+	 */	
+
+	function get_disabled_days(){
+		$week_array    = array("monday", "tuesday", "wednesday","thursday","friday","saturday","sunday");
+		$availble_days = get_option('sbprok_availbility');
+		$availble_days = array_keys ($availble_days);
+		$exclude       = array_diff($week_array,$availble_days);
+		$days = [];
+		foreach($exclude as $val){
+			if ($val != 'sunday') $days[] = 0;
+			if ($val != 'monday') $days[] = 1;
+			if ($val != 'tuesday') $days[] = 2;
+			if ($val != 'wednesday') $days[] = 3;
+			if ($val != 'thursday') $days[] = 4;
+			if ($val != 'friday') $days[] = 5;
+			if ($val != 'saturday') $days[] = 6;
+		  }
+		echo json_encode($days);
+		exit;
 		}
 	
 }

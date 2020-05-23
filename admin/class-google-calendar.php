@@ -94,9 +94,7 @@ class Sbprok_Google_Calendar {
                 update_post_meta( $post_id, '_sbprok_booking_event_id', $event->id );
             }
         } catch (Google_Service_Exception $e) {
-            return new WP_Error( 'broke', __( $e->getErrors()[0]['message']) );
-            //print_r($e->getErrors()[0]['message']); 
-             //return $error;  
+            print_r($e->getErrors()[0]['message']); 
         }
 
     }
@@ -113,13 +111,8 @@ class Sbprok_Google_Calendar {
         $event->setEnd($end);
         try{
             $updatedEvent = $this->calendarService->events->update($update_data['calendar_id'], $event->getId(), $event);
-        } catch (Google_Service_Exception $e) {
-           $e->getMessage();
-           global $error;
-           $error = new WP_Error();
-           $error->add($e->getErrors()[0]['message']);
-           return;        
-       // print_r($e->getErrors()[0]['message']);    
+        } catch (Google_Service_Exception $e) {    
+         print_r($e->getErrors()[0]['message']);    
         }
         
 
@@ -130,13 +123,6 @@ class Sbprok_Google_Calendar {
             $event = $this->calendarService->events->delete($emp_calendar_id, $event_id);
         } catch (Google_Service_Exception $e) {
             print_r($e->getErrors()[0]['message']); 
-            exit();
-             //return $error;  
         }
-
-        
-
     }
-	
-
 }

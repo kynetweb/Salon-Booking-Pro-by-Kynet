@@ -68,7 +68,9 @@ class Sbprok_Posttypes {
 		$loader->add_filter( 'manage_sbprok_bookings_posts_columns', $this, 'filter_bookings_columns' );
 		$loader->add_action( 'manage_sbprok_bookings_posts_custom_column', $this, 'bookings_column', 10, 2);
 		$loader->add_filter( 'manage_sbprok_services_posts_columns', $this, 'filter_services_columns' );
-        $loader->add_action( 'manage_sbprok_services_posts_custom_column', $this, 'services_column', 10, 2);
+		$loader->add_action( 'manage_sbprok_services_posts_custom_column', $this, 'services_column', 10, 2);
+		$loader->add_action( 'post_submitbox_misc_actions', $this, 'display_google_calendar_status' );
+        //$loader->add_action( 'post_submitbox_start', $this, 'display_google_calendar_status' );
 
 
 	}
@@ -145,7 +147,31 @@ class Sbprok_Posttypes {
 		
 	}
 
+	/**
+	 * display_google_calendar_status
+	 *
+	 * @since    1.0.0
+	 */
+    function display_google_calendar_status($post){
 
+    $screen = get_current_screen();
+		 if( 'sbprok_bookings' == $screen->post_type ) {
+			$post_meta       = get_post_meta( $post->ID);
+			$employee_meta   = get_user_meta($post_meta['_sbprok_employee'][0]);
+			$emp_calendar_id = $employee_meta['calendar_id'][0];
+			if(empty($emp_calendar_id)){
+			echo "<p style='padding: 2px 13px;'><span>Booking is not synchronized with Google Calendar.</span></p>";
+			}else{
+			echo "<p style='padding: 2px 13px;'><span>Booking is synchronized with Google Calendar.</span></p>";
+			}
+		 } 
+    }
+
+    /**
+	 * delete_calendar_events.
+	 *
+	 * @since    1.0.0
+	*/
 	public function delete_calendar_events($post_id){
 		$post_meta       = get_post_meta( $post_id);
 		$employee_meta   = get_user_meta($post_meta['_sbprok_employee'][0]);
@@ -153,6 +179,7 @@ class Sbprok_Posttypes {
 		$event_id        = get_post_meta($post_id, '_sbprok_booking_event_id', true);
 		$this->google_calendar->delete_event($emp_calendar_id,$event_id);
 	}
+	
 	/**
 	 * booking_title.
 	 *

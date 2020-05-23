@@ -29,16 +29,32 @@
 	 * pr
 	 * actising this, we should strive to set a better example in our own work.
 	 */
+
 	$(document).ready(function(){
+		var exclude_days;
 		var employee_calendar_date;
+		$.ajax({
+			url: sbprokAjax.ajaxurl,
+			type: 'POST',
+			dataType: "json",
+			data: { action : 'get_disabled_days'},
+			success: function (res) {
+				exclude_days = res;	
+			  }
+		  });
+		
 		$('input[data-sbprok="datepicker"]').datepicker({
             onSelect: function(dateText, inst) {
 				employee_calendar_date = dateText;
 			  },
+			  beforeShowDay:function (date) {
+				return [exclude_days.indexOf(date.getDay()) > -1];
+			  },
 			  changeMonth: true,
 			  changeYear: true,
 			  minDate:new Date()
-        });
+		});
+		
 		$('input[data-sbprok="timepicker"]').timepicker({
 			change: function(dateText, inst){
 				var time             = $(this).val();
