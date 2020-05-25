@@ -47,10 +47,12 @@ class Sbprok_Public {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $version, $loader ) {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+		$loader->add_action( 'wp_enqueue_scripts', $this, 'enqueue_styles'); 
+		$loader->add_action('wp_enqueue_scripts', $this, 'enqueue_scripts');
 
 	}
 
