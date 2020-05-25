@@ -50,7 +50,7 @@ class Sbprok_Shortcode {
 	public function __construct( $plugin_name, $version, $loader ) {
 
 		$this->plugin_name = $plugin_name;
-        $this->version = $version;
+        $this->version     = $version;
         add_shortcode( 'sbprok_booking_widget', array( $this, 'sbprok_shortcode' ) );
 
     }
@@ -61,7 +61,7 @@ class Sbprok_Shortcode {
 	 * @since    1.0.0
 	 */
     function sbprok_shortcode() {
-
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/templates/front-end-template.php';
     }
 
 

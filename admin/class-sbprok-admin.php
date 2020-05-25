@@ -83,7 +83,6 @@ class Sbprok_Admin {
 		wp_enqueue_style( $this->plugin_name.'-css5', plugin_dir_url( __FILE__ ) . 'css/calendr_css/list/main.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-css6', plugin_dir_url( __FILE__ ) . 'css/calendr_css/bootstrap/main.css', array(), $this->version, 'all' );
 		wp_enqueue_style( $this->plugin_name.'-css6', plugin_dir_url( __FILE__ ) . 'css/calendr_css/bootstrap/main.min.css', array(), $this->version, 'all' );
-		
 	
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/sbprok-admin.css', array(), $this->version, 'all' );
 
@@ -128,6 +127,7 @@ class Sbprok_Admin {
 		wp_enqueue_script( $this->plugin_name.'-js9', plugin_dir_url( __FILE__ ) . 'js/packages/google-calendar/main.js', array( 'jquery' ), $this->version, true );
 
 		wp_enqueue_script( $this->plugin_name.'-calendarmain', plugin_dir_url( __FILE__ ) . 'js/full-calendar-init.js', array( 'jquery' ), $this->version, true );
+
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sbprok-admin.js', array( 'jquery-ui-datepicker','jquery' ), $this->version, false );
 		wp_localize_script( $this->plugin_name, 'sbprokAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ))); 
 		

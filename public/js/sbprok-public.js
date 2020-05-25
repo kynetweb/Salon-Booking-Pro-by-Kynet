@@ -29,4 +29,19 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	$(document).on('click','.sbprok-inner-box', function(e){
+		$(".common_1").addClass("sbprok-hide");
+		$(".common_2").removeClass("sbprok-hide");
+	});
+
+	$(document).on('click','.sbprok-inner-box-2', function(e){
+		$(".common_2").addClass("sbprok-hide");
+		$(".common_3").removeClass("sbprok-hide");
+	});
+	$(document).on('click','#sbprok-back', function(e){
+		$(".common_2").addClass("sbprok-hide");
+		$(".common_1").removeClass("sbprok-hide");
+	});
+	
+
 })( jQuery );
