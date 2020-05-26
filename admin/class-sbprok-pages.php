@@ -53,6 +53,11 @@ class Sbprok_Pages {
 		$loader->add_action( 'admin_menu', $this, 'menu_pages'); 
 		$loader->add_action('admin_init', $this, 'saloon_setting_options');
 
+		$loader->add_action('show_user_profile', $this, 'user_custom_fields' );
+		$loader->add_action( 'edit_user_profile', $this, 'user_custom_fields' );
+		$loader->add_action( 'personal_options_update', $this, 'save_user_custom_fields' );
+		$loader->add_action('edit_user_profile_update', $this, 'save_user_custom_fields' );
+
 	}
     /**
 	 * Register the menu pages.
@@ -61,7 +66,7 @@ class Sbprok_Pages {
 	 */
 	function menu_pages(){
 		add_menu_page(__('Salon Booking Pro', 'sbprok'), __('Salon Booking Pro', 'sbprok'), 'manage_options', 'sbprok', array($this, 'saloon_main_menu') );
-  	    add_submenu_page('sbprok', __('Employees', 'sbprok'), 'Employees', 'manage_options', 'sbprok_employee_list',  array($this, 'employees_list')  );
+  	add_submenu_page('sbprok', __('Employees', 'sbprok'), 'Employees', 'manage_options', 'sbprok_employee_list',  array($this, 'employees_list')  );
 		add_submenu_page('sbprok', __('Add Employee', 'sbprok'), __('Add Employee', 'sbprok'), 'manage_options', 'sbprok_add_employee',  array($this, 'add_employee')  );
 		add_submenu_page( 'sbprok', __('Services', 'sbprok'), __('Services', 'sbprok'), 'manage_options', 'edit.php?post_type=sbprok_services', NULL );
 		add_submenu_page( 'sbprok', __('Service Categories', 'sbprok'), __('Service Categories', 'sbprok'), 'manage_options', 'edit-tags.php?taxonomy=sbprok_category', NULL );
@@ -77,23 +82,11 @@ class Sbprok_Pages {
 	 * @since    1.0.0
 	 */
 
-	function calendar_sub_menu() { ?>
-		<style>
-	 	body {
-			margin: 40px 10px;
-			padding: 0;
-			font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-			font-size: 14px;
-	  }
-	  #calendar {
-		max-width: 900px;
-		margin: 0 auto;
-	  }
-	  </style>
-	  <div id='loading'></div>
-	  <div id='calendar'></div>
-		<?php 
-		}
+	function calendar_sub_menu() { 
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sbprok-admin-calendar.php';
+
+	}
 
 	/**
 	 * callback main menu settings functions.
@@ -128,7 +121,7 @@ class Sbprok_Pages {
 		add_settings_field( 'saturday_id', 'Saturday', 'saturday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
 		add_settings_field( 'sunday_id', 'Sunday', 'sunday_callback', 'sbprok_availbility', 'availability_tab_section_id' );
 	}
-    function ch_essentials_header_callback() { 
+  function ch_essentials_header_callback() { 
 		echo '<p>Header Display Options:</p>'; 
 	}
 
@@ -188,9 +181,9 @@ class Sbprok_Pages {
 					$employee_phone = $_POST['employee_phone'];
 					update_user_meta( $user_id, 'employee_phone', $employee_phone );
 				}
-				if(isset($_POST['image_attachment_id'])){
-					$profile_image = $_POST['image_attachment_id'];
-					update_user_meta( $user_id, 'image_attachment_id', $profile_image );
+				if(isset($_POST['sbprok_img_id'])){
+					$profile_image = $_POST['sbprok_img_id'];
+					update_user_meta( $user_id, 'sbprok_img_id', $profile_image );
 			   }
 				if(isset($_POST['active_status'])){
 					$active_status = $_POST['active_status'];
@@ -219,6 +212,38 @@ class Sbprok_Pages {
 		);
 		$users = get_users( $args );
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sbprok-employees-list.php';
+	}
+	/**
+	 * admin user page additional meta fields.
+	 *
+	 * @since    1.0.0
+	 */
+	function user_custom_fields( $user ) {
+		//print_r($user->roles);
+		if(in_array("sbprok_employee", $user->roles)){
+		$employee_address = esc_attr( get_the_author_meta( 'employee_address', $user->ID ) );
+		$employee_phone = esc_attr( get_the_author_meta( 'employee_phone', $user->ID ) );
+		$active_status = get_the_author_meta( 'active_status', $user->ID);
+		$calendar_id = get_the_author_meta( 'calendar_id', $user->ID);
+		$profile_image = esc_attr( get_the_author_meta( 'sbprok_img_id', $user->ID ) );
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/sbprok-user-fields.php';
+		}
+	}
+	/**
+	 * admin user page additional meta fields.
+	 *
+	 * @since    1.0.0
+	 */
+	function save_user_custom_fields( $user_id ) {
+		if ( !current_user_can( 'edit_user', $user_id ) )
+			return FALSE;
+
+			update_usermeta( $user_id, 'employee_address', $_POST['employee_address'] );
+			update_usermeta( $user_id, 'employee_phone', $_POST['employee_phone'] );
+			update_usermeta( $user_id, 'active_status', $_POST['active_status'] );
+			update_usermeta( $user_id, 'sbprok_img_id', $_POST['sbprok_img_id'] );
+			update_usermeta( $user_id, 'calendar_id', $_POST['calendar_id'] );
 	}
 
 	 

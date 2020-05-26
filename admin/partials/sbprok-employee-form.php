@@ -90,9 +90,9 @@
                 <label>Profile Image</label>
             </div>
             <div class="sbprok-col-75">
-                <img id='image-preview' src='<?php echo wp_get_attachment_url( get_option( 'media_selector_attachment_id' ) ); ?>' height='100'>
-                <input id="upload_image_button" class ="sbprok-employee-form-button" type="button" class="button" value = "<?php _e( 'Upload image' ); ?>" />
-                <input type='hidden' name='image_attachment_id' id='image_attachment_id' value ='<?php echo get_option( 'media_selector_attachment_id' ); ?>'><br></br>
+                <img id='sbprok-img-preview' src="" height='100'>
+                <input id="sbprok-img-upload" class ="sbprok-employee-form-button" type="button" class="button" value = "<?php _e( 'Upload image' ); ?>" />
+                <input type='hidden' name='sbprok_img_id' id='sbprok-img-id' value =""><br></br>
             </div>
         </div>
         <div class='sbprok-employeeform_row'>
