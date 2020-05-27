@@ -168,7 +168,7 @@ class Sbprok_Posttypes {
 		 if( 'sbprok_bookings' == $screen->post_type ) {
 			$post_meta       = get_post_meta( $post->ID);
 
-			if(array_key_exists("_sbprok_booking_event_id",$post_meta)){
+			if(array_key_exists("_sbprok_booking_event_id",$post_meta) && !empty($post_meta['_sbprok_booking_event_id'][0])){
 			 echo "<p style='padding: 2px 13px;'><span>Booking is synchronized with Google Calendar.</span></p>";
 			}else{
 			 echo "<p style='padding: 2px 13px;'><span>Booking is not synchronized with Google Calendar.</span></p>";
