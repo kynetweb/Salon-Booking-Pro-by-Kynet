@@ -107,13 +107,14 @@ class Sbprok_Posttypes {
 		{
 			if(isset($_POST['_sbprok_employee'])){
 				$employee_meta   = get_user_meta($_POST['_sbprok_employee']);
-			    $emp_calendar_id = $employee_meta['calendar_id'][0];
+				$emp_calendar_id = $employee_meta['calendar_id'][0];
 			}
 
 			if($emp_calendar_id != ''){
 				if ( isset( $_POST['_sbprok_services']) ){
 					$service_post    = get_post($_POST['_sbprok_services']);
 					$service         = $service_post->post_title;
+				    $service_details = get_post_meta($service_post->ID,"_sbprok_service_details",true);
 				}
 				if (isset($_POST['_sbprok_booking_schedule']['_customer'])) {
 					$customer_meta   = get_user_meta($_POST['_sbprok_booking_schedule']['_customer']);
@@ -121,9 +122,9 @@ class Sbprok_Posttypes {
 				}
 				if(isset($_POST['_sbprok_booking_schedule']['_date']) && isset($_POST['_sbprok_booking_schedule']['_time'])){ 
 					$start_date      = datetime_conversion($_POST['_sbprok_booking_schedule']['_date'].$_POST['_sbprok_booking_schedule']['_time']);
-					$end_time        = calculate_end_time($_POST['_sbprok_booking_schedule']['_date'].$_POST['_sbprok_booking_schedule']['_time']);
+					$end_time        = calculate_end_time($_POST['_sbprok_booking_schedule']['_date'].$_POST['_sbprok_booking_schedule']['_time'], $service_details['_duration']);
 				}
-
+				
 				$post_meta       = get_post_meta($post_id);
 				$event_id        = get_post_meta($post_id, '_sbprok_booking_event_id', true);
 				$event           = new Google_Service_Calendar_Event(array(
@@ -186,9 +187,11 @@ class Sbprok_Posttypes {
 		{
 		$post_meta       = get_post_meta( $post_id);
 		$employee_meta   = get_user_meta($post_meta['_sbprok_employee'][0]);
-		$emp_calendar_id = $employee_meta['calendar_id'][0];
-		$event_id        = get_post_meta($post_id, '_sbprok_booking_event_id', true);
-		$this->google_calendar->delete_event($emp_calendar_id,$event_id);
+		if(array_key_exists("calendar_id",$post_meta)){
+			$emp_calendar_id = $employee_meta['calendar_id'][0];
+			$event_id        = get_post_meta($post_id, '_sbprok_booking_event_id', true);
+			$this->google_calendar->delete_event($emp_calendar_id,$event_id);
+		}
 	   }
 	}
 	

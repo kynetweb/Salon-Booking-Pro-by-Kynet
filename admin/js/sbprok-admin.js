@@ -33,65 +33,9 @@
 	$(document).ready(function(){
 		var exclude_days;
 		var employee_calendar_date;
-		$.ajax({
-			url: sbprokAjax.ajaxurl,
-			type: 'POST',
-			dataType: "json",
-			data: { action : 'get_disabled_days'},
-			success: function (res) {
-				exclude_days = res;	
-			  }
-		  });
-		
-		$('input[data-sbprok="datepicker"]').datepicker({
-            onSelect: function(dateText, inst) {
-				employee_calendar_date = dateText;
-			  },
-			  beforeShowDay:function (date) {
-				return [exclude_days.indexOf(date.getDay()) == -1];
-			  },
-			  changeMonth: true,
-			  changeYear: true,
-			  minDate:new Date()
-		});
-		
-		$('input[data-sbprok="timepicker"]').timepicker({
-			change: function(dateText, inst){
-				var time             = $(this).val();
-				var service_selected = $(".sbprok_srvice option:selected").val();
-				
-				$.ajax({
-					url: sbprokAjax.ajaxurl,
-					type: 'POST',
-					dataType: "json",
-					data: { action : 'get_posts_metadata'},
-					success: function (res) {
-						$.each(res, function(index, value) {
-							var service_id = index.substr(index.indexOf("_") + 1);
-							if(employee_calendar_date == value._date && time == value._time && service_id == service_selected) {
-								$('.errorMsg').html('<span>This time for '+employee_calendar_date+' is already booked.Please choose different time slot. </span>');
-								$('.errorMsg').css({"color":"#a94442","background-color": "#f2dede", "border-color": "#ebccd1","width": "300px", "height": "35px", "text-align": "center"});
-								$('input[data-sbprok="timepicker"]').val('');
-								return false;
-							}else{
-								$('.errorMsg').html(' ');
-								$('.errorMsg').css({"color":"#ffffff","background-color": "#ffffff", "border-color": "#ffffff"});
-							}
-						});
-						
-					  }
-				  });
-		
-					},
-			timeFormat: 'hh:mm p',
-			interval: 30,
-			minTime: '09',
-			maxTime: '06:00pm',
-			startTime: '09:00',
-			dynamic: false,
-			dropdown: true,
-			scrollbar: true
-		});
+		var service_selected;
+		var arrray = [];
+
 		/**** select2 */
 		$('select[data-sbprok="select2"]').select2();
 
@@ -136,6 +80,59 @@
 					  }
 				  });
 		});
+
+		$.ajax({
+			url: sbprokAjax.ajaxurl,
+			type: 'POST',
+			dataType: "json",
+			data: { action : 'get_disabled_days'},
+			success: function (res) {
+				exclude_days = res;	
+			  }
+		  });
+		
+		$('input[data-sbprok="datepicker"]').datepicker({
+            onSelect: function(dateText, inst) {
+				employee_calendar_date = dateText;
+			  },
+			  beforeShowDay:function (date) {
+				return [exclude_days.indexOf(date.getDay()) == -1];
+			  },
+			  changeMonth: true,
+			  changeYear: true,
+			  minDate:new Date()
+		});
+		
+				
+				// $.ajax({
+				// 	url: sbprokAjax.ajaxurl,
+				// 	type: 'POST',
+				// 	dataType: "json",
+				// 	data: { action : 'get_posts_metadata'},
+				// 	success: function (res) {
+				// 		$.each(res, function(index, value) { 
+				// 			var service_id = index.substr(index.indexOf("_") + 1);
+				// 			if(employee_calendar_date == value._date && service_id == service_selected) {
+				// 				arrray = [value._time, res['end_time']];
+				// 				console.log(arrray);
+				// 			}
+				// 		});
+						
+				// 	  }
+				//   });
+		
+		$('input[data-sbprok="timepicker"]').timepicker({
+			timeFormat: 'hh:mm p',
+			disableTimeRanges: [ ['01:30 PM', '02:30 PM'] ],
+			interval: 30,
+			minTime: '09',
+			maxTime: '06:00pm',
+			startTime: '09:00',
+			dynamic: false,
+			dropdown: true,
+			scrollbar: true
+		});
+
 		//DataTables
 		$('#sbprok_emp_table').DataTable();
 		

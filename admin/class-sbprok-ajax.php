@@ -174,7 +174,7 @@ class Sbprok_Ajax {
             }
 		 
         }
-	}
+	} 
 
 	/**
 	* get services from category
@@ -189,7 +189,12 @@ class Sbprok_Ajax {
 		  ]);
 		  foreach($posts as $p){
 			$service                      = get_post_meta($p->ID,"_sbprok_services",true);
-			$long[$p->ID.'_'.$service]    = get_post_meta($p->ID,"_sbprok_booking_schedule",true);
+			$service_post                 = get_post($service);  
+			$service_details              = get_post_meta($service_post->ID,"_sbprok_service_details",true);
+			$booking_details              = get_post_meta($p->ID,"_sbprok_booking_schedule",true);
+			$end_time                     = calculate_end_time($booking_details['_date'].$booking_details['_time'], $service_details['_duration']);
+			$long[$p->ID.'_'.$service]    = $booking_details;
+			$long['end_time']             = date('h:i a', strtotime($end_time));
 		}
 		echo json_encode($long);
 			exit;
@@ -228,6 +233,7 @@ class Sbprok_Ajax {
 			$title           = $_POST['title'];
 			$start           = $_POST['start_date'];
 			$time            = $_POST['start_time'];
+			$end_time        = $_POST['end_time'];
 		    $details         = array(
 									'_date' => !empty($start ) ? $start : '',
 									'_time' => !empty($time ) ? $time : '',

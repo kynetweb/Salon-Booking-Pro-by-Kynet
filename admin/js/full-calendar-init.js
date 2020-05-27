@@ -119,16 +119,16 @@
                         							  }else{
                         								var posts_id = info.oldEvent.id;
                         								var name     = info.oldEvent.title;
-                        								var time     = moment(info.event.start).format('hh:mm a');
+														var time     = moment(info.event.start).format('hh:mm a');
+														var end_time = moment(info.event.end).format('hh:mm a');
                         								if(info.oldEvent.title == info.event.title && info.oldEvent.id == info.event.id){
                                                             var dates = info.event.start;
                         									dates = dates.toDateString();
                         									jQuery.ajax({
                         										type: "POST",
                         										url: sbprokAjax.ajaxurl,
-                        										data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time},
+                        										data: { action: "get_ajax_data_requests", posts_id:posts_id,title: info.event.title,start_date:dates,start_time:time,end_time:end_time},
                         										success: function(data) {
-																	console.log(data);
                         											alert(info.event.title + " was dropped on " + info.event.start);
                         										}
                         									});		

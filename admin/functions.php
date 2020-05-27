@@ -31,9 +31,15 @@ function datetime_conversion($datetime){
 	return date(DATE_ISO8601, strtotime($datetime));
 }
 
-function calculate_end_time($startTime){
-    $cenvertedTime = date(DATE_ISO8601,strtotime('+1 hour',strtotime($startTime)));
-    return $cenvertedTime;
+function calculate_end_time($startTime,$duration=null){
+    if($duration == null){
+       $duraton_add = '+1 hour';
+    }else{
+        $duration    = explode(':', $duration);
+        $duraton_add = '+'.$duration[0].' hour'.' +'.$duration[1].' minutes';
+    }
+    $cenvertedTime = date(DATE_ISO8601,strtotime($duraton_add,strtotime($startTime)));
+    return  $cenvertedTime;
 }
 
 
