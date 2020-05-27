@@ -182,11 +182,35 @@ class Sbprok_Ajax {
 	* @since    1.0.0
 	*/
 	function get_posts_metadata(){
-		$posts = get_posts([
-			'post_type' => 'sbprok_bookings',
-			'post_status' => 'publish',
-			'numberposts' => -1
-		  ]);
+
+		// $posts = get_posts([
+		// 	'post_type' => 'sbprok_bookings',
+		// 	'post_status' => 'publish',
+		// 	'numberposts' => -1,
+		// 	'meta_query' => array(
+		// 		array(
+		// 			'meta_key' => '_sbprok_service_details',
+		// 			'meta_value' => $_POST['employee_calendar_date'],
+		// 			'compare' => 'IN',
+		// 		)
+		// 	)
+		//   ]);
+			$posts = get_posts([
+				'post_type' => 'sbprok_bookings',
+				'meta_query' => array(
+					array(
+						'meta_key' => '_sbprok_services',
+						'meta_value' => $_POST['service_selected'],
+						'compare' => '=',
+					),
+					array(
+						'meta_key' => '_sbprok_employee',
+						'meta_value' => $_POST['selected_emp'],
+						'compare' => '=',
+					)
+				)
+			  ]);
+			
 		  foreach($posts as $p){
 			$service                      = get_post_meta($p->ID,"_sbprok_services",true);
 			$service_post                 = get_post($service);  

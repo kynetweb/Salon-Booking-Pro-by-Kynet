@@ -93,24 +93,15 @@
 		$('input[data-sbprok="datepicker"]').datepicker({
             onSelect: function(dateText, inst) {
 				employee_calendar_date = dateText;
-			  },
-			  beforeShowDay:function (date) {
-				return [exclude_days.indexOf(date.getDay()) == -1];
-			  },
-			  changeMonth: true,
-			  changeYear: true,
-			  minDate:new Date()
-		});
-		
-		
-		$(".time_pic").one( "click", function() {
-			var service_selected = $(".sbprok_srvice option:selected").val();
+				var service_selected = $(".sbprok_srvice option:selected").val();
+				var selected_emp     = $('.sbprok_employees option:selected').val();
 				$.ajax({
 					url: sbprokAjax.ajaxurl,
 					type: 'POST',
 					dataType: "json",
-					data: { action : 'get_posts_metadata'},
+					data: { action : 'get_posts_metadata',service_selected:service_selected,selected_emp:selected_emp},
 					success: function (res) {
+						console.log(res);
 						$.each(res, function(index, value) { 
 							var service_id = index.substr(index.indexOf("_") + 1);
 							if(employee_calendar_date == value._date && service_id == service_selected) {
@@ -121,20 +112,30 @@
 						
 					  }
 				  });
-			
+				  $('input[data-sbprok="timepicker"]').timepicker({
+					'minTime': '9:00am',
+					'maxTime': '6:00pm',
+					'step': function(i) {
+						return 30;
+					},
+					'disableTimeRanges': time_ranges[0]
+				});
+		
+			  },
+			  beforeShowDay:function (date) {
+				return [exclude_days.indexOf(date.getDay()) == -1];
+			  },
+			  changeMonth: true,
+			  changeYear: true,
+			  minDate:new Date()
 		});
+		
+		
+		
 		$(".cst").change(function() {
 			console.log(time_ranges);
 		});
-		$('input[data-sbprok="timepicker"]').timepicker({
-			'minTime': '9:00am',
-			'maxTime': '6:00pm',
-			'step': function(i) {
-				return 30;
-			},
-			'disableTimeRanges': time_ranges[0]
-		});
-
+		
 		//DataTables
 		$('#sbprok_emp_table').DataTable();
 		
