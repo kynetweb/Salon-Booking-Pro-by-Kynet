@@ -167,12 +167,11 @@ class Sbprok_Posttypes {
     $screen = get_current_screen();
 		 if( 'sbprok_bookings' == $screen->post_type ) {
 			$post_meta       = get_post_meta( $post->ID);
-			$employee_meta   = get_user_meta($post_meta['_sbprok_employee'][0]);
-			$emp_calendar_id = $employee_meta['calendar_id'][0];
-			if(empty($emp_calendar_id)){
-			echo "<p style='padding: 2px 13px;'><span>Booking is not synchronized with Google Calendar.</span></p>";
+
+			if(array_key_exists("_sbprok_booking_event_id",$post_meta)){
+			 echo "<p style='padding: 2px 13px;'><span>Booking is synchronized with Google Calendar.</span></p>";
 			}else{
-			echo "<p style='padding: 2px 13px;'><span>Booking is synchronized with Google Calendar.</span></p>";
+			 echo "<p style='padding: 2px 13px;'><span>Booking is not synchronized with Google Calendar.</span></p>";
 			}
 		 } 
     }
