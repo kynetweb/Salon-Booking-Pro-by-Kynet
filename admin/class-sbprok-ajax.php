@@ -194,7 +194,7 @@ class Sbprok_Ajax {
 			$booking_details              = get_post_meta($p->ID,"_sbprok_booking_schedule",true);
 			$end_time                     = calculate_end_time($booking_details['_date'].$booking_details['_time'], $service_details['_duration']);
 			$long[$p->ID.'_'.$service]    = $booking_details;
-			$long['end_time']             = date('h:i a', strtotime($end_time));
+			$long['end_time']             = date('h:ia', strtotime($end_time));
 		}
 		echo json_encode($long);
 			exit;
