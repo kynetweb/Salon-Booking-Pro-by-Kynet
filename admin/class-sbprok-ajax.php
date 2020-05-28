@@ -175,11 +175,12 @@ class Sbprok_Ajax {
 				$service_post                 = get_post($service);  
 				$service_details              = get_post_meta($service_post->ID,"_sbprok_service_details",true);
 				$booking_details['_date']     = get_post_meta( $p->ID, "_sbprok_booking_date", true );
-				$booking_details['_time']     = rtrim(get_post_meta( $p->ID, "_sbprok_booking_time", true ), " APMapm");
+				$booking_details['_time']     = get_post_meta( $p->ID, "_sbprok_booking_time", true );
 				$booking_details['_customer'] = get_post_meta( $p->ID, "_sbprok_booking_customer", true );
 				$end_time                     = calculate_end_time($booking_details['_date'].$booking_details['_time'], $service_details['_duration']);
+				$booking_details['end_time']  = date('h:ia', strtotime($end_time));
 				$long[$p->ID.'_'.$service]    = $booking_details;
-				$long['end_time']             = date('h:ia', strtotime($end_time));
+				
 			}
 		 }else{
 			$long = []; 

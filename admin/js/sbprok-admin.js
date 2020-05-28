@@ -93,7 +93,6 @@
 		$('input[data-sbprok="datepicker"]').datepicker({
             onSelect: function(dateText, inst) {
 				employee_calendar_date = dateText;
-				console.log(employee_calendar_date);
 				var service_selected = $(".sbprok_srvice option:selected").val();
 				var selected_emp     = $('.sbprok_employees option:selected').val();
 				$.ajax({
@@ -102,25 +101,24 @@
 					dataType: "json",
 					data: { action : 'get_posts_metadata',employee_calendar_date:employee_calendar_date},
 					success: function (res) {
-						console.log(res);
 						$.each(res, function(index, value) { 
 							var service_id  = index.substr(index.indexOf("_") + 1);
 							if(employee_calendar_date == value._date && service_id == service_selected) {
-								time_ranges = [value._time, res['end_time']];
-								return false;
+								time_ranges.push([value._time, value.end_time]);
 							}
 						});
 						
+						$('input[data-sbprok="timepicker"]').timepicker({
+							'minTime': '9:00am',
+							'maxTime': '6:00pm',
+							'step': function(i) {
+								return 30;
+							},
+							'disableTimeRanges' :time_ranges
+						});	
 					  }
 				  });
-				  $('input[data-sbprok="timepicker"]').timepicker({
-					'minTime': '9:00am',
-					'maxTime': '6:00pm',
-					'step': function(i) {
-						return 30;
-					},
-					'disableTimeRanges': time_ranges[0]
-				});
+				  
 		
 			  },
 			  beforeShowDay:function (date) {
@@ -129,12 +127,6 @@
 			  changeMonth: true,
 			  changeYear: true,
 			  minDate:new Date()
-		});
-		
-		
-		
-		$(".cst").change(function() {
-			console.log(time_ranges);
 		});
 		
 		//DataTables

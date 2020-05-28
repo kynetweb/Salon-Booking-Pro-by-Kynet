@@ -185,27 +185,22 @@ class Sbprok_Metaboxes {
     * @since: 1.0
     */  
     private function booking_schedule($box, $post_id){
-        $post_meta = $this->meta_value($box, $post_id);
-
-        if(empty($post_meta)){
-            $post_meta = array(
-                '_date'=> '',
-                '_time' => '',
-                '_customer' => ''
-            );
-        }
+        $post_meta   = $this->meta_value($box, $post_id);
+        $customer_id = get_post_meta( $post_id, "_sbprok_booking_customer", true );
+        $date        = get_post_meta( $post_id, "_sbprok_booking_date", true );
+        $time        = get_post_meta( $post_id, "_sbprok_booking_time", true );
         ?>
         <div class="sbprok-row">
             <div class="sbprok-col-4">
             <label><?php echo __('Date', 'sbprok') ?></label>
-            <input class="sbprok-input datepic" data-sbprok="datepicker" type="text" value="<?php echo $post_meta['_date'] ?>" name="<?php echo $box['id'] ?>[_date]"  />
+            <input class="sbprok-input datepic" data-sbprok="datepicker" type="text" value="<?php echo $date ?>" name="<?php echo $box['id'] ?>[_date]"  />
            <div class="errorMsg">
            </div>
             </div>
 
             <div class="sbprok-col-4">
             <label><?php echo __('Time', 'sbprok') ?></label>
-            <input class="sbprok-input time_pic" required="required" data-sbprok="timepicker" type="text" value="<?php echo $post_meta['_time'] ?>" name="<?php echo $box['id'] ?>[_time]"  />
+            <input class="sbprok-input time_pic" required="required" data-sbprok="timepicker" type="text" value="<?php echo $time ?>" name="<?php echo $box['id'] ?>[_time]"  />
             <div class="errorMsgtime">
            </div>
             </div>
@@ -218,10 +213,11 @@ class Sbprok_Metaboxes {
                     'role__in'     => array('sbprok_customer'),
                      )
                 );
-                echo '<select class="cst" data-sbprok="select2" name="'.$box['id'].'[_customer]" id="'.$post_meta['_customer'].'">';  
-                echo '<option value="">Select Customer</option>';
+        
+                echo '<select class="cst" data-sbprok="select2" name="'.$box['id'].'[_customer]" id="'.$customer_id.'">';  
+                echo '<option value="">Select Customers</option>';
                 foreach ($blogusers as $user) { 
-                    echo '<option value="'.$user->id.'" '.(in_array($user->id, $post_meta) ? "selected" : "").'>'.$user->display_name.'</option>';   
+                    echo '<option value="'.$user->id.'" '.($user->id == $customer_id ? "selected" : "").'>'.$user->display_name.'</option>';   
                 }  
                 echo '</select>'; 
             ?>
