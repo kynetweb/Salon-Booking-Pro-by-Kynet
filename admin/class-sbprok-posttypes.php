@@ -204,18 +204,15 @@ class Sbprok_Posttypes {
 		if(get_post_type( $post_id ) == 'sbprok_bookings')
 		{
 			$new_title     = get_post_meta( $post_id, '_sbprok_services', true);
-			$customer      = get_post_meta( $post_id, "_sbprok_booking_schedule", true );
+			$customer_id   = get_post_meta( $post_id, "_sbprok_booking_customer", true );
 			$array         = array(
 				'post_type'=>'sbprok_services'
 			);
 			$service_names = get_posts($array);
 			foreach($service_names as $service_name){	
 					if($service_name->ID == $new_title){
-						foreach($customer as $customers){
-							$customer_id = $customer["_customer"];
 							$user_info = get_userdata($customer_id);
 							return $service_name->post_title."-".$user_info->display_name;
-						}
 					}			
 			}
 	
@@ -238,15 +235,14 @@ class Sbprok_Posttypes {
         return $columns;
     }
     function bookings_column(  $column, $post_id ) {  
-		$schedule = get_post_meta($post_id, "_sbprok_booking_schedule", true );
         if($column == "employee") {	
 			$empid  = get_post_meta($post_id, "_sbprok_employee", true );
 			$emp 	= 	get_user_by( 'id', $empid );
 			echo $emp->display_name ;
         } elseif($column == "bookingdate"){
-            echo $schedule['_date'];
+            echo get_post_meta($post_id, "_sbprok_booking_date", true );
 		} elseif($column == "time"){
-			echo $schedule['_time'];	
+			echo get_post_meta($post_id, "_sbprok_booking_time", true );	
 		}
 	}
 	/**

@@ -76,9 +76,9 @@
 													.format('LT');
 									    var final_time = end_time;
 									}
-									
+							
 									var dates    = new Date(this._date+' '+this._time).toISOString();
-									var end_date = new Date(this._date+' '+end_time).toISOString();
+									var end_date = new Date(this._date+' '+final_time).toISOString();
 													events.push({
 													id:	posts_id,
 													title: name+': '+customer,

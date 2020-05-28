@@ -54,7 +54,6 @@ class Sbprok_Ajax {
 		$this->load_dependencies();
 		$this->load_Helper();
         $loader->add_action( 'wp_ajax_get_bookings',$this, 'get_bookings');
-		$loader->add_action( 'wp_ajax_get_availbility',$this, 'get_availbility');
 		$loader->add_action( 'wp_ajax_add_google_calendar_events',$this, 'add_google_calendar_events');
 		$loader->add_action( 'wp_ajax_get_service_employees',$this, 'get_service_employees');
 		$loader->add_action( 'wp_ajax_get_cat_service',$this, 'get_cat_service');
@@ -113,7 +112,9 @@ class Sbprok_Ajax {
 			$service_idds['id']         = $service_id;
 			$service_idds['duration']   = implode(",",$final_durations);
 			$service_idds['posts_id']   = $ajaxpost->ID;
-			$date_time                  = get_post_meta( $ajaxpost->ID, "_sbprok_booking_schedule", true );
+			$date_time['_date']         = get_post_meta( $ajaxpost->ID, "_sbprok_booking_date", true );
+			$date_time['_time']         = rtrim(get_post_meta( $ajaxpost->ID, "_sbprok_booking_time", true ), " APMapm");
+			$date_time['_customer']     = get_post_meta( $ajaxpost->ID, "_sbprok_booking_customer", true );
 			$customer_name              = get_userdata($date_time['_customer']);
 			$date_time['_customer']     = $customer_name->display_name;
 			$schedule[]                 = array_merge($service_idds,$date_time);
@@ -124,35 +125,7 @@ class Sbprok_Ajax {
 			echo json_encode( array($schedule,$service_id) );
 			exit; 
 		}
-    /**
-	 * get availbility
-	 *
-	 * @since    1.0.0
-	 */
-	function get_availbility() {
-		$services  = array(
-						'post_type' => array('sbprok_appoints'),
-						'posts_per_page' => 40,
-						'nopaging' => true,
-						'order' => 'DESC',
-						'orderby' => 'date'
-				     );
-		$ajaxposts = get_posts($services);
-
-		foreach($ajaxposts as $ajaxpost){
-			$date_time      = get_post_meta( $ajaxpost->ID, "_sbprok_booking_schedule", true );
-				foreach($date_time as $date_times){
-					$date         = $date_time["_date"];
-					$time[$date]  = $date_time["_time"];
-				}
-				$date_time_array[]   = $time;
-				$time                = (array) null;
-			}
-			$date_array  = [3, 4];
-			
-		   echo json_encode(array($date_time_array,$date_array));
-			exit; 
-		}
+    
     /**
 	 * get employees related to a service
 	 *
@@ -183,43 +156,35 @@ class Sbprok_Ajax {
 	*/
 	function get_posts_metadata(){
 
-		// $posts = get_posts([
-		// 	'post_type' => 'sbprok_bookings',
-		// 	'post_status' => 'publish',
-		// 	'numberposts' => -1,
-		// 	'meta_query' => array(
-		// 		array(
-		// 			'meta_key' => '_sbprok_service_details',
-		// 			'meta_value' => $_POST['employee_calendar_date'],
-		// 			'compare' => 'IN',
-		// 		)
-		// 	)
-		//   ]);
-			$posts = get_posts([
-				'post_type' => 'sbprok_bookings',
-				'meta_query' => array(
-					array(
-						'meta_key' => '_sbprok_services',
-						'meta_value' => $_POST['service_selected'],
-						'compare' => '=',
-					),
-					array(
-						'meta_key' => '_sbprok_employee',
-						'meta_value' => $_POST['selected_emp'],
-						'compare' => '=',
-					)
+		$args = array(
+			'post_type' => 'sbprok_bookings',
+			'meta_query' => array(
+				array(
+					'meta_key' => '_sbprok_booking_date',
+					'meta_value' => $_POST['employee_calendar_date'],
+					'compare' => '=',
+					'type' => 'DATE' 
 				)
-			  ]);
-			
-		  foreach($posts as $p){
-			$service                      = get_post_meta($p->ID,"_sbprok_services",true);
-			$service_post                 = get_post($service);  
-			$service_details              = get_post_meta($service_post->ID,"_sbprok_service_details",true);
-			$booking_details              = get_post_meta($p->ID,"_sbprok_booking_schedule",true);
-			$end_time                     = calculate_end_time($booking_details['_date'].$booking_details['_time'], $service_details['_duration']);
-			$long[$p->ID.'_'.$service]    = $booking_details;
-			$long['end_time']             = date('h:ia', strtotime($end_time));
-		}
+			)
+		  );
+		  $query = new WP_Query( $args );
+         if($query->have_posts() ){
+			$posts = $query->get_posts();
+			foreach($posts as $p){
+				$service                      = get_post_meta($p->ID,"_sbprok_services",true);
+				$service_post                 = get_post($service);  
+				$service_details              = get_post_meta($service_post->ID,"_sbprok_service_details",true);
+				$booking_details['_date']     = get_post_meta( $p->ID, "_sbprok_booking_date", true );
+				$booking_details['_time']     = rtrim(get_post_meta( $p->ID, "_sbprok_booking_time", true ), " APMapm");
+				$booking_details['_customer'] = get_post_meta( $p->ID, "_sbprok_booking_customer", true );
+				$end_time                     = calculate_end_time($booking_details['_date'].$booking_details['_time'], $service_details['_duration']);
+				$long[$p->ID.'_'.$service]    = $booking_details;
+				$long['end_time']             = date('h:ia', strtotime($end_time));
+			}
+		 }else{
+			$long = []; 
+		 }
+		  
 		echo json_encode($long);
 			exit;
 	}
@@ -258,10 +223,7 @@ class Sbprok_Ajax {
 			$start           = $_POST['start_date'];
 			$time            = $_POST['start_time'];
 			$end_time        = $_POST['end_time'];
-		    $details         = array(
-									'_date' => !empty($start ) ? $start : '',
-									'_time' => !empty($time ) ? $time : '',
-								);
+
 			$start_date      = datetime_conversion($start.$time);
 			$end_time        = calculate_end_time($start.$time);
 			$post_meta       = get_post_meta( $posts_id);
@@ -277,7 +239,12 @@ class Sbprok_Ajax {
 									);
 
 			$this->google_calendar->update_event($update_data);		
-		    update_post_meta($posts_id, '_sbprok_booking_schedule', $details);
+			$date = !empty($start ) ? $start : '';
+            update_post_meta( $post_id, '_sbprok_booking_date', $date );
+
+            $time = !empty($time ) ? $time : '';
+            update_post_meta( $post_id, '_sbprok_booking_time', $time );
+		
 		}
 
 	/**

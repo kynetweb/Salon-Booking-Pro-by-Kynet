@@ -243,16 +243,16 @@ class Sbprok_Meta {
 
     // store booking meta boxes details
     if ( isset( $_POST['_sbprok_booking_schedule'] ) ) {
-        
-        $details = array(
-            '_date' => !empty( $_POST['_sbprok_booking_schedule']['_date'] ) ?  $_POST['_sbprok_booking_schedule']['_date'] : '',
-            '_time' => !empty( $_POST['_sbprok_booking_schedule']['_time']  ) ? $_POST['_sbprok_booking_schedule']['_time'] : '',
-            '_customer' => !empty( $_POST['_sbprok_booking_schedule']['_customer']  ) ? $_POST['_sbprok_booking_schedule']['_customer'] : '',
-            
-        );
 
-        update_post_meta( $post_id, '_sbprok_booking_schedule', $details );
-        
+        $date = !empty( $_POST['_sbprok_booking_schedule']['_date'] ) ?  $_POST['_sbprok_booking_schedule']['_date'] : ' ';
+        update_post_meta( $post_id, '_sbprok_booking_date', $date );
+
+        $time = !empty( $_POST['_sbprok_booking_schedule']['_time'] ) ?  $_POST['_sbprok_booking_schedule']['_time'] : ' ';
+        update_post_meta( $post_id, '_sbprok_booking_time', $time );
+
+        $customer = !empty( $_POST['_sbprok_booking_schedule']['_customer'] ) ?  $_POST['_sbprok_booking_schedule']['_customer'] : ' ';
+        update_post_meta( $post_id, '_sbprok_booking_customer', $customer );
+
     }
 
     if ( isset( $_POST['_sbprok_customer']) ) {
