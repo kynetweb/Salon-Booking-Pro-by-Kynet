@@ -112,7 +112,7 @@
 							'minTime': '9:00am',
 							'maxTime': '6:00pm',
 							'step': function(i) {
-								return 30;
+								return 60;
 							},
 							'disableTimeRanges' :time_ranges
 						});	
