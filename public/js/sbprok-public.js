@@ -31,12 +31,23 @@
 
 	$(document).on('click','.sbprok-inner-box', function(e){
 		$(".common_1").addClass("sbprok-hide");
-		$(".common_2").removeClass("sbprok-hide");
+		if($(".Sub-Category").length){
+		 $(".Sub-Category").removeClass("sbprok-hide");
+		}else{
+		 $(".common_2").removeClass("sbprok-hide");
+		}
+		
+	});
+
+	$(document).on('click','.Sub-Category', function(e){
+		$(".Sub-Category").addClass("sbprok-hide");
+		$(".sub_common_2").removeClass("sbprok-hide");
 	});
 
 	$(document).on('click','.sbprok-inner-box-2', function(e){
-		$(".common_2").addClass("sbprok-hide");
-		$(".common_3").removeClass("sbprok-hide");
+		var id = $(this).find('.service_id').val();
+		$(".service_list").addClass("sbprok-hide");
+		$(".common_"+id).removeClass("sbprok-hide");
 	});
 	$(document).on('click','#sbprok-back', function(e){
 		$(".common_2").addClass("sbprok-hide");

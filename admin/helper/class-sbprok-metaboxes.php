@@ -314,7 +314,7 @@ class Sbprok_Metaboxes {
             foreach ( $terms as $term ) { 
                 echo '<option value="'.$term->term_id.'" '.($term->term_id == $post_meta ? "selected" : "").'>'.$term->name.'</option>'; 
             }
-            echo '</select>';  
+            echo '</select>';   
         }  
     }
 
