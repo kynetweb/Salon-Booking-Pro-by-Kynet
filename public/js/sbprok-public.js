@@ -37,7 +37,7 @@
 		 $(".common_2").removeClass("sbprok-hide");
 		}
 		
-	});
+	});  
 
 	$(document).on('click','.Sub-Category', function(e){
 		$(".Sub-Category").addClass("sbprok-hide");

@@ -155,6 +155,12 @@ class Sbprok {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sbprok-shortcode.php';
 
+		/**
+		 * The class responsible for paypal payment
+		 * side of the site.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-sbprok-paypal-gateway.php';
+
 		
 
 		$this->loader = new Sbprok_Loader();

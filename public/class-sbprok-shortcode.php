@@ -51,7 +51,10 @@ class Sbprok_Shortcode {
 
 		$this->plugin_name = $plugin_name;
         $this->version     = $version;
-        add_shortcode( 'sbprok_booking_widget', array( $this, 'sbprok_shortcode' ) );
+		add_shortcode( 'sbprok_booking_widget', array( $this, 'sbprok_shortcode' ) );
+		add_shortcode( 'sbprok_paysucess_widget', array( $this, 'sbprok_sucess_shortcode' ) );
+		add_shortcode( 'sbprok_paycancel_widget', array( $this, 'sbprok_sucess_shortcode' ) );
+		add_shortcode( 'sbprok_payipn_widget', array( $this, 'sbprok_ipn_shortcode' ) );
 
     }
 
@@ -62,8 +65,18 @@ class Sbprok_Shortcode {
 	 */
     function sbprok_shortcode() {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/templates/front-end-template.php';
-    }
+	}
+	
+	function sbprok_ipn_shortcode() {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/templates/ipn.php';
+	}
 
-
+	function sbprok_sucess_shortcode() {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/templates/success.php';
+	}
+	
+	function sbprok_cancel_shortcode() {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/templates/success.php';
+	}
 
 }

@@ -49,7 +49,7 @@
 				dataType: "json",
 				data: { action : 'get_cat_service',cat_id:service_cat_id },
 				beforeSend : function ( xhr ) {
-					$('.prop_loadmore').text( 'Loading...' ); 
+				  setTimeout(function(){ $('.prop_loadmore').text( 'Loading...' ); }, 2000); 	 
 				},
 				success: function (res) {
 					$.each(res, function(index, value) {
@@ -69,7 +69,7 @@
 					dataType: "json",
 					data: { action : 'get_service_employees', service_id: service_selected },
 					beforeSend : function ( xhr ) {
-						$('.loadmore').text( 'Loading...' ); 
+						setTimeout(function(){ $('.loadmore').text( 'Loading...' ); }, 2000); 
 					},
 					success: function (res) {
 							$.each(res, function(index, values) {

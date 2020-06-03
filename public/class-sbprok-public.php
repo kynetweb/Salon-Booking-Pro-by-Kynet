@@ -97,11 +97,11 @@ class Sbprok_Public {
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-
+        
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/sbprok-public.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name.'-js1', plugin_dir_url( __FILE__ ) . 'js/assets/popper.min.js', array( 'jquery' ), $this->version, false );
 		wp_enqueue_script( $this->plugin_name.'-js2', plugin_dir_url( __FILE__ ) . 'js/assets/popper.min.js.map', array( 'jquery' ), $this->version, false );
-		
+		wp_localize_script( $this->plugin_name, 'sbprokAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ))); 
 
 	}
 
